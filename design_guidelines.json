@@ -1,0 +1,112 @@
+{
+  "theme": "light",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "brand": {
+    "name": "VanguardCX",
+    "tone": "Objective, extremely fast, highly legible, un-distracting",
+    "emotion": "Intelligence, Speed, Trust",
+    "reasoning": "Enterprise B2B agent-assist dashboards require low cognitive load and maximum data density. Color is used strictly for function (sentiment/alerts), not decoration. Moving away from the 'SaaS Purple/Teal' cliché to a stark, authoritative Swiss aesthetic."
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Cabinet Grotesk",
+      "body": "IBM Plex Sans",
+      "mono": "JetBrains Mono"
+    },
+    "rules": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tighter font-medium text-[#0A0A0A] leading-tight",
+      "h2": "text-2xl sm:text-3xl tracking-tight font-medium text-[#0A0A0A]",
+      "h3": "text-lg sm:text-xl font-semibold tracking-tight text-[#0A0A0A]",
+      "overline": "uppercase text-[10px] sm:text-xs tracking-[0.15em] font-bold text-[#525252]",
+      "body": "text-sm sm:text-base leading-relaxed text-[#262626]",
+      "data_labels": "text-xs font-mono text-[#737373] uppercase tracking-wider",
+      "transcript_text": "text-sm font-medium leading-relaxed font-body"
+    }
+  },
+  "colors": {
+    "background": {
+      "app": "#F4F4F5",
+      "surface": "#FFFFFF",
+      "surface_secondary": "#FAFAFA",
+      "surface_inverted": "#09090B"
+    },
+    "text": {
+      "primary": "#0A0A0A",
+      "secondary": "#525252",
+      "tertiary": "#A3A3A3",
+      "inverted": "#FFFFFF",
+      "accent": "#0055FF"
+    },
+    "brand": {
+      "primary": "#0055FF",
+      "primary_hover": "#0040CC",
+      "accent": "#0A0A0A"
+    },
+    "semantic": {
+      "success": { "bg": "#ECFDF5", "border": "#10B981", "text": "#047857" },
+      "warning": { "bg": "#FFFBEB", "border": "#F59E0B", "text": "#B45309" },
+      "danger": { "bg": "#FEF2F2", "border": "#EF4444", "text": "#B91C1C" },
+      "info": { "bg": "#EFF6FF", "border": "#3B82F6", "text": "#1D4ED8" }
+    },
+    "rules": [
+      "ABSOLUTELY NO PURPLE OR TEAL (#9D4CDD or #1B93A4).",
+      "Use 1px borders instead of drop shadows to define surfaces.",
+      "Color is Function Only: 95% of the UI should be monochrome. Color exists only to guide action or indicate status (e.g., Red for escalation, Blue for next-best-action)."
+    ]
+  },
+  "layout": {
+    "spacing_scale": "Use standard Tailwind spacing. For the Agent Workspace, use 'Control Room Grid' (tight gaps: gap-2 to gap-4) to maximize data density.",
+    "grid_strategy": "Control Room Grid. Base grid-cols-12 for workspaces. Every pixel utilized.",
+    "borders": "border border-[#E5E5E5] or border-border",
+    "radius": "rounded-sm (2px) or rounded-none to emphasize the technical Swiss aesthetic.",
+    "shadows": "Minimal. Use shadow-sm for popovers and dropdowns, otherwise rely purely on 1px borders for structure.",
+    "surfaces": "Use 'Grid Borders' pattern. Expose the skeleton, make the grid visible in analytics panels."
+  },
+  "motion": {
+    "hover_states": "Hard color swaps (e.g., bg-white text-black -> bg-black text-white) or sharp 1px border highlights.",
+    "transitions": "Fast and snappy. 150ms ease-out.",
+    "agent_workspace": "Live transcript should use framer-motion to smoothly push new lines up without jarring the agent's reading flow."
+  },
+  "components_strategy": {
+    "buttons": "Sharp corners. High contrast. Primary: bg-black text-white hover:bg-[#0055FF].",
+    "cards": "White background, 1px solid border, no shadow. CardHeader should have a subtle bottom border to separate from content.",
+    "live_transcript_panel": "Use IBM Plex Sans for legibility. Speaker A/B denoted by small bold mono tags. Active utterance highlighted with slight blue tint background. Terminal-like flow.",
+    "nba_cards": "Next-Best-Action suggestions. Floating or dedicated right panel. Highlighted with a subtle 1px primary color border and an icon.",
+    "sentiment_meter": "Horizontal minimal bar chart or dot indicator. Red (high risk) -> Amber -> Green. No gradients, block colors only.",
+    "compliance_checklist": "Dense checklist UI. Checkbox turns solid black when ticked. Strikethrough text when done.",
+    "forms_and_inputs": "Shadcn components customized to have `rounded-none`, sharp borders, and high-contrast focus rings (`focus:ring-[#0055FF]`)."
+  },
+  "iconography": {
+    "library": "@phosphor-icons/react",
+    "style": "Regular or Light weight. High legibility, geometric.",
+    "install_command": "yarn add @phosphor-icons/react"
+  },
+  "media": {
+    "hero_image": {
+      "url": "https://images.pexels.com/photos/12732218/pexels-photo-12732218.jpeg",
+      "description": "Abstract white geometric pattern for landing page hero background to convey structural AI and intelligence."
+    },
+    "texture_noise": {
+      "url": "https://images.pexels.com/photos/978487/pexels-photo-978487.jpeg",
+      "description": "Monochrome grainy noise. Use as a fixed background overlay with opacity-5 mix-blend-multiply on marketing pages to break digital flatness."
+    },
+    "agent_profile": {
+      "url": "https://images.pexels.com/photos/5467593/pexels-photo-5467593.jpeg",
+      "description": "Professional agent photo for user profile / avatar / landing page testimonial."
+    }
+  },
+  "accessibility": {
+    "contrast": "Ensure APCA/WCAG AA contrast. Especially on sentiment indicators.",
+    "focus": "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0055FF] focus-visible:ring-offset-1",
+    "testing": "All interactive elements MUST have data-testid attributes (e.g., data-testid=\"call-transcript-panel\")."
+  },
+  "pages_to_build": [
+    "Landing Page: Minimalist, typographic, high contrast. F-pattern layout.",
+    "Login: JWT auth, split screen with abstract geometry image.",
+    "Agent Workspace: Hero surface. 4-pane dense layout. Left: Live transcript. Center: AI Assist (NBA). Right: Knowledge base & Compliance.",
+    "Supervisor Dashboard: Heatmaps, live call monitoring list, escalation alerts.",
+    "KB Management: Document upload interface, data tables with sticky headers.",
+    "Analytics: Post-call metrics, charting with Recharts (monochrome palettes with semantic accents).",
+    "Settings: API integrations, webhooks, omnichannel setup."
+  ]
+}
