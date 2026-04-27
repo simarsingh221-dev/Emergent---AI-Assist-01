@@ -18,9 +18,11 @@ from pydantic import BaseModel, Field, EmailStr
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from pypdf import PdfReader
+import hashlib
+import base64
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
-from emergentintegrations.llm.openai import OpenAISpeechToText
+from emergentintegrations.llm.openai import OpenAISpeechToText, OpenAITextToSpeech
 
 
 ROOT_DIR = Path(__file__).parent
@@ -604,6 +606,69 @@ async def list_providers(user=Depends(get_current_user)):
 @api.get("/")
 async def root():
     return {"service": "FlowPilot Agent Assist", "version": "1.0.0", "status": "healthy"}
+
+
+# ========== DEMO (TTS + LEAD CAPTURE) ==========
+class TTSReq(BaseModel):
+    text: str
+    voice: str = "coral"
+
+
+class LeadReq(BaseModel):
+    name: str
+    email: EmailStr
+    company: Optional[str] = ""
+    message: Optional[str] = ""
+
+
+@api.post("/demo/tts")
+async def demo_tts(req: TTSReq):
+    """Public TTS for the demo player. Caches audio by sha256(text+voice) to avoid regenerating."""
+    if not req.text or len(req.text) > 4000:
+        raise HTTPException(400, "Text required (max 4000 chars)")
+    key = hashlib.sha256(f"{req.voice}|{req.text}".encode("utf-8")).hexdigest()
+    cached = await db.tts_cache.find_one({"key": key}, {"_id": 0, "audio_b64": 1})
+    if cached and cached.get("audio_b64"):
+        return {"audio_b64": cached["audio_b64"], "cached": True}
+    try:
+        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
+        audio_bytes = await tts.generate_speech(
+            text=req.text, model="tts-1-hd", voice=req.voice, response_format="mp3", speed=1.0
+        )
+        b64 = base64.b64encode(audio_bytes).decode("ascii")
+        await db.tts_cache.update_one(
+            {"key": key},
+            {"$set": {
+                "key": key, "voice": req.voice, "text": req.text[:200],
+                "audio_b64": b64, "created_at": now_iso()
+            }},
+            upsert=True
+        )
+        return {"audio_b64": b64, "cached": False}
+    except Exception as e:
+        logger.error(f"tts fail: {e}")
+        raise HTTPException(500, f"TTS failed: {str(e)[:200]}")
+
+
+@api.post("/demo/lead")
+async def demo_lead(req: LeadReq):
+    doc = {
+        "id": str(uuid.uuid4()),
+        "name": req.name,
+        "email": req.email.lower(),
+        "company": req.company or "",
+        "message": req.message or "",
+        "created_at": now_iso()
+    }
+    await db.leads.insert_one(doc)
+    doc.pop("_id", None)
+    return {"ok": True, "id": doc["id"]}
+
+
+@api.get("/demo/leads")
+async def list_leads(user=Depends(get_current_user)):
+    leads = await db.leads.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return leads
 
 
 app.include_router(api)

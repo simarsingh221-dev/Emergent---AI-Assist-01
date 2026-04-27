@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import Demo from "@/pages/Demo";
 import AppShell from "@/components/AppShell";
 import AgentWorkspace from "@/pages/AgentWorkspace";
 import SupervisorDashboard from "@/pages/SupervisorDashboard";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/demo" element={<Demo />} />
           <Route path="/app" element={<Private><AppShell /></Private>}>
             <Route index element={<Navigate to="/app/workspace" replace />} />
             <Route path="workspace" element={<AgentWorkspace />} />

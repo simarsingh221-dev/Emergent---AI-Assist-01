@@ -61,14 +61,14 @@ export default function Landing() {
                 instant knowledge, and live compliance — while supervisors watch every conversation in one glass.
               </p>
               <div className="mt-10 flex flex-wrap gap-3">
-                <Link to="/register" data-testid="hero-cta-start">
-                  <Button className="bg-black text-white hover:bg-[#7B61FF] rounded-none h-12 px-6 text-sm font-medium">
-                    Start free trial <ArrowRight size={16} className="ml-2" />
+                <Link to="/demo" data-testid="hero-cta-watch-demo">
+                  <Button className="brand-gradient-bg text-white hover:opacity-90 rounded-none h-12 px-6 text-sm font-medium">
+                    Watch 3-min demo <ArrowRight size={16} className="ml-2" />
                   </Button>
                 </Link>
-                <Link to="/login" data-testid="hero-cta-demo">
+                <Link to="/register" data-testid="hero-cta-start">
                   <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white rounded-none h-12 px-6 text-sm">
-                    Sign in
+                    Start free trial
                   </Button>
                 </Link>
               </div>

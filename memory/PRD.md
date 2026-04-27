@@ -29,6 +29,7 @@ A webapp that integrates with existing Call Monitoring / CCaaS solutions to prov
 - Frontend pages: Landing, Login, Register, Agent Workspace (4-pane), Supervisor Dashboard, Knowledge Base, Analytics, Settings, Call History
 - Mic recording → upload → Whisper transcription in workspace
 - AI Assist panel: intent, sentiment, escalation, churn risk, NBA cards, suggested response (click to use), compliance checklist, KB suggestions
+- **Demo Mode** (`/demo`): 3-min self-running narrated tour with 3 scenarios (retention / KYC / frustrated claim), OpenAI TTS-1-HD voice (`coral`), brand-gradient progress, server-side TTS caching, CTA + lead capture (`/api/demo/lead`)
 
 ## Test Results
 - Backend: 24/24 pytest pass (`/app/backend/tests/backend_test.py`)
