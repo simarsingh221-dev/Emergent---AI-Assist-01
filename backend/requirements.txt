@@ -4,7 +4,6 @@ uvicorn==0.22.0
 gunicorn==21.2.0
 python-dotenv
 requests
-
 pymongo
 motor
 boto3
