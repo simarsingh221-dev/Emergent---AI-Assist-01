@@ -1,7 +1,7 @@
 # FlowPilot — Real-Time Agent Assist
 
 ## Original Problem Statement
-A webapp that integrates with existing Call Monitoring / CCaaS solutions to provide Real-Time Agent Assist. Eight pillars: (1) real-time listening + intent, (2) live NBA suggestions, (3) instant KB retrieval, (4) auto note-taking & summarization, (5) real-time compliance (AutoQA), (6) live analytics & sentiment, (7) workflow guidance, (8) omnichannel low-latency. UI/UX must be great and smooth, integration-ready.
+A webapp that integrates with existing Call Monitoring / CCaaS solutions to provide Real-Time Agent Assist. lars: (1) real-time listening + intent, (2) live NBA suggestions, (3) instant KB retrieval, (4) auto note-taking & summarization, (5) real-time compliance (AutoQA), (6) live analytics & sentiment, (7) workflow guidance, (8) omnichannel low-latency. UI/UX must be great and smooth, integration-ready.
 
 ## User Choices
 - LLM: **Emergent LLM Key** (GPT-5.2 for chat/analysis)

@@ -147,7 +147,7 @@ export default function Landing() {
             <div className="col-span-12 lg:col-span-5">
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-3">§ Capabilities</div>
               <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
-                Eight pillars of a modern<br />agent-assist platform.
+                Six pillars of a modern<br />agent-assist platform.
               </h2>
             </div>
             <div className="col-span-12 lg:col-span-7 text-[#525252] text-sm sm:text-base leading-relaxed flex items-end">
