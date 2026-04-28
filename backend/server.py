@@ -20,9 +20,7 @@ from jose import jwt, JWTError
 from pypdf import PdfReader
 import hashlib
 import base64
-
-from emergentintegrations.llm.chat import LlmChat, UserMessage
-from emergentintegrations.llm.openai import OpenAISpeechToText, OpenAITextToSpeech
+from openai import AsyncOpenAI
 
 
 ROOT_DIR = Path(__file__).parent
@@ -39,6 +37,9 @@ db = client[DB_NAME]
 
 pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer = HTTPBearer(auto_error=False)
+
+# Initialize OpenAI client
+openai_client = AsyncOpenAI(api_key=EMERGENT_LLM_KEY)
 
 app = FastAPI(title="FlowPilot Agent Assist")
 api = APIRouter(prefix="/api")
@@ -128,18 +129,28 @@ async def get_current_user(cred: HTTPAuthorizationCredentials = Depends(bearer))
 
 async def llm_json(system: str, user_text: str, session_id: str) -> Dict[str, Any]:
     """Call LLM and parse JSON response safely."""
-    chat = LlmChat(api_key=EMERGENT_LLM_KEY, session_id=session_id,
-                   system_message=system).with_model("openai", "gpt-5.2")
-    resp = await chat.send_message(UserMessage(text=user_text))
-    # Extract JSON
-    txt = resp.strip()
-    m = re.search(r"\{[\s\S]*\}", txt)
-    if m:
-        try:
-            return json.loads(m.group(0))
-        except Exception:
-            pass
-    return {}
+    try:
+        response = await openai_client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_text}
+            ],
+            temperature=0.7,
+            max_tokens=2000
+        )
+        txt = response.choices[0].message.content.strip()
+        # Extract JSON
+        m = re.search(r"\{[\s\S]*\}", txt)
+        if m:
+            try:
+                return json.loads(m.group(0))
+            except Exception:
+                pass
+        return {}
+    except Exception as e:
+        logger.error(f"LLM call failed: {e}")
+        return {}
 
 
 def extract_pdf_text(raw: bytes) -> str:
@@ -409,11 +420,15 @@ async def upload_audio(call_id: str, speaker: str = Form("customer"),
     raw = await file.read()
     fname = file.filename or "audio.webm"
     try:
-        stt = OpenAISpeechToText(api_key=EMERGENT_LLM_KEY)
         bio = io.BytesIO(raw)
         bio.name = fname
-        response = await stt.transcribe(file=bio, model="whisper-1", response_format="json", language="en")
-        text = response.text if hasattr(response, "text") else str(response)
+        response = await openai_client.audio.transcriptions.create(
+            file=bio,
+            model="whisper-1",
+            response_format="json",
+            language="en"
+        )
+        text = response.text
     except Exception as e:
         logger.error(f"whisper fail: {e}")
         raise HTTPException(500, f"Transcription failed: {str(e)[:200]}")
@@ -631,10 +646,14 @@ async def demo_tts(req: TTSReq):
     if cached and cached.get("audio_b64"):
         return {"audio_b64": cached["audio_b64"], "cached": True}
     try:
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        audio_bytes = await tts.generate_speech(
-            text=req.text, model="tts-1-hd", voice=req.voice, response_format="mp3", speed=1.0
+        response = await openai_client.audio.speech.create(
+            input=req.text,
+            model="tts-1-hd",
+            voice=req.voice,
+            response_format="mp3",
+            speed=1.0
         )
+        audio_bytes = response.content
         b64 = base64.b64encode(audio_bytes).decode("ascii")
         await db.tts_cache.update_one(
             {"key": key},
