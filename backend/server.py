@@ -443,7 +443,7 @@ async def analyze_call(call_id: str, user=Depends(get_current_user)):
         "\"escalation_risk\": \"low\"|\"medium\"|\"high\", "
         "\"churn_risk\": \"low\"|\"medium\"|\"high\", "
         "\"next_best_actions\": [{\"title\": string, \"reason\": string, \"type\": \"response\"|\"question\"|\"action\"|\"upsell\"}], "
-        "\"suggested_response\": string, "
+        "\"suggested_response\": string (STRICT 160-250 characters; concise empathetic, action-oriented; no preamble), "
         "\"compliance\": [{\"item\": string, \"status\": \"done\"|\"pending\"|\"missed\", \"note\": string}], "
         "\"kb_query\": string }"
     )
@@ -453,6 +453,11 @@ async def analyze_call(call_id: str, user=Depends(get_current_user)):
     except Exception as e:
         logger.error(f"analyze fail: {e}")
         raise HTTPException(500, f"LLM failed: {str(e)[:200]}")
+    # Hard cap suggested_response to 250 chars (LLM should respect, but enforce)
+    sr = analysis.get("suggested_response") or ""
+    if isinstance(sr, str) and len(sr) > 250:
+        cut = sr[:247].rsplit(" ", 1)[0]
+        analysis["suggested_response"] = (cut + "…") if cut else sr[:250]
     await db.calls.update_one({"id": call_id}, {"$set": {"analysis": analysis, "analyzed_at": now_iso()}})
     # Run KB lookup if suggested
     kb_result = None
@@ -600,6 +605,31 @@ async def list_providers(user=Depends(get_current_user)):
         {"id": "zendesk_talk", "name": "Zendesk Talk", "status": "available"},
         {"id": "salesforce_sc", "name": "Salesforce Service Cloud Voice", "status": "available"}
     ]
+
+
+# ========== APP SETTINGS (assist mode) ==========
+class AssistModeReq(BaseModel):
+    mode: str  # "auto" or "click"
+
+
+@api.get("/settings/assist")
+async def get_assist_mode(user=Depends(get_current_user)):
+    doc = await db.app_settings.find_one({"id": "assist_mode"}, {"_id": 0})
+    return {"mode": (doc or {}).get("mode", "auto")}
+
+
+@api.put("/settings/assist")
+async def set_assist_mode(req: AssistModeReq, user=Depends(get_current_user)):
+    if user["role"] != "supervisor":
+        raise HTTPException(403, "Only supervisors can change assist mode")
+    if req.mode not in ("auto", "click"):
+        raise HTTPException(400, "mode must be 'auto' or 'click'")
+    await db.app_settings.update_one(
+        {"id": "assist_mode"},
+        {"$set": {"id": "assist_mode", "mode": req.mode, "updated_at": now_iso(), "updated_by": user["id"]}},
+        upsert=True
+    )
+    return {"mode": req.mode}
 
 
 # ========== HEALTH ==========

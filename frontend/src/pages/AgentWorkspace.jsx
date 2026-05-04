@@ -41,9 +41,17 @@ export default function AgentWorkspace() {
   const autoAnalyzeTimerRef = useRef(null);
   const analyzingRef = useRef(false);
   const lastAnalyzedLenRef = useRef(0);
+  const [assistMode, setAssistMode] = useState("auto"); // "auto" | "click"
+  const [analyzeCount, setAnalyzeCount] = useState(0);
+
+  // Estimated USD cost per LLM op (GPT-5.2 baseline; update when we move to Gemini Flash)
+  const COST_PER_ANALYZE = 0.0055;
+  const COST_PER_SUMMARY = 0.0053;
+  const liveCost = analyzeCount * COST_PER_ANALYZE + (summary ? COST_PER_SUMMARY : 0);
 
   useEffect(() => {
     api.get("/workflows").then((r) => setWorkflows(r.data));
+    api.get("/settings/assist").then((r) => setAssistMode(r.data.mode || "auto")).catch(() => {});
     if (callId) loadCall(callId);
   }, [callId]);
 
@@ -104,6 +112,7 @@ export default function AgentWorkspace() {
       const r = await api.post(`/calls/${call.id}/analyze`);
       setAnalysis(r.data);
       lastAnalyzedLenRef.current = call.transcript?.length || 0;
+      setAnalyzeCount((c) => c + 1);
     } catch (e) { /* silent — auto-analyze shouldn't toast-spam */ }
     finally {
       analyzingRef.current = false;
@@ -111,8 +120,9 @@ export default function AgentWorkspace() {
     }
   }, [call]);
 
-  // Auto-analyze: whenever transcript grows (and call is active, not summarised), debounce 2.5s then analyze.
+  // Auto-analyze: only when mode === "auto", call active, and transcript grows. Debounce 1.5s.
   useEffect(() => {
+    if (assistMode !== "auto") return;
     if (!call) return;
     if (call.status !== "active") return;
     if (summary) return;
@@ -120,9 +130,9 @@ export default function AgentWorkspace() {
     if (len === 0) return;
     if (len <= lastAnalyzedLenRef.current) return;
     if (autoAnalyzeTimerRef.current) clearTimeout(autoAnalyzeTimerRef.current);
-    autoAnalyzeTimerRef.current = setTimeout(() => { analyze(); }, 2500);
+    autoAnalyzeTimerRef.current = setTimeout(() => { analyze(); }, 1500);
     return () => { if (autoAnalyzeTimerRef.current) clearTimeout(autoAnalyzeTimerRef.current); };
-  }, [call?.transcript?.length, call?.status, summary, analyze]);
+  }, [call?.transcript?.length, call?.status, summary, analyze, assistMode]);
 
   const startRecording = async () => {
     try {
@@ -212,20 +222,37 @@ export default function AgentWorkspace() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {isActive && (
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F3EFFF] border border-[#7B61FF]/30" data-testid="auto-analyze-indicator">
-              <Sparkle size={12} weight="fill" className={`text-[#7B61FF] ${analyzing ? "animate-pulse" : ""}`} />
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[#5B3EE5]">
-                {analyzing ? "AI analyzing…" : "AI Assist · auto"}
-              </span>
-            </div>
+          {/* Live cost meter */}
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-neutral-900 text-white" data-testid="cost-meter">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">Live cost</span>
+            <span className="font-mono text-[11px] tabular-nums">${liveCost.toFixed(4)}</span>
+            <span className="font-mono text-[10px] text-neutral-500">·</span>
+            <span className="font-mono text-[10px] text-neutral-400">{analyzeCount} {analyzeCount === 1 ? "analysis" : "analyses"}</span>
+          </div>
+          {assistMode === "auto" ? (
+            <>
+              {isActive && (
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F3EFFF] border border-[#7B61FF]/30" data-testid="auto-analyze-indicator">
+                  <Sparkle size={12} weight="fill" className={`text-[#7B61FF] ${analyzing ? "animate-pulse" : ""}`} />
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#5B3EE5]">
+                    {analyzing ? "AI analyzing…" : "AI Assist · auto"}
+                  </span>
+                </div>
+              )}
+              <Button onClick={analyze} disabled={analyzing || (call.transcript?.length || 0) === 0}
+                      data-testid="btn-analyze"
+                      variant="outline"
+                      className="rounded-none h-9 border-[#7B61FF] text-[#5B3EE5] hover:bg-[#7B61FF] hover:text-white">
+                <Sparkle size={14} className="mr-1.5" />Re-analyze
+              </Button>
+            </>
+          ) : (
+            <Button onClick={analyze} disabled={analyzing || (call.transcript?.length || 0) === 0}
+                    data-testid="btn-analyze"
+                    className="rounded-none h-9 brand-gradient-bg text-white hover:opacity-90">
+              <Sparkle size={14} className="mr-1.5" />{analyzing ? "Analyzing…" : "AI Assist"}
+            </Button>
           )}
-          <Button onClick={analyze} disabled={analyzing || (call.transcript?.length || 0) === 0}
-                  data-testid="btn-analyze"
-                  variant="outline"
-                  className="rounded-none h-9 border-[#7B61FF] text-[#5B3EE5] hover:bg-[#7B61FF] hover:text-white">
-            <Sparkle size={14} className="mr-1.5" />Re-analyze
-          </Button>
           {isActive ? (
             <Button onClick={endCall} disabled={summarizing}
                     data-testid="btn-end-call"
@@ -303,10 +330,18 @@ export default function AgentWorkspace() {
           <div className="flex-1 overflow-y-auto scrollbar-thin p-5 space-y-4" data-testid="ai-assist-panel">
             {summary ? <SummaryBlock summary={summary} /> : !analysis ? (
               <div className="text-sm text-[#525252]">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3] mb-2">Listening</div>
-                {(call.transcript?.length || 0) === 0
-                  ? <>AI Assist will analyze the conversation automatically as soon as the first utterance arrives.</>
-                  : <>Analysing…</>}
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3] mb-2">
+                  {assistMode === "auto" ? "Listening" : "Ready"}
+                </div>
+                {(call.transcript?.length || 0) === 0 ? (
+                  assistMode === "auto"
+                    ? <>AI Assist will analyze the conversation automatically as soon as the first utterance arrives.</>
+                    : <>Once the conversation begins, click <span className="font-semibold">AI Assist</span> to analyze.</>
+                ) : (
+                  assistMode === "auto"
+                    ? <>Analysing…</>
+                    : <>Click <span className="font-semibold">AI Assist</span> in the top bar to analyze the conversation.</>
+                )}
               </div>
             ) : (
               <>
