@@ -22,8 +22,11 @@ export default function AppShell() {
     <div className="flex min-h-screen bg-[#F4F4F5]" data-testid="app-shell">
       <aside className="w-[220px] bg-[#09090B] text-white flex flex-col border-r border-black">
         <div className="px-5 py-6 border-b border-neutral-800">
-          <div className="font-heading text-xl font-bold tracking-tight">VanguardCX</div>
-          <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mt-1">Agent Assist · v1.0</div>
+          <div className="flex items-center gap-2">
+            <FlowLogo size={24} />
+            <span className="font-heading text-xl font-bold tracking-tight">FlowPilot</span>
+          </div>
+          <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mt-2">Agent Assist · v1.0</div>
         </div>
         <nav className="flex-1 py-3">
           {items.map((it) => (

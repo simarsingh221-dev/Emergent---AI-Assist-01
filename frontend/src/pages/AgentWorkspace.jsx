@@ -38,6 +38,9 @@ export default function AgentWorkspace() {
   const mediaRef = useRef(null);
   const chunksRef = useRef([]);
   const transcriptEnd = useRef(null);
+  const autoAnalyzeTimerRef = useRef(null);
+  const analyzingRef = useRef(false);
+  const lastAnalyzedLenRef = useRef(0);
 
   useEffect(() => {
     api.get("/workflows").then((r) => setWorkflows(r.data));
@@ -94,13 +97,32 @@ export default function AgentWorkspace() {
 
   const analyze = useCallback(async () => {
     if (!call) return;
+    if (analyzingRef.current) return;
+    analyzingRef.current = true;
     setAnalyzing(true);
     try {
       const r = await api.post(`/calls/${call.id}/analyze`);
       setAnalysis(r.data);
-    } catch (e) { toast.error("Analysis failed"); }
-    finally { setAnalyzing(false); }
+      lastAnalyzedLenRef.current = call.transcript?.length || 0;
+    } catch (e) { /* silent — auto-analyze shouldn't toast-spam */ }
+    finally {
+      analyzingRef.current = false;
+      setAnalyzing(false);
+    }
   }, [call]);
+
+  // Auto-analyze: whenever transcript grows (and call is active, not summarised), debounce 2.5s then analyze.
+  useEffect(() => {
+    if (!call) return;
+    if (call.status !== "active") return;
+    if (summary) return;
+    const len = call.transcript?.length || 0;
+    if (len === 0) return;
+    if (len <= lastAnalyzedLenRef.current) return;
+    if (autoAnalyzeTimerRef.current) clearTimeout(autoAnalyzeTimerRef.current);
+    autoAnalyzeTimerRef.current = setTimeout(() => { analyze(); }, 2500);
+    return () => { if (autoAnalyzeTimerRef.current) clearTimeout(autoAnalyzeTimerRef.current); };
+  }, [call?.transcript?.length, call?.status, summary, analyze]);
 
   const startRecording = async () => {
     try {
@@ -190,10 +212,19 @@ export default function AgentWorkspace() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={analyze} disabled={analyzing || call.transcript.length === 0}
+          {isActive && (
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F3EFFF] border border-[#7B61FF]/30" data-testid="auto-analyze-indicator">
+              <Sparkle size={12} weight="fill" className={`text-[#7B61FF] ${analyzing ? "animate-pulse" : ""}`} />
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[#5B3EE5]">
+                {analyzing ? "AI analyzing…" : "AI Assist · auto"}
+              </span>
+            </div>
+          )}
+          <Button onClick={analyze} disabled={analyzing || (call.transcript?.length || 0) === 0}
                   data-testid="btn-analyze"
-                  className="rounded-none h-9 bg-[#7B61FF] hover:bg-[#5F44E6] text-white">
-            <Sparkle size={14} className="mr-1.5" />{analyzing ? "Analyzing…" : "AI Assist"}
+                  variant="outline"
+                  className="rounded-none h-9 border-[#7B61FF] text-[#5B3EE5] hover:bg-[#7B61FF] hover:text-white">
+            <Sparkle size={14} className="mr-1.5" />Re-analyze
           </Button>
           {isActive ? (
             <Button onClick={endCall} disabled={summarizing}
@@ -272,8 +303,10 @@ export default function AgentWorkspace() {
           <div className="flex-1 overflow-y-auto scrollbar-thin p-5 space-y-4" data-testid="ai-assist-panel">
             {summary ? <SummaryBlock summary={summary} /> : !analysis ? (
               <div className="text-sm text-[#525252]">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3] mb-2">Waiting</div>
-                Click <span className="font-semibold">AI Assist</span> to analyze the conversation.
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3] mb-2">Listening</div>
+                {(call.transcript?.length || 0) === 0
+                  ? <>AI Assist will analyze the conversation automatically as soon as the first utterance arrives.</>
+                  : <>Analysing…</>}
               </div>
             ) : (
               <>

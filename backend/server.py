@@ -44,7 +44,7 @@ app = FastAPI(title="FlowPilot Agent Assist")
 api = APIRouter(prefix="/api")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger("vanguardcx")
+logger = logging.getLogger("flowpilot")
 
 
 # ========== MODELS ==========
