@@ -30,10 +30,12 @@ A webapp that integrates with existing Call Monitoring / CCaaS solutions to prov
 - Mic recording → upload → Whisper transcription in workspace
 - AI Assist panel: intent, sentiment, escalation, churn risk, NBA cards, suggested response (click to use), compliance checklist, KB suggestions
 - **Demo Mode** (`/demo`): 3-min self-running narrated tour with 3 scenarios (retention / KYC / frustrated claim), OpenAI TTS-1-HD voice (`coral`), brand-gradient progress, server-side TTS caching, CTA + lead capture (`/api/demo/lead`)
+- **User Management** (2026-02-05): DB-backed CRUD at `/api/users` (list/create/patch/delete + reset-password), supervisor-gated, self-delete blocked. UI at `/app/users`.
+- **Visual Workflow Builder** (2026-02-05): DB-backed workflows at `/api/workflows` replacing hardcoded ones. 5 default workflows auto-seeded (kyc/loan/claims/retention/general). Soft-disable for seeded entries, hard delete for custom. UI at `/app/workflows` with steps + compliance items editor and pipeline diagram.
 
 ## Test Results
-- Backend: 24/24 pytest pass (`/app/backend/tests/backend_test.py`)
-- Frontend: full Playwright E2E pass — landing, login, workspace flow (start → utter → analyze → end/summary), KB seed/search/upload, settings webhook CRUD, analytics, history.
+- Backend: 24/24 + 28/28 pytest pass (`backend_test.py`, `test_users_workflows.py`)
+- Frontend: full Playwright E2E pass — landing, login, workspace, KB, settings, analytics, history, **users CRUD, workflows CRUD** (iter2 2026-02-05).
 
 ## Backlog
 ### P0
