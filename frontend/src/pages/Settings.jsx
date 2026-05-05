@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export default function Settings() {
   const [assistMode, setAssistMode] = useState("auto");
   const [savingMode, setSavingMode] = useState(false);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const [p, h, a] = await Promise.all([
       api.get("/integrations/providers"),
       api.get("/integrations/webhooks"),
@@ -23,8 +23,8 @@ export default function Settings() {
     setProviders(p.data);
     setHooks(h.data);
     setAssistMode(a.data.mode || "auto");
-  };
-  useEffect(() => { load(); }, []);
+  }, []);
+  useEffect(() => { load(); }, [load]);
 
   const updateAssistMode = async (mode) => {
     setSavingMode(true);

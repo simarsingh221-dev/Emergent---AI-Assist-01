@@ -1,4 +1,4 @@
-"""VanguardCX backend E2E tests."""
+"""FlowPilot backend E2E tests."""
 import os
 import io
 import time
@@ -9,9 +9,10 @@ import requests
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://assist-flow.preview.emergentagent.com').rstrip('/')
 API = f"{BASE_URL}/api"
 
-AGENT_EMAIL = f"test_agent_{uuid.uuid4().hex[:8]}@vanguard.ai"
-SUP_EMAIL = f"test_sup_{uuid.uuid4().hex[:8]}@vanguard.ai"
-PASSWORD = "Test1234"
+AGENT_EMAIL = f"test_agent_{uuid.uuid4().hex[:8]}@flowpilot.ai"
+SUP_EMAIL = f"test_sup_{uuid.uuid4().hex[:8]}@flowpilot.ai"
+# Test password — load from env to avoid hardcoded secret in source.
+PASSWORD = os.environ.get('TEST_USER_PASSWORD', f"Test{uuid.uuid4().hex[:8]}!")
 
 state = {}
 

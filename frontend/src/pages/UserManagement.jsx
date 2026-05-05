@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ export default function UserManagement() {
   const [editForm, setEditForm] = useState({ name: "", role: "agent", active: true });
   const [newPassword, setNewPassword] = useState("");
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const r = await api.get("/users");
@@ -28,8 +28,8 @@ export default function UserManagement() {
     } catch (e) {
       if (e?.response?.status === 403) toast.error("Supervisor role required");
     } finally { setLoading(false); }
-  };
-  useEffect(() => { load(); }, []);
+  }, []);
+  useEffect(() => { load(); }, [load]);
 
   const create = async (e) => {
     e.preventDefault();

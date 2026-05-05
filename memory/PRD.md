@@ -34,8 +34,9 @@ A webapp that integrates with existing Call Monitoring / CCaaS solutions to prov
 - **Visual Workflow Builder** (2026-02-05): DB-backed workflows at `/api/workflows` replacing hardcoded ones. 5 default workflows auto-seeded (kyc/loan/claims/retention/general). Soft-disable for seeded entries, hard delete for custom. UI at `/app/workflows` with steps + compliance items editor and pipeline diagram.
 
 ## Test Results
-- Backend: 24/24 + 28/28 pytest pass (`backend_test.py`, `test_users_workflows.py`)
+- Backend: 24/24 + 28/28 pytest pass (`backend_test.py`, `test_users_workflows.py`) — re-run 2026-02-05 after code-review fixes.
 - Frontend: full Playwright E2E pass — landing, login, workspace, KB, settings, analytics, history, **users CRUD, workflows CRUD** (iter2 2026-02-05).
+- Code-review hygiene pass (2026-02-05): hardcoded test password → env var; empty `catch{}` blocks → logged; missing React-hook deps fixed via `useCallback` for `load` (UserManagement / WorkflowBuilder / Settings / KnowledgeBase / AgentWorkspace); WorkflowBuilder editor steps now use stable `_key` UUIDs (not array index) so reordering doesn't corrupt state. Backend lint (ruff) and frontend lint (ESLint) clean.
 
 ## Backlog
 ### P0

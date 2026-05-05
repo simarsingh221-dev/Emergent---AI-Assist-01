@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,11 +15,11 @@ export default function KnowledgeBase() {
   const [searching, setSearching] = useState(false);
   const fileRef = useRef(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const r = await api.get("/kb/documents");
     setDocs(r.data);
-  };
-  useEffect(() => { load(); }, []);
+  }, []);
+  useEffect(() => { load(); }, [load]);
 
   const upload = async () => {
     const f = fileRef.current?.files?.[0];
@@ -57,7 +57,7 @@ export default function KnowledgeBase() {
     try {
       const r = await api.post("/kb/search", { query });
       setResult(r.data);
-    } catch { toast.error("Search failed"); }
+    } catch (e) { console.warn("KB search failed", e); toast.error("Search failed"); }
     finally { setSearching(false); }
   };
 

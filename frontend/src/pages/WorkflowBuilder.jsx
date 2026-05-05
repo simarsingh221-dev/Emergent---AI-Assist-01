@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -22,8 +22,9 @@ const PIPELINE_STAGES = [
   { icon: Monitor, label: "Agent UI", sub: "Real-time surface", color: "#FF4FD8" }
 ];
 
-const EMPTY_STEP = { label: "", description: "", trigger_keywords: [], required: false };
-const EMPTY_WORKFLOW = { name: "", description: "", category: "General", steps: [{ ...EMPTY_STEP }], compliance_items: [], active: true };
+const newStepId = () => (typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+const newStep = () => ({ _key: newStepId(), label: "", description: "", trigger_keywords: [], required: false });
+const EMPTY_WORKFLOW = { name: "", description: "", category: "General", steps: [newStep()], compliance_items: [], active: true };
 
 export default function WorkflowBuilder() {
   const { user: me } = useAuth();
@@ -32,21 +33,21 @@ export default function WorkflowBuilder() {
   const [editor, setEditor] = useState(null); // {mode: 'create'|'edit', data}
   const canEdit = me?.role === "supervisor";
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const r = await api.get("/workflows");
       setWorkflows(r.data);
     } finally { setLoading(false); }
-  };
-  useEffect(() => { load(); }, []);
+  }, []);
+  useEffect(() => { load(); }, [load]);
 
-  const openCreate = () => setEditor({ mode: "create", data: { ...EMPTY_WORKFLOW, steps: [{ ...EMPTY_STEP }] } });
+  const openCreate = () => setEditor({ mode: "create", data: { ...EMPTY_WORKFLOW, steps: [newStep()] } });
   const openEdit = (w) => setEditor({
     mode: "edit",
     data: {
       ...w,
-      steps: (w.steps || []).map((s) => ({ ...EMPTY_STEP, ...s })),
+      steps: (w.steps || []).map((s) => ({ _key: newStepId(), label: "", description: "", trigger_keywords: [], required: false, ...s })),
       compliance_items: w.compliance_items || []
     }
   });
@@ -79,7 +80,7 @@ export default function WorkflowBuilder() {
 
   const updateEditor = (patch) => setEditor((e) => ({ ...e, data: { ...e.data, ...patch } }));
   const updateStep = (i, patch) => updateEditor({ steps: editor.data.steps.map((s, idx) => idx === i ? { ...s, ...patch } : s) });
-  const addStep = () => updateEditor({ steps: [...editor.data.steps, { ...EMPTY_STEP }] });
+  const addStep = () => updateEditor({ steps: [...editor.data.steps, newStep()] });
   const removeStep = (i) => updateEditor({ steps: editor.data.steps.filter((_, idx) => idx !== i) });
   const moveStep = (i, delta) => {
     const arr = [...editor.data.steps];
@@ -220,7 +221,7 @@ export default function WorkflowBuilder() {
                 </div>
                 <div className="space-y-2">
                   {editor.data.steps.map((s, i) => (
-                    <div key={i} className="border border-[#E5E5E5] p-3 bg-[#FAFAFA]" data-testid={`wf-step-${i}`}>
+                    <div key={s._key || i} className="border border-[#E5E5E5] p-3 bg-[#FAFAFA]" data-testid={`wf-step-${i}`}>
                       <div className="flex items-start gap-3">
                         <span className="font-mono text-[11px] text-[#525252] mt-2 w-6">{String(i + 1).padStart(2, "0")}</span>
                         <div className="flex-1 space-y-2">

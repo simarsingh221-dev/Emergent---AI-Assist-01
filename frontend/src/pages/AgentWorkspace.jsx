@@ -51,8 +51,9 @@ export default function AgentWorkspace() {
 
   useEffect(() => {
     api.get("/workflows").then((r) => setWorkflows(r.data));
-    api.get("/settings/assist").then((r) => setAssistMode(r.data.mode || "auto")).catch(() => {});
+    api.get("/settings/assist").then((r) => setAssistMode(r.data.mode || "auto")).catch((e) => console.warn("assist mode fetch failed", e));
     if (callId) loadCall(callId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callId]);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function AgentWorkspace() {
       setSelectedWorkflow(r.data.workflow);
       setChannel(r.data.channel);
       setCustomerName(r.data.customer_name);
-    } catch { /* ignore */ }
+    } catch (e) { console.warn("loadCall failed", e); }
   };
 
   const startCall = async () => {
@@ -113,7 +114,7 @@ export default function AgentWorkspace() {
       setAnalysis(r.data);
       lastAnalyzedLenRef.current = call.transcript?.length || 0;
       setAnalyzeCount((c) => c + 1);
-    } catch (e) { /* silent — auto-analyze shouldn't toast-spam */ }
+    } catch (e) { console.debug("auto-analyze skipped", e); }
     finally {
       analyzingRef.current = false;
       setAnalyzing(false);

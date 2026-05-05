@@ -208,7 +208,7 @@ export default function Demo() {
   const stop = () => {
     cancelRef.current = true;
     if (currentAudioRef.current) {
-      try { currentAudioRef.current.pause(); } catch { /* noop */ }
+      try { currentAudioRef.current.pause(); } catch (e) { console.debug("pause noop", e); }
     }
     pausedRef.current = false;
   };
@@ -218,11 +218,11 @@ export default function Demo() {
     pausedRef.current = !pausedRef.current;
     if (pausedRef.current) {
       if (currentAudioRef.current) {
-        try { currentAudioRef.current.pause(); } catch { /* noop */ }
+        try { currentAudioRef.current.pause(); } catch (e) { console.debug("pause noop", e); }
       }
     } else {
       if (currentAudioRef.current) {
-        try { currentAudioRef.current.play(); } catch { /* noop */ }
+        try { currentAudioRef.current.play(); } catch (e) { console.debug("play noop", e); }
       }
       if (resumeFnRef.current) {
         const fn = resumeFnRef.current;
