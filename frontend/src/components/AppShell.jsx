@@ -2,7 +2,8 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import FlowLogo from "@/components/FlowLogo";
 import {
-  Headset, Broadcast, ChartLineUp, BookOpen, Gear, SignOut, ClockCounterClockwise, User
+  Headset, Broadcast, ChartLineUp, BookOpen, Gear, SignOut, ClockCounterClockwise, User,
+  UsersThree, GitBranch
 } from "@phosphor-icons/react";
 
 export default function AppShell() {
@@ -14,6 +15,8 @@ export default function AppShell() {
     { to: "/app/supervisor", icon: Broadcast, label: "Supervisor", testid: "nav-supervisor", role: "supervisor" },
     { to: "/app/history", icon: ClockCounterClockwise, label: "History", testid: "nav-history" },
     { to: "/app/kb", icon: BookOpen, label: "Knowledge", testid: "nav-kb" },
+    { to: "/app/workflows", icon: GitBranch, label: "Workflows", testid: "nav-workflows" },
+    { to: "/app/users", icon: UsersThree, label: "Users", testid: "nav-users", role: "supervisor" },
     { to: "/app/analytics", icon: ChartLineUp, label: "Analytics", testid: "nav-analytics" },
     { to: "/app/settings", icon: Gear, label: "Settings", testid: "nav-settings" },
   ].filter((i) => !i.role || user?.role === i.role);

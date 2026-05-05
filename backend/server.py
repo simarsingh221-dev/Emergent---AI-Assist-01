@@ -241,6 +241,7 @@ async def register(req: RegisterReq):
         "name": req.name,
         "role": role,
         "password": pwd_ctx.hash(req.password),
+        "active": True,
         "created_at": now_iso()
     }
     await db.users.insert_one(doc)
@@ -253,6 +254,8 @@ async def login(req: LoginReq):
     user = await db.users.find_one({"email": req.email.lower()})
     if not user or not pwd_ctx.verify(req.password, user["password"]):
         raise HTTPException(401, "Invalid credentials")
+    if user.get("active") is False:
+        raise HTTPException(403, "Account is deactivated")
     token = make_token(user["id"], user["role"])
     return {"token": token, "user": {"id": user["id"], "email": user["email"], "name": user["name"], "role": user["role"]}}
 
@@ -260,6 +263,95 @@ async def login(req: LoginReq):
 @api.get("/auth/me")
 async def me(user=Depends(get_current_user)):
     return user
+
+
+# ========== USER MANAGEMENT (supervisor only) ==========
+class UserCreateReq(BaseModel):
+    email: EmailStr
+    name: str
+    role: str = "agent"
+    password: str
+
+
+class UserUpdateReq(BaseModel):
+    name: Optional[str] = None
+    role: Optional[str] = None
+    active: Optional[bool] = None
+
+
+class PasswordResetReq(BaseModel):
+    new_password: str
+
+
+def require_supervisor(user: Dict[str, Any]) -> None:
+    if user.get("role") != "supervisor":
+        raise HTTPException(403, "Supervisor role required")
+
+
+@api.get("/users")
+async def list_users(user=Depends(get_current_user)):
+    require_supervisor(user)
+    users = await db.users.find({}, {"_id": 0, "password": 0}).sort("created_at", -1).to_list(1000)
+    return users
+
+
+@api.post("/users")
+async def create_user(req: UserCreateReq, user=Depends(get_current_user)):
+    require_supervisor(user)
+    if req.role not in ("agent", "supervisor"):
+        raise HTTPException(400, "role must be agent or supervisor")
+    existing = await db.users.find_one({"email": req.email.lower()})
+    if existing:
+        raise HTTPException(400, "Email already registered")
+    uid = str(uuid.uuid4())
+    doc = {
+        "id": uid, "email": req.email.lower(), "name": req.name, "role": req.role,
+        "password": pwd_ctx.hash(req.password), "active": True,
+        "created_at": now_iso(), "created_by": user["id"]
+    }
+    await db.users.insert_one(doc)
+    return {"id": uid, "email": doc["email"], "name": doc["name"], "role": doc["role"], "active": True, "created_at": doc["created_at"]}
+
+
+@api.patch("/users/{user_id}")
+async def update_user(user_id: str, req: UserUpdateReq, user=Depends(get_current_user)):
+    require_supervisor(user)
+    updates: Dict[str, Any] = {}
+    if req.name is not None:
+        updates["name"] = req.name
+    if req.role is not None:
+        if req.role not in ("agent", "supervisor"):
+            raise HTTPException(400, "role must be agent or supervisor")
+        updates["role"] = req.role
+    if req.active is not None:
+        updates["active"] = req.active
+    if not updates:
+        raise HTTPException(400, "No fields to update")
+    result = await db.users.update_one({"id": user_id}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(404, "User not found")
+    doc = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    return doc
+
+
+@api.post("/users/{user_id}/reset-password")
+async def reset_password(user_id: str, req: PasswordResetReq, user=Depends(get_current_user)):
+    require_supervisor(user)
+    if len(req.new_password) < 6:
+        raise HTTPException(400, "Password must be at least 6 characters")
+    result = await db.users.update_one({"id": user_id}, {"$set": {"password": pwd_ctx.hash(req.new_password)}})
+    if result.matched_count == 0:
+        raise HTTPException(404, "User not found")
+    return {"ok": True}
+
+
+@api.delete("/users/{user_id}")
+async def delete_user(user_id: str, user=Depends(get_current_user)):
+    require_supervisor(user)
+    if user_id == user["id"]:
+        raise HTTPException(400, "Cannot delete your own account")
+    await db.users.delete_one({"id": user_id})
+    return {"ok": True}
 
 
 # ========== KB ROUTES ==========
@@ -534,35 +626,153 @@ async def analytics_overview(user=Depends(get_current_user)):
     }
 
 
-# ========== WORKFLOWS ==========
+# ========== WORKFLOWS (DB-backed, supervisor-editable) ==========
+class WorkflowStep(BaseModel):
+    label: str
+    description: Optional[str] = ""
+    trigger_keywords: List[str] = []
+    required: bool = False
+
+
+class WorkflowReq(BaseModel):
+    name: str
+    description: Optional[str] = ""
+    category: Optional[str] = "General"
+    steps: List[WorkflowStep] = []
+    compliance_items: List[str] = []
+    active: bool = True
+
+
+SEED_WORKFLOWS = [
+    {"id": "kyc", "name": "KYC Verification", "category": "Compliance", "description": "Verify customer identity before account-specific actions.",
+     "steps": [
+         {"label": "Verify name and date of birth", "description": "Confirm full legal name + DOB.", "trigger_keywords": ["name", "date of birth", "DOB"], "required": True},
+         {"label": "Capture mobile and PAN last 4", "description": "", "trigger_keywords": ["mobile", "PAN"], "required": True},
+         {"label": "Send and confirm OTP", "description": "", "trigger_keywords": ["OTP"], "required": True},
+         {"label": "Verify address (city + pincode)", "description": "", "trigger_keywords": ["address", "pincode"], "required": True},
+         {"label": "Read privacy disclosure", "description": "Mandatory by law.", "trigger_keywords": ["privacy", "disclosure"], "required": True},
+         {"label": "Document in CRM", "description": "", "trigger_keywords": [], "required": False}
+     ],
+     "compliance_items": ["Privacy policy disclosure", "Recording consent", "KYC verification"]},
+    {"id": "loan", "name": "Loan Processing", "category": "Banking", "description": "Originate a personal, auto or home loan.",
+     "steps": [
+         {"label": "Capture loan type, amount, tenure", "description": "", "trigger_keywords": ["loan", "lakhs", "years"], "required": True},
+         {"label": "Complete KYC", "description": "See KYC workflow.", "trigger_keywords": [], "required": True},
+         {"label": "Check credit score (>700)", "description": "", "trigger_keywords": ["CIBIL", "credit score"], "required": True},
+         {"label": "Collect income proof", "description": "Last 3 salary slips or 6-mo bank stmt.", "trigger_keywords": ["salary", "income"], "required": True},
+         {"label": "Offer suitable product", "description": "", "trigger_keywords": [], "required": False},
+         {"label": "Quote indicative EMI", "description": "", "trigger_keywords": ["EMI"], "required": False},
+         {"label": "Cross-sell credit life insurance", "description": "", "trigger_keywords": ["insurance"], "required": False}
+     ],
+     "compliance_items": ["Privacy policy disclosure", "Recording consent", "Credit score consent"]},
+    {"id": "claims", "name": "Claims Handling", "category": "Insurance", "description": "Insurance claim intake and escalation.",
+     "steps": [
+         {"label": "Express empathy", "description": "", "trigger_keywords": [], "required": True},
+         {"label": "Capture policy # + incident date", "description": "", "trigger_keywords": ["policy", "incident"], "required": True},
+         {"label": "Classify claim (motor/health/property)", "description": "", "trigger_keywords": ["claim", "motor", "health", "property"], "required": True},
+         {"label": "Collect claim details", "description": "", "trigger_keywords": [], "required": True},
+         {"label": "Raise in CRM + share claim ID", "description": "", "trigger_keywords": ["claim ID"], "required": True},
+         {"label": "Inform SLAs", "description": "48 hrs initial, 7 days decision.", "trigger_keywords": ["SLA", "timeline"], "required": False}
+     ],
+     "compliance_items": ["Privacy policy disclosure", "Recording consent", "Policy T&C disclosure"]},
+    {"id": "retention", "name": "Credit Card Retention", "category": "Banking", "description": "Retain at-risk credit card customers.",
+     "steps": [
+         {"label": "Acknowledge intent to close", "description": "", "trigger_keywords": ["close", "cancel"], "required": True},
+         {"label": "Verify KYC", "description": "", "trigger_keywords": [], "required": True},
+         {"label": "Probe reason", "description": "", "trigger_keywords": ["reason", "why"], "required": False},
+         {"label": "Offer retention incentive", "description": "5K points / fee waiver / APR reduction.", "trigger_keywords": [], "required": False},
+         {"label": "Confirm decision", "description": "", "trigger_keywords": [], "required": True},
+         {"label": "Close or retain with CRM note", "description": "", "trigger_keywords": [], "required": True}
+     ],
+     "compliance_items": ["Privacy policy disclosure", "Recording consent", "KYC verification"]},
+    {"id": "general", "name": "General Inquiry", "category": "CX", "description": "Default fallback for unclassified queries.",
+     "steps": [
+         {"label": "Greet + verify identity", "description": "", "trigger_keywords": [], "required": True},
+         {"label": "Listen to query", "description": "", "trigger_keywords": [], "required": True},
+         {"label": "Search knowledge base", "description": "", "trigger_keywords": [], "required": False},
+         {"label": "Provide resolution", "description": "", "trigger_keywords": [], "required": True},
+         {"label": "Confirm satisfaction", "description": "", "trigger_keywords": ["satisfied", "resolved"], "required": False}
+     ],
+     "compliance_items": ["Privacy policy disclosure", "Recording consent"]}
+]
+
+
+async def _ensure_workflows_seeded() -> None:
+    count = await db.workflows.count_documents({})
+    if count == 0:
+        for w in SEED_WORKFLOWS:
+            doc = dict(w)
+            doc["active"] = True
+            doc["created_at"] = now_iso()
+            doc["is_seed"] = True
+            await db.workflows.insert_one(doc)
+
+
 @api.get("/workflows")
 async def list_workflows(user=Depends(get_current_user)):
-    return [
-        {"id": "kyc", "name": "KYC Verification", "steps": [
-            "Greet & verify name + DOB", "Ask registered mobile + PAN last 4",
-            "Send & confirm OTP", "Verify address (city + pincode)",
-            "Read privacy disclosure", "Document in CRM"
-        ]},
-        {"id": "loan", "name": "Loan Processing", "steps": [
-            "Capture loan type, amount, tenure", "Complete KYC",
-            "Check credit score (>700)", "Collect income proof",
-            "Offer suitable product", "Quote indicative EMI", "Cross-sell credit life insurance"
-        ]},
-        {"id": "claims", "name": "Claims Handling", "steps": [
-            "Express empathy", "Capture policy # + incident date",
-            "Classify claim", "Collect claim details",
-            "Raise in CRM + share claim ID", "Inform SLAs"
-        ]},
-        {"id": "retention", "name": "Credit Card Retention", "steps": [
-            "Acknowledge intent to close", "Verify KYC",
-            "Probe reason", "Offer retention incentive",
-            "Confirm decision", "Close or retain with CRM note"
-        ]},
-        {"id": "general", "name": "General Inquiry", "steps": [
-            "Greet + verify identity", "Listen to query",
-            "Search knowledge base", "Provide resolution", "Confirm satisfaction"
-        ]}
-    ]
+    await _ensure_workflows_seeded()
+    docs = await db.workflows.find({"active": True}, {"_id": 0}).sort("name", 1).to_list(200)
+    return docs
+
+
+@api.get("/workflows/{workflow_id}")
+async def get_workflow(workflow_id: str, user=Depends(get_current_user)):
+    await _ensure_workflows_seeded()
+    doc = await db.workflows.find_one({"id": workflow_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(404, "Workflow not found")
+    return doc
+
+
+@api.post("/workflows")
+async def create_workflow(req: WorkflowReq, user=Depends(get_current_user)):
+    require_supervisor(user)
+    wid = re.sub(r"[^a-z0-9]+", "-", req.name.lower()).strip("-") or str(uuid.uuid4())
+    exists = await db.workflows.find_one({"id": wid})
+    if exists:
+        wid = wid + "-" + str(uuid.uuid4())[:6]
+    doc = {
+        "id": wid, "name": req.name, "description": req.description or "",
+        "category": req.category or "General",
+        "steps": [s.model_dump() for s in req.steps],
+        "compliance_items": req.compliance_items,
+        "active": req.active, "is_seed": False,
+        "created_at": now_iso(), "created_by": user["id"]
+    }
+    await db.workflows.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+
+@api.patch("/workflows/{workflow_id}")
+async def update_workflow(workflow_id: str, req: WorkflowReq, user=Depends(get_current_user)):
+    require_supervisor(user)
+    updates = {
+        "name": req.name, "description": req.description or "",
+        "category": req.category or "General",
+        "steps": [s.model_dump() for s in req.steps],
+        "compliance_items": req.compliance_items,
+        "active": req.active, "updated_at": now_iso()
+    }
+    result = await db.workflows.update_one({"id": workflow_id}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(404, "Workflow not found")
+    doc = await db.workflows.find_one({"id": workflow_id}, {"_id": 0})
+    return doc
+
+
+@api.delete("/workflows/{workflow_id}")
+async def delete_workflow(workflow_id: str, user=Depends(get_current_user)):
+    require_supervisor(user)
+    doc = await db.workflows.find_one({"id": workflow_id})
+    if not doc:
+        raise HTTPException(404, "Workflow not found")
+    if doc.get("is_seed"):
+        # soft-disable seeded workflows instead of hard delete
+        await db.workflows.update_one({"id": workflow_id}, {"$set": {"active": False}})
+        return {"ok": True, "deactivated": True}
+    await db.workflows.delete_one({"id": workflow_id})
+    return {"ok": True, "deleted": True}
 
 
 # ========== INTEGRATIONS / WEBHOOKS ==========

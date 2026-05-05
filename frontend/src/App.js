@@ -12,6 +12,8 @@ import KnowledgeBase from "@/pages/KnowledgeBase";
 import Analytics from "@/pages/Analytics";
 import Settings from "@/pages/Settings";
 import CallHistory from "@/pages/CallHistory";
+import UserManagement from "@/pages/UserManagement";
+import WorkflowBuilder from "@/pages/WorkflowBuilder";
 import "@/App.css";
 
 function Private({ children }) {
@@ -37,6 +39,8 @@ export default function App() {
             <Route path="supervisor" element={<SupervisorDashboard />} />
             <Route path="history" element={<CallHistory />} />
             <Route path="kb" element={<KnowledgeBase />} />
+            <Route path="workflows" element={<WorkflowBuilder />} />
+            <Route path="users" element={<UserManagement />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="settings" element={<Settings />} />
           </Route>
