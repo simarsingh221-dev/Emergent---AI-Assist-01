@@ -229,7 +229,9 @@ Mandatory disclosure: "All claims are subject to policy terms and conditions. Th
 
 # ========== AUTH ROUTES ==========
 @api.post("/auth/register")
-async def register(req: RegisterReq):
+async def register(req: RegisterReq, user=Depends(get_current_user)):
+    """Provision a new user. Supervisor/admin only — public self-registration is disabled."""
+    require_supervisor(user)
     existing = await db.users.find_one({"email": req.email.lower()})
     if existing:
         raise HTTPException(400, "Email already registered")
@@ -242,11 +244,11 @@ async def register(req: RegisterReq):
         "role": role,
         "password": pwd_ctx.hash(req.password),
         "active": True,
-        "created_at": now_iso()
+        "created_at": now_iso(),
+        "created_by": user["id"],
     }
     await db.users.insert_one(doc)
-    token = make_token(uid, role)
-    return {"token": token, "user": {"id": uid, "email": req.email.lower(), "name": req.name, "role": role}}
+    return {"user": {"id": uid, "email": req.email.lower(), "name": req.name, "role": role}}
 
 
 @api.post("/auth/login")

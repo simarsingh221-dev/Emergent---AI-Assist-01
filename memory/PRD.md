@@ -32,6 +32,11 @@ A webapp that integrates with existing Call Monitoring / CCaaS solutions to prov
 - **Demo Mode** (`/demo`): 3-min self-running narrated tour with 3 scenarios (retention / KYC / frustrated claim), OpenAI TTS-1-HD voice (`coral`), brand-gradient progress, server-side TTS caching, CTA + lead capture (`/api/demo/lead`)
 - **User Management** (2026-02-05): DB-backed CRUD at `/api/users` (list/create/patch/delete + reset-password), supervisor-gated, self-delete blocked. UI at `/app/users`.
 - **Visual Workflow Builder** (2026-02-05): DB-backed workflows at `/api/workflows` replacing hardcoded ones. 5 default workflows auto-seeded (kyc/loan/claims/retention/general). Soft-disable for seeded entries, hard delete for custom. UI at `/app/workflows` with steps + compliance items editor and pipeline diagram.
+- **Public registration removed** (2026-02-08): Landing page CTAs replaced with "Contact us" / "Talk to sales". Login removes "Create an account". `/register` route redirects to `/contact`. `/api/auth/register` now requires supervisor/admin auth (was public). Accounts are exclusively provisioned by supervisor/admin via `/app/users`.
+- **Contact Us** (2026-02-08): New `/contact` page + `POST /api/contact` (public, no auth) → `db.contacts` collection. Supervisors/admins list via `GET /api/contacts`. Email integration was deliberately deferred per user choice.
+- **Privacy & Terms** (2026-02-08): New `/privacy` and `/terms` pages with full legal content, linked from a new shared `Footer` component on Landing/Contact/Privacy/Terms.
+- **Admin role** (2026-02-08): Backend accepts `admin` alongside `agent`/`supervisor`; `require_supervisor` now also accepts admin (admin = full supervisor access). UserManagement UI shows Admin in Create/Edit role dropdown. AppShell sidebar grants admins access to Users + Supervisor sections. Settings AI Assist toggle works for admin role too.
+- **CORS hardened** (2026-02-08): Replaced `allow_origins=['*']` + `allow_credentials=True` (invalid combo silently rejected by browsers) with `allow_origin_regex='.*'` so custom domains like `flowpilot.co.in` work in production with credentialed-style preflight.
 
 ## Test Results
 - Backend: 24/24 + 28/28 pytest pass (`backend_test.py`, `test_users_workflows.py`) — re-run 2026-02-05 after code-review fixes.

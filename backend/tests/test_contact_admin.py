@@ -40,11 +40,14 @@ def test_setup_supervisor_login(s):
 
 def test_setup_create_agent(s):
     email = f"test_agent_{uuid.uuid4().hex[:8]}@flowpilot.ai"
-    r = s.post(f"{API}/auth/register",
+    r = s.post(f"{API}/auth/register", headers=_hsup(),
                json={"email": email, "password": "Pass1234", "name": "T Agent", "role": "agent"}, timeout=30)
     assert r.status_code == 200
-    state["agent_token"] = r.json()["token"]
     state["agent_id"] = r.json()["user"]["id"]
+    # Login the new agent to get a token
+    r_login = s.post(f"{API}/auth/login", json={"email": email, "password": "Pass1234"}, timeout=30)
+    assert r_login.status_code == 200
+    state["agent_token"] = r_login.json()["token"]
 
 
 # ---------- /api/contact (PUBLIC) ----------
@@ -183,11 +186,19 @@ def test_patch_user_agent_to_admin_and_back(s):
 
 
 def test_register_admin_role(s):
+    """With supervisor auth, registering admin role works; anonymously it fails."""
     email = f"test_radm_{uuid.uuid4().hex[:8]}@flowpilot.ai"
-    r = s.post(f"{API}/auth/register",
+    # Anonymous: 401
+    r_anon = s.post(f"{API}/auth/register",
+                    json={"email": email, "password": "Pass1234", "name": "TEST_RegAdmin", "role": "admin"}, timeout=30)
+    assert r_anon.status_code == 401
+    # With supervisor: 200
+    r = s.post(f"{API}/auth/register", headers=_hsup(),
                json={"email": email, "password": "Pass1234", "name": "TEST_RegAdmin", "role": "admin"}, timeout=30)
     assert r.status_code == 200, r.text
     assert r.json()["user"]["role"] == "admin"
+    # Cleanup
+    s.delete(f"{API}/users/{r.json()['user']['id']}", headers=_hsup(), timeout=30)
 
 
 # ---------- Cleanup ----------

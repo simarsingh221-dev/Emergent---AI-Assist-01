@@ -22,24 +22,55 @@ def s():
     return requests.Session()
 
 
-# Auth
+# Seed supervisor account (fixture in test_credentials.md)
+SEED_SUP_EMAIL = "demo@flowpilot.ai"
+SEED_SUP_PASSWORD = "Demo@1234"
+
+
+def _login(session, email, password):
+    r = session.post(f"{API}/auth/login", json={"email": email, "password": password}, timeout=30)
+    assert r.status_code == 200, r.text
+    return r.json()
+
+
+# Auth — provisioning is now supervisor-only via /api/auth/register or /api/users
+def test_register_supervisor_seeded(s):
+    """Login the seeded supervisor; it provisions test users below."""
+    d = _login(s, SEED_SUP_EMAIL, SEED_SUP_PASSWORD)
+    state["sup_token"] = d["token"]
+    state["sup_id"] = d["user"]["id"]
+
+
 def test_register_agent(s):
-    r = s.post(f"{API}/auth/register", json={"email": AGENT_EMAIL, "password": PASSWORD, "name": "Tester", "role": "agent"}, timeout=30)
+    h = {"Authorization": f"Bearer {state['sup_token']}"}
+    r = s.post(f"{API}/auth/register", headers=h,
+               json={"email": AGENT_EMAIL, "password": PASSWORD, "name": "Tester", "role": "agent"}, timeout=30)
     assert r.status_code == 200, r.text
     d = r.json()
-    assert "token" in d and d["user"]["role"] == "agent"
-    state["agent_token"] = d["token"]
+    assert d["user"]["role"] == "agent"
     state["agent_id"] = d["user"]["id"]
+    # Login the new agent to get its token
+    state["agent_token"] = _login(s, AGENT_EMAIL, PASSWORD)["token"]
 
 
 def test_register_supervisor(s):
-    r = s.post(f"{API}/auth/register", json={"email": SUP_EMAIL, "password": PASSWORD, "name": "Sup", "role": "supervisor"}, timeout=30)
+    h = {"Authorization": f"Bearer {state['sup_token']}"}
+    r = s.post(f"{API}/auth/register", headers=h,
+               json={"email": SUP_EMAIL, "password": PASSWORD, "name": "Sup", "role": "supervisor"}, timeout=30)
     assert r.status_code == 200
-    state["sup_token"] = r.json()["token"]
+
+
+def test_register_requires_supervisor(s):
+    """Anonymous /api/auth/register is now rejected."""
+    r = s.post(f"{API}/auth/register",
+               json={"email": f"anon_{uuid.uuid4().hex[:6]}@x.com", "password": PASSWORD, "name": "A", "role": "agent"}, timeout=30)
+    assert r.status_code == 401
 
 
 def test_register_duplicate(s):
-    r = s.post(f"{API}/auth/register", json={"email": AGENT_EMAIL, "password": PASSWORD, "name": "X"}, timeout=30)
+    h = {"Authorization": f"Bearer {state['sup_token']}"}
+    r = s.post(f"{API}/auth/register", headers=h,
+               json={"email": AGENT_EMAIL, "password": PASSWORD, "name": "X"}, timeout=30)
     assert r.status_code == 400
 
 

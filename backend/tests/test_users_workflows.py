@@ -38,13 +38,17 @@ def _hagent():
 
 # -------------------- USER MANAGEMENT --------------------
 def test_users_list_requires_supervisor(s):
-    # First create a plain agent to test 403 path
+    # First create a plain agent (via supervisor-gated /auth/register) to test 403 path
     email = f"test_agent_{uuid.uuid4().hex[:8]}@flowpilot.ai"
-    r = s.post(f"{API}/auth/register", json={"email": email, "password": "Test1234", "name": "T Agent", "role": "agent"}, timeout=30)
+    r = s.post(f"{API}/auth/register", headers=_hsup(),
+               json={"email": email, "password": "Test1234", "name": "T Agent", "role": "agent"}, timeout=30)
     assert r.status_code == 200
-    state["agent_token"] = r.json()["token"]
     state["agent_id"] = r.json()["user"]["id"]
     state["agent_email"] = email
+    # Login the new agent to get a token
+    r_login = s.post(f"{API}/auth/login", json={"email": email, "password": "Test1234"}, timeout=30)
+    assert r_login.status_code == 200
+    state["agent_token"] = r_login.json()["token"]
     # Agent should be forbidden from listing users
     r2 = s.get(f"{API}/users", headers=_hagent(), timeout=30)
     assert r2.status_code == 403

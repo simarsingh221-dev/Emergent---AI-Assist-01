@@ -606,10 +606,10 @@ function CTAScreen({ onSubmitted }) {
             </div>
             <h3 className="font-heading text-2xl font-bold tracking-tight mt-4">You're on the list.</h3>
             <p className="text-[#525252] mt-2">A FlowPilot specialist will reach out within one business day.</p>
-            <Link to="/register" className="inline-block mt-8">
+            <Link to="/contact" className="inline-block mt-8">
               <Button data-testid="demo-cta-register"
                       className="rounded-none h-11 bg-black hover:brand-gradient-bg text-white">
-                Or jump straight in <ArrowRight size={14} className="ml-2" />
+                Or talk to us <ArrowRight size={14} className="ml-2" />
               </Button>
             </Link>
           </div>
