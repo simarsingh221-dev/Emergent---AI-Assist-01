@@ -912,13 +912,29 @@ async def list_leads(user=Depends(get_current_user)):
 
 
 app.include_router(api)
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+
+# CORS — when allow_credentials is True, allow_origin_regex is required because
+# the literal "*" is rejected by browsers in credentialed-style preflight.
+# We accept all origins via regex (safe — auth is JWT in Authorization header,
+# not cookies) so custom domains (e.g. flowpilot.co.in) work in production.
+_cors_env = os.environ.get('CORS_ORIGINS', '*').strip()
+if _cors_env in ('', '*'):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=".*",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[o.strip() for o in _cors_env.split(',') if o.strip()],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 @app.on_event("shutdown")
