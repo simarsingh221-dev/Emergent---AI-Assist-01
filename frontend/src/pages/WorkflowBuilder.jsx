@@ -31,7 +31,7 @@ export default function WorkflowBuilder() {
   const [workflows, setWorkflows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editor, setEditor] = useState(null); // {mode: 'create'|'edit', data}
-  const canEdit = me?.role === "supervisor";
+  const canEdit = me?.role === "supervisor" || me?.role === "admin";
 
   const load = useCallback(async () => {
     setLoading(true);

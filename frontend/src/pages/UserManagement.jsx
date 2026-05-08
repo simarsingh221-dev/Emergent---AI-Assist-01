@@ -74,7 +74,7 @@ export default function UserManagement() {
     } catch (err) { toast.error(err?.response?.data?.detail || "Delete failed"); }
   };
 
-  if (me?.role !== "supervisor") {
+  if (me?.role !== "supervisor" && me?.role !== "admin") {
     return (
       <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="users-page">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Users</div>
@@ -113,7 +113,9 @@ export default function UserManagement() {
           ) : users.map((u) => (
             <div key={u.id} data-testid={`user-row-${u.id}`} className="grid grid-cols-12 px-6 py-3 items-center text-sm hover:bg-[#FAFAFA]">
               <div className="col-span-3 flex items-center gap-2 font-medium">
-                {u.role === "supervisor" ? <Shield size={14} className="text-[#7B61FF]" /> : <UserCircle size={14} className="text-[#525252]" />}
+                {u.role === "admin" ? <Shield size={14} weight="fill" className="text-[#FF4FD8]" />
+                  : u.role === "supervisor" ? <Shield size={14} className="text-[#7B61FF]" />
+                  : <UserCircle size={14} className="text-[#525252]" />}
                 {u.name}
               </div>
               <div className="col-span-4 text-[#525252] font-mono text-xs">{u.email}</div>
@@ -165,6 +167,7 @@ export default function UserManagement() {
                 <SelectContent>
                   <SelectItem value="agent">Agent</SelectItem>
                   <SelectItem value="supervisor">Supervisor</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -195,6 +198,7 @@ export default function UserManagement() {
                   <SelectContent>
                     <SelectItem value="agent">Agent</SelectItem>
                     <SelectItem value="supervisor">Supervisor</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

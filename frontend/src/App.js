@@ -3,8 +3,10 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 import Demo from "@/pages/Demo";
+import Contact from "@/pages/Contact";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 import AppShell from "@/components/AppShell";
 import AgentWorkspace from "@/pages/AgentWorkspace";
 import SupervisorDashboard from "@/pages/SupervisorDashboard";
@@ -30,8 +32,12 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/demo" element={<Demo />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          {/* /register removed — accounts are provisioned by admin via /app/users */}
+          <Route path="/register" element={<Navigate to="/contact" replace />} />
           <Route path="/app" element={<Private><AppShell /></Private>}>
             <Route index element={<Navigate to="/app/workspace" replace />} />
             <Route path="workspace" element={<AgentWorkspace />} />

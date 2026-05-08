@@ -68,7 +68,7 @@ export default function Login() {
             </Button>
           </div>
           <p className="text-sm text-[#525252] mt-6">
-            New here? <Link to="/register" className="underline" data-testid="link-register">Create an account</Link>
+            Need access? <Link to="/contact" className="underline" data-testid="link-contact">Contact your administrator</Link>
           </p>
         </form>
       </div>

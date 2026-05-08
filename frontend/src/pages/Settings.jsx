@@ -8,6 +8,7 @@ import { Plus, Trash, Plug, CheckCircle, Sparkle, CursorClick } from "@phosphor-
 
 export default function Settings() {
   const { user } = useAuth();
+  const canManage = user?.role === "supervisor" || user?.role === "admin";
   const [providers, setProviders] = useState([]);
   const [hooks, setHooks] = useState([]);
   const [form, setForm] = useState({ name: "", url: "", events: "call.started,call.ended" });
@@ -60,17 +61,17 @@ export default function Settings() {
         <div className="px-6 py-4 border-b border-[#E5E5E5]">
           <div className="font-heading text-lg font-semibold">AI Assist mode</div>
           <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mt-0.5">
-            Controls how every agent sees AI Assist · {user?.role === "supervisor" ? "Supervisor-controlled" : "Read-only (supervisor sets)"}
+            Controls how every agent sees AI Assist · {canManage ? "Supervisor / admin-controlled" : "Read-only (supervisor sets)"}
           </div>
         </div>
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-3">
           <button
             data-testid="mode-auto"
-            disabled={savingMode || user?.role !== "supervisor"}
+            disabled={savingMode || !canManage}
             onClick={() => updateAssistMode("auto")}
             className={`text-left p-5 border-2 transition-colors ${
               assistMode === "auto" ? "border-[#7B61FF] bg-[#F3EFFF]" : "border-[#E5E5E5] hover:border-[#A3A3A3]"
-            } ${user?.role !== "supervisor" ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
+            } ${!canManage ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
           >
             <div className="flex items-center gap-2 mb-2">
               <Sparkle size={16} weight={assistMode === "auto" ? "fill" : "regular"} className="text-[#7B61FF]" />
@@ -82,11 +83,11 @@ export default function Settings() {
           </button>
           <button
             data-testid="mode-click"
-            disabled={savingMode || user?.role !== "supervisor"}
+            disabled={savingMode || !canManage}
             onClick={() => updateAssistMode("click")}
             className={`text-left p-5 border-2 transition-colors ${
               assistMode === "click" ? "border-black bg-neutral-50" : "border-[#E5E5E5] hover:border-[#A3A3A3]"
-            } ${user?.role !== "supervisor" ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
+            } ${!canManage ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
           >
             <div className="flex items-center gap-2 mb-2">
               <CursorClick size={16} weight={assistMode === "click" ? "fill" : "regular"} />
@@ -97,8 +98,8 @@ export default function Settings() {
             <div className="text-xs text-[#525252] mt-1">Agents click "AI Assist" when they want analysis. Lowest LLM cost. Best for low-volume or cost-sensitive deployments.</div>
           </button>
         </div>
-        {user?.role !== "supervisor" && (
-          <div className="px-6 pb-4 text-xs text-[#A3A3A3] font-mono">Sign in as a supervisor to change this setting.</div>
+        {!canManage && (
+          <div className="px-6 pb-4 text-xs text-[#A3A3A3] font-mono">Sign in as a supervisor or admin to change this setting.</div>
         )}
       </div>
 

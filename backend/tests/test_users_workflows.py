@@ -86,9 +86,19 @@ def test_create_user_duplicate_email(s):
 def test_create_user_invalid_role(s):
     email = f"test_bad_role_{uuid.uuid4().hex[:8]}@flowpilot.ai"
     r = s.post(f"{API}/users", headers=_hsup(),
-               json={"email": email, "password": "Pass1234", "name": "X", "role": "admin"}, timeout=30)
-    # request mentions admin role; backend rejects (only agent/supervisor).
+               json={"email": email, "password": "Pass1234", "name": "X", "role": "ceo"}, timeout=30)
+    # backend accepts agent/supervisor/admin only.
     assert r.status_code == 400
+
+
+def test_create_user_admin_role(s):
+    email = f"test_admin_{uuid.uuid4().hex[:8]}@flowpilot.ai"
+    r = s.post(f"{API}/users", headers=_hsup(),
+               json={"email": email, "password": "Pass1234", "name": "TEST_Admin", "role": "admin"}, timeout=30)
+    assert r.status_code == 200, r.text
+    assert r.json()["role"] == "admin"
+    # Cleanup: delete the admin user
+    s.delete(f"{API}/users/{r.json()['id']}", headers=_hsup(), timeout=30)
 
 
 def test_create_user_login_works(s):

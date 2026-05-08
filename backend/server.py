@@ -233,7 +233,7 @@ async def register(req: RegisterReq):
     existing = await db.users.find_one({"email": req.email.lower()})
     if existing:
         raise HTTPException(400, "Email already registered")
-    role = req.role if req.role in ("agent", "supervisor") else "agent"
+    role = req.role if req.role in ("agent", "supervisor", "admin") else "agent"
     uid = str(uuid.uuid4())
     doc = {
         "id": uid,
@@ -284,8 +284,11 @@ class PasswordResetReq(BaseModel):
 
 
 def require_supervisor(user: Dict[str, Any]) -> None:
-    if user.get("role") != "supervisor":
-        raise HTTPException(403, "Supervisor role required")
+    if user.get("role") not in ("supervisor", "admin"):
+        raise HTTPException(403, "Supervisor or admin role required")
+
+
+_VALID_ROLES = ("agent", "supervisor", "admin")
 
 
 @api.get("/users")
@@ -298,8 +301,8 @@ async def list_users(user=Depends(get_current_user)):
 @api.post("/users")
 async def create_user(req: UserCreateReq, user=Depends(get_current_user)):
     require_supervisor(user)
-    if req.role not in ("agent", "supervisor"):
-        raise HTTPException(400, "role must be agent or supervisor")
+    if req.role not in _VALID_ROLES:
+        raise HTTPException(400, "role must be agent, supervisor or admin")
     existing = await db.users.find_one({"email": req.email.lower()})
     if existing:
         raise HTTPException(400, "Email already registered")
@@ -320,8 +323,8 @@ async def update_user(user_id: str, req: UserUpdateReq, user=Depends(get_current
     if req.name is not None:
         updates["name"] = req.name
     if req.role is not None:
-        if req.role not in ("agent", "supervisor"):
-            raise HTTPException(400, "role must be agent or supervisor")
+        if req.role not in _VALID_ROLES:
+            raise HTTPException(400, "role must be agent, supervisor or admin")
         updates["role"] = req.role
     if req.active is not None:
         updates["active"] = req.active
@@ -830,8 +833,8 @@ async def get_assist_mode(user=Depends(get_current_user)):
 
 @api.put("/settings/assist")
 async def set_assist_mode(req: AssistModeReq, user=Depends(get_current_user)):
-    if user["role"] != "supervisor":
-        raise HTTPException(403, "Only supervisors can change assist mode")
+    if user["role"] not in ("supervisor", "admin"):
+        raise HTTPException(403, "Only supervisors or admins can change assist mode")
     if req.mode not in ("auto", "click"):
         raise HTTPException(400, "mode must be 'auto' or 'click'")
     await db.app_settings.update_one(
@@ -840,6 +843,41 @@ async def set_assist_mode(req: AssistModeReq, user=Depends(get_current_user)):
         upsert=True
     )
     return {"mode": req.mode}
+
+
+# ========== CONTACT US ==========
+class ContactReq(BaseModel):
+    name: str
+    email: EmailStr
+    company: Optional[str] = ""
+    phone: Optional[str] = ""
+    message: str
+
+
+@api.post("/contact")
+async def submit_contact(req: ContactReq):
+    """Public contact form endpoint. Stores submission in MongoDB."""
+    if not req.name.strip() or not req.message.strip():
+        raise HTTPException(400, "Name and message are required")
+    doc = {
+        "id": str(uuid.uuid4()),
+        "name": req.name.strip(),
+        "email": req.email.lower(),
+        "company": (req.company or "").strip(),
+        "phone": (req.phone or "").strip(),
+        "message": req.message.strip(),
+        "status": "new",
+        "created_at": now_iso(),
+    }
+    await db.contacts.insert_one(doc)
+    return {"ok": True, "id": doc["id"]}
+
+
+@api.get("/contacts")
+async def list_contacts(user=Depends(get_current_user)):
+    require_supervisor(user)
+    contacts = await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return contacts
 
 
 # ========== HEALTH ==========

@@ -1,0 +1,42 @@
+{
+  "summary": "End-to-end validation of the 5 new UX/onboarding changes (remove public registration, contact us page+API, footer, privacy/terms, admin role). Backend: 49/49 pytest pass (29 users+workflows regression + 20 new contact+admin tests). Frontend: Landing CTAs replaced (no Start free / Create your workspace / /register links), /register correctly redirects to /contact, /contact form submits and persists to db.contacts and shows 'Message received.', /privacy and /terms render with new Footer component, Login page replaces 'Create an account' with 'Contact your administrator' linking to /contact, UserManagement shows Agent/Supervisor/Admin in role dropdown, admin user creation works (pink filled Shield icon visible), newly-created admin can log in and sees full sidebar (Users + Supervisor + Workflows + Workspace + Settings) and Settings AI Assist toggle is enabled for admin role.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Demo.jsx (post-submit CTA)", "issues": ["Leftover <Link to='/register'> at line 609 (button text 'Or jump straight in', data-testid demo-cta-register). Functionally OK because /register now redirects to /contact, but per the spec public registration was removed and Demo page should also be updated to point directly to /contact (or remove the CTA). Cosmetic/cleanup only."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_contact_admin.py",
+    "/app/backend/tests/test_users_workflows.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/iter3_contact_admin.xml"
+  ],
+  "action_items": [
+    "(Cosmetic) Update /app/frontend/src/pages/Demo.jsx line 609: replace <Link to='/register'> with <Link to='/contact'> (or remove the entire 'Or jump straight in' button) so that no /register references remain in source code.",
+    "(Optional, carry-over from iter2) server.py is ~981 lines — recommend splitting into routers/."
+  ],
+  "critical_code_review_comments": [
+    "Public POST /api/contact has no rate-limiting / captcha — anyone can flood db.contacts. Consider IP-based throttling or a hCaptcha for production.",
+    "ContactReq.message has no max length; combined with no rate-limit this enables payload abuse. Add max_length on name/email/company/phone/message via Pydantic constraints.",
+    "list_contacts returns up to 500 rows un-paginated; once contacts grow this will be a perf issue. Add ?limit/?cursor pagination.",
+    "Contact form on the frontend doesn't display backend error responses (it only handles success path). On 422/400 the user sees no feedback. Add error toast/state in Contact.jsx.",
+    "/api/auth/register endpoint is still public (no auth required) even though UI removed the public registration. Per the spec it's 'kept for internal use', but if it's truly internal it should require_supervisor. Currently anyone with the URL can self-register an admin account by POSTing role:'admin' to /api/auth/register (verified — test_register_admin_role passes anonymously). HIGH-severity gap if the intent was 'admin-provisioned only'.",
+    "Settings page disables the assist-mode buttons via `disabled={savingMode || !canManage}` and uses CSS opacity — but no data-testid on the toggle buttons themselves; add data-testid='assist-mode-auto' / 'assist-mode-click' to make automated testing reliable.",
+    "Frontend Demo.jsx still references /register (line 609) — orphan link not cleaned up after register removal."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_contact_admin.py (new)",
+    "/app/test_reports/pytest/iter3_contact_admin.xml (new)",
+    "/app/test_reports/iteration_3.json (new)"
+  ],
+  "success_rate": {"backend": "100% (49/49)", "frontend": "100% on tested flows"},
+  "test_credentials": "demo@flowpilot.ai / Demo@1234 (supervisor) — works.",
+  "seed_data_creation": "Created public contact submissions (TEST_Alice, TEST_Pub, TEST_Playwright User) via /api/contact — left in db.contacts (low-volume, prefixed TEST_/playwright). Created TEST_UI Admin user via UserManagement UI — left in db.users (admin role). Created throw-away test_admin / test_promote / test_radm users which are deleted by the test suite teardown. Recommend running a TEST_-prefixed cleanup script before production.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "New reusable backend test file: /app/backend/tests/test_contact_admin.py (20 tests covering POST /api/contact public, GET /api/contacts auth+RBAC, admin role create/login/list-users/list-contacts/PUT settings/assist, agent forbidden on settings, agent->admin->agent PATCH, /api/auth/register with role=admin). Run all backend tests with: REACT_APP_BACKEND_URL=https://assist-flow.preview.emergentagent.com pytest backend/tests/ -v . Frontend testids verified: nav-login, nav-contact, hero-cta-watch-demo, hero-cta-contact, footer-cta-contact, footer-cta-demo, footer-link-privacy, footer-link-terms, footer-link-contact, contact-name/email/company/phone/message/submit/done, privacy-page, terms-page, dialog-create-user, create-role (Select with options Agent/Supervisor/Admin). Admin sees nav-users + nav-supervisor + nav-workflows + nav-workspace + nav-settings.",
+  "rca of the issue": "N/A — no defects found. One cosmetic leftover (/register link inside Demo.jsx) and one potential security gap (anonymous /api/auth/register still allows role=admin self-provisioning) flagged for main agent review."
+}

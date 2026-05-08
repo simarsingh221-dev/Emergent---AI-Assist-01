@@ -12,14 +12,14 @@ export default function AppShell() {
 
   const items = [
     { to: "/app/workspace", icon: Headset, label: "Workspace", testid: "nav-workspace" },
-    { to: "/app/supervisor", icon: Broadcast, label: "Supervisor", testid: "nav-supervisor", role: "supervisor" },
+    { to: "/app/supervisor", icon: Broadcast, label: "Supervisor", testid: "nav-supervisor", roles: ["supervisor", "admin"] },
     { to: "/app/history", icon: ClockCounterClockwise, label: "History", testid: "nav-history" },
     { to: "/app/kb", icon: BookOpen, label: "Knowledge", testid: "nav-kb" },
     { to: "/app/workflows", icon: GitBranch, label: "Workflows", testid: "nav-workflows" },
-    { to: "/app/users", icon: UsersThree, label: "Users", testid: "nav-users", role: "supervisor" },
+    { to: "/app/users", icon: UsersThree, label: "Users", testid: "nav-users", roles: ["supervisor", "admin"] },
     { to: "/app/analytics", icon: ChartLineUp, label: "Analytics", testid: "nav-analytics" },
     { to: "/app/settings", icon: Gear, label: "Settings", testid: "nav-settings" },
-  ].filter((i) => !i.role || user?.role === i.role);
+  ].filter((i) => !i.roles || i.roles.includes(user?.role));
 
   return (
     <div className="flex min-h-screen bg-[#F4F4F5]" data-testid="app-shell">

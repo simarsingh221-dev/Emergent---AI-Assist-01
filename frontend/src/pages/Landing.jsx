@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import FlowLogo from "@/components/FlowLogo";
+import Footer from "@/components/Footer";
 import {
-  Waveform, Brain, Target, BookOpen, ShieldCheck, ChartBar, ArrowRight, Lightning, Check, CirclesFour
+  Waveform, Brain, Target, BookOpen, ShieldCheck, ChartBar, ArrowRight, Lightning, CirclesFour
 } from "@phosphor-icons/react";
 
 const features = [
@@ -35,8 +36,8 @@ export default function Landing() {
           </div>
           <div className="flex items-center gap-3">
             <Link to="/login" data-testid="nav-login" className="text-sm px-3 py-2 hover:bg-neutral-100">Sign in</Link>
-            <Link to="/register" data-testid="nav-register">
-              <Button className="bg-black text-white hover:bg-[#7B61FF] rounded-none h-9 px-4 text-sm">Start free</Button>
+            <Link to="/contact" data-testid="nav-contact">
+              <Button className="bg-black text-white hover:bg-[#7B61FF] rounded-none h-9 px-4 text-sm">Contact us</Button>
             </Link>
           </div>
         </div>
@@ -66,9 +67,9 @@ export default function Landing() {
                     Watch 3-min demo <ArrowRight size={16} className="ml-2" />
                   </Button>
                 </Link>
-                <Link to="/register" data-testid="hero-cta-start">
+                <Link to="/contact" data-testid="hero-cta-contact">
                   <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white rounded-none h-12 px-6 text-sm">
-                    Start free trial
+                    Talk to sales
                   </Button>
                 </Link>
               </div>
@@ -201,24 +202,21 @@ export default function Landing() {
           <h2 className="font-heading text-3xl sm:text-5xl font-bold tracking-tighter mt-6">
             Ship better conversations. Today.
           </h2>
-          <p className="text-[#525252] mt-4 max-w-xl mx-auto">Start free. Connect your first call queue in under 10 minutes.</p>
-          <div className="mt-8">
-            <Link to="/register" data-testid="footer-cta">
-              <Button className="bg-black text-white hover:bg-[#7B61FF] rounded-none h-12 px-8 text-sm">Create your workspace</Button>
+          <p className="text-[#525252] mt-4 max-w-xl mx-auto">Tell us about your contact center. We'll get back within one business day.</p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link to="/contact" data-testid="footer-cta-contact">
+              <Button className="bg-black text-white hover:bg-[#7B61FF] rounded-none h-12 px-8 text-sm">Contact us</Button>
+            </Link>
+            <Link to="/demo" data-testid="footer-cta-demo">
+              <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white rounded-none h-12 px-8 text-sm">
+                Watch the 3-min demo <ArrowRight size={14} className="ml-2" />
+              </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-[#E5E5E5] bg-[#FAFAFA]">
-        <div className="max-w-[1400px] mx-auto px-6 py-8 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <FlowLogo size={22} />
-            <span className="font-heading font-bold">FlowPilot</span>
-          </div>
-          <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">© 2026 · Built for contact centers</div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
