@@ -40,32 +40,27 @@ export default function Privacy() {
               <li>Comply with applicable law and regulatory obligations.</li>
             </ul>
           </Section>
-          <Section title="4. Sub-processors">
-            We rely on a small set of vetted sub-processors: <strong>OpenAI</strong> (LLM, speech-to-text, text-to-speech via the
-            Emergent LLM gateway), <strong>MongoDB Atlas</strong> (managed database), and <strong>Emergent</strong> (deployment
-            infrastructure). All sub-processors are bound by data-processing agreements.
-          </Section>
-          <Section title="5. Data retention">
+          <Section title="4. Data retention">
             We retain account and conversation data for the duration of your contract plus 90 days, unless you instruct us in
             writing to delete it sooner. Anonymous usage logs are retained for up to 12 months.
           </Section>
-          <Section title="6. Your rights">
+          <Section title="5. Your rights">
             Subject to applicable law (DPDP Act 2023, GDPR, etc.) you may request access, correction, deletion, or portability
-            of your personal data by writing to <a className="underline" href="mailto:gursimar.singh@flowpilot.co.in">gursimar.singh@flowpilot.co.in</a>.
+            of your personal data by writing to <a className="underline" href="mailto:gursimar.singh@flowpilot.co.in">Contactus@flowpilot.co.in</a>.
           </Section>
-          <Section title="7. Security">
+          <Section title="6. Security">
             FlowPilot uses TLS in transit, encrypted databases at rest, JWT-based session tokens, role-based access control,
             and least-privilege secrets management. We follow industry standards and continuously harden our infrastructure.
           </Section>
-          <Section title="8. Children">
+          <Section title="7. Children">
             FlowPilot is a B2B product and is not directed at individuals under 18.
           </Section>
-          <Section title="9. Changes to this policy">
+          <Section title="8. Changes to this policy">
             We may update this policy from time to time. Material changes will be notified to your registered email at least
             14 days before they take effect.
           </Section>
-          <Section title="10. Contact">
-            Questions? Email <a className="underline" href="mailto:gursimar.singh@flowpilot.co.in">gursimar.singh@flowpilot.co.in</a>
+          <Section title="9. Contact">
+            Questions? Email <a className="underline" href="mailto:Contactus@flowpilot.co.in">Contactus@flowpilot.co.in</a>
             {" "}or use our <Link to="/contact" className="underline">contact form</Link>.
           </Section>
         </div>

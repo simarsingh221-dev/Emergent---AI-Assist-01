@@ -68,14 +68,14 @@ export default function Terms() {
           </Section>
           <Section title="11. Termination">
             Either party may terminate for material breach with 30 days' written notice if the breach is not cured. Upon
-            termination, FlowPilot will retain Customer Data for 90 days for export, after which it will be deleted.
+            termination, FlowPilot will retain Customer Data for 90 days, after which it will be deleted.
           </Section>
           <Section title="12. Governing law">
             These Terms are governed by the laws of India. Disputes will be resolved exclusively by the courts of
             New Delhi, India.
           </Section>
           <Section title="13. Contact">
-            Email <a className="underline" href="mailto:gursimar.singh@flowpilot.co.in">gursimar.singh@flowpilot.co.in</a>
+            Email <a className="underline" href="mailto:Contactus@flowpilot.co.in">Contactus@flowpilot.co.in</a>
             {" "}for any questions about these Terms.
           </Section>
         </div>

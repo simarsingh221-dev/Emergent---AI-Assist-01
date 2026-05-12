@@ -61,11 +61,11 @@ export default function Contact() {
               <div className="mt-10 space-y-4 text-sm">
                 <div className="flex items-center gap-3 text-neutral-300">
                   <EnvelopeSimple size={16} className="text-[#7B61FF]" />
-                  <span>gursimar.singh@flowpilot.co.in</span>
+                  <span>Contactus@flowpilot.co.in</span>
                 </div>
                 <div className="flex items-center gap-3 text-neutral-300">
                   <Buildings size={16} className="text-[#7B61FF]" />
-                  <span>FlowPilot · India</span>
+                  <span>FlowPilot</span>
                 </div>
               </div>
               <div className="mt-12 grid grid-cols-3 gap-4 max-w-md">
