@@ -441,7 +441,7 @@ export default function AgentWorkspace() {
                   {workflow.steps.map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-xs">
                       <span className="font-mono text-[10px] text-[#A3A3A3] min-w-[18px]">{String(i + 1).padStart(2, "0")}</span>
-                      <span>{s}</span>
+                      <span>{typeof s === "string" ? s : s.label}</span>
                     </li>
                   ))}
                 </ol>
