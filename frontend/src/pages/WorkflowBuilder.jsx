@@ -107,7 +107,7 @@ export default function WorkflowBuilder() {
 
       {/* Pipeline architecture diagram */}
       <div className="bg-[#0B0B12] text-white p-6 mb-8 overflow-x-auto" data-testid="pipeline-diagram">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-4">§ How FlowPilot thinks · pipeline architecture</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-4">§ How FlowPilot thinks</div>
         <div className="flex items-stretch gap-2 min-w-[1100px]">
           {PIPELINE_STAGES.map((s, i) => (
             <div key={s.label} className="flex items-stretch">
@@ -121,9 +121,6 @@ export default function WorkflowBuilder() {
               )}
             </div>
           ))}
-        </div>
-        <div className="font-mono text-[10px] text-neutral-500 mt-4">
-          Your workflows plug into stage <span className="text-white font-semibold">5 — Workflow engine</span>. Every step defined below becomes guidance + compliance context consumed by the Decision engine in real time.
         </div>
       </div>
 
