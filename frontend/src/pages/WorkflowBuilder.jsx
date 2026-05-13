@@ -16,7 +16,7 @@ const PIPELINE_STAGES = [
   { icon: Microphone, label: "Live conversation", sub: "Voice · Chat · Email", color: "#7B61FF" },
   { icon: Waveform, label: "Transcription", sub: "Deepgram / Whisper", color: "#7B61FF" },
   { icon: Brain, label: "Context engine", sub: "Rolling transcript + KB + persona", color: "#9B7BFF" },
-  { icon: GitBranch, label: "Decision engine", sub: "GPT · intent / sentiment / NBA", color: "#00D4FF" },
+  { icon: GitBranch, label: "Decision engine", sub: "intent / sentiment / NBA", color: "#00D4FF" },
   { icon: PuzzlePiece, label: "Workflow engine", sub: "Steps · compliance · triggers", color: "#00D4FF" },
   { icon: Lightning, label: "Suggestion / action", sub: "Response · NBA · KB", color: "#FF4FD8" },
   { icon: Monitor, label: "Agent UI", sub: "Real-time surface", color: "#FF4FD8" }
