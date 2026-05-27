@@ -4,6 +4,7 @@ import re
 import io
 import json
 import uuid
+import asyncio
 import logging
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
@@ -20,6 +21,7 @@ from jose import jwt, JWTError
 from pypdf import PdfReader
 import hashlib
 import base64
+import resend
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from emergentintegrations.llm.openai import OpenAISpeechToText, OpenAITextToSpeech
@@ -33,6 +35,14 @@ DB_NAME = os.environ['DB_NAME']
 EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
 JWT_SECRET = os.environ['JWT_SECRET']
 JWT_ALG = "HS256"
+
+# Resend email config — optional. If RESEND_API_KEY missing, contact form still saves to DB
+# but the email notification is skipped (logged as warning).
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '').strip()
+CONTACT_NOTIFY_TO = os.environ.get('CONTACT_NOTIFY_TO', '').strip()
+CONTACT_NOTIFY_FROM = os.environ.get('CONTACT_NOTIFY_FROM', 'FlowPilot <onboarding@resend.dev>').strip()
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
 
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
@@ -856,9 +866,82 @@ class ContactReq(BaseModel):
     message: str
 
 
+def _html_escape(s: str) -> str:
+    return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+             .replace('"', "&quot;").replace("'", "&#39;"))
+
+
+def _build_contact_email_html(doc: Dict[str, Any]) -> str:
+    """Build the HTML body for the notification email. Inline CSS only."""
+    rows = [
+        ("Name", doc["name"]),
+        ("Email", doc["email"]),
+        ("Company", doc.get("company") or "—"),
+        ("Phone", doc.get("phone") or "—"),
+        ("Submitted", doc["created_at"]),
+        ("Submission ID", doc["id"]),
+    ]
+    rows_html = "".join(
+        f'<tr><td style="padding:8px 12px;border-bottom:1px solid #E5E5E5;'
+        f'font-family:monospace;font-size:11px;color:#525252;text-transform:uppercase;'
+        f'letter-spacing:0.1em;width:140px;vertical-align:top">{_html_escape(label)}</td>'
+        f'<td style="padding:8px 12px;border-bottom:1px solid #E5E5E5;'
+        f'font-family:Arial,sans-serif;font-size:14px;color:#0A0A0A">{_html_escape(str(value))}</td></tr>'
+        for label, value in rows
+    )
+    message_html = _html_escape(doc["message"]).replace("\n", "<br/>")
+    return f"""<!doctype html>
+<html><body style="margin:0;padding:0;background:#F4F4F5;font-family:Arial,sans-serif">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#F4F4F5;padding:32px 16px">
+<tr><td align="center">
+<table cellpadding="0" cellspacing="0" border="0" width="600" style="background:#ffffff;border:1px solid #E5E5E5;max-width:600px">
+  <tr><td style="padding:20px 24px;background:#0B0B12;color:#ffffff">
+    <div style="font-family:monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#a3a3a3">§ New contact form submission</div>
+    <div style="font-size:22px;font-weight:bold;margin-top:6px">FlowPilot · Contact us</div>
+  </td></tr>
+  <tr><td style="padding:24px">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">{rows_html}</table>
+    <div style="margin-top:24px;padding:16px;background:#FAFAFA;border-left:3px solid #7B61FF">
+      <div style="font-family:monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#525252;margin-bottom:8px">Message</div>
+      <div style="font-size:14px;line-height:1.55;color:#0A0A0A">{message_html}</div>
+    </div>
+    <div style="margin-top:24px;font-size:12px;color:#525252">
+      Reply to this email to respond directly to <strong>{_html_escape(doc["name"])}</strong>
+      &lt;{_html_escape(doc["email"])}&gt;.
+    </div>
+  </td></tr>
+  <tr><td style="padding:14px 24px;background:#FAFAFA;border-top:1px solid #E5E5E5;
+              font-family:monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:#525252">
+    © FlowPilot · Sent automatically
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>"""
+
+
+async def _send_contact_notification(doc: Dict[str, Any]) -> None:
+    """Fire-and-forget Resend email. Logs error on failure but never raises."""
+    if not RESEND_API_KEY or not CONTACT_NOTIFY_TO:
+        logger.warning("Resend not configured; skipping email for contact id=%s", doc["id"])
+        return
+    params = {
+        "from": CONTACT_NOTIFY_FROM,
+        "to": [CONTACT_NOTIFY_TO],
+        "reply_to": doc["email"],
+        "subject": f"FlowPilot contact: {doc['name']} ({doc.get('company') or doc['email']})",
+        "html": _build_contact_email_html(doc),
+    }
+    try:
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info("Contact notification email sent id=%s resend_id=%s",
+                    doc["id"], result.get("id") if isinstance(result, dict) else result)
+    except Exception as e:
+        logger.error("Resend send failed for contact id=%s: %s", doc["id"], e)
+
+
 @api.post("/contact")
 async def submit_contact(req: ContactReq):
-    """Public contact form endpoint. Stores submission in MongoDB."""
+    """Public contact form endpoint. Stores submission in MongoDB and emails notification."""
     if not req.name.strip() or not req.message.strip():
         raise HTTPException(400, "Name and message are required")
     doc = {
@@ -872,6 +955,8 @@ async def submit_contact(req: ContactReq):
         "created_at": now_iso(),
     }
     await db.contacts.insert_one(doc)
+    # Fire-and-forget email — never blocks the API response or fails the submission.
+    asyncio.create_task(_send_contact_notification({k: v for k, v in doc.items() if k != "_id"}))
     return {"ok": True, "id": doc["id"]}
 
 

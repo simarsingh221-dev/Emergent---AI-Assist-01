@@ -182,7 +182,7 @@ export default function Landing() {
             {[
               { n: "01", t: "Connect", d: "Plug into Genesys, Five9, NICE, Amazon Connect via webhook or SIP bridge." },
               { n: "02", t: "Stream", d: "Audio and chat stream to FlowPilot in under 800ms end-to-end." },
-              { n: "03", t: "Assist", d: "GPT-5.2 + your KB surface suggestions and compliance checks live." },
+              { n: "03", t: "Assist", d: "LLM + your KB surface suggestions and compliance checks live." },
               { n: "04", t: "Summarize", d: "Auto-generated summary & CRM updates at call end — zero wrap-up." }
             ].map((s) => (
               <div key={s.n} className="border-t border-neutral-800 pt-5">
