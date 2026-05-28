@@ -15,7 +15,7 @@ export default function Terms() {
         </div>
       </header>
       <main className="flex-1 max-w-[900px] mx-auto px-6 py-16">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-3">§ Legal</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-3">Legal</div>
         <h1 className="font-heading text-4xl sm:text-5xl font-bold tracking-tighter mb-3">Terms of service</h1>
         <p className="font-mono text-xs text-[#525252] mb-12">Last updated: 5 February 2026</p>
 

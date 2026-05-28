@@ -77,7 +77,7 @@ export default function UserManagement() {
   if (me?.role !== "supervisor" && me?.role !== "admin") {
     return (
       <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="users-page">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Users</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Users</div>
         <h1 className="font-heading text-3xl font-bold tracking-tight mb-4">Access denied.</h1>
         <p className="text-sm text-[#525252]">User management is supervisor-only.</p>
       </div>
@@ -88,7 +88,7 @@ export default function UserManagement() {
     <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="users-page">
       <div className="flex items-baseline justify-between mb-8">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Users</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Users</div>
           <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight">Team & access.</h1>
         </div>
         <Button onClick={() => setShowCreate(true)} data-testid="btn-add-user"

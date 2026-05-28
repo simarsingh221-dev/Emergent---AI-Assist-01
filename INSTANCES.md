@@ -138,7 +138,7 @@ For the **500+ agent full rollout**.
 | Month 1 (full 500 agents) | ~₹6.79 L COGS | ₹7.95 L | ~₹1.16 L |
 | Year 1 | ~₹81 L COGS | ₹95.4 L | ~₹14.4 L |
 
-(For full breakdown see `/app/BRD_FlowPilot.md` §6.2.)
+(For full breakdown see `/app/BRD_FlowPilot.md` $6.2.)
 
 ---
 

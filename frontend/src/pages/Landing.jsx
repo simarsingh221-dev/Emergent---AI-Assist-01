@@ -146,7 +146,7 @@ export default function Landing() {
         <div className="max-w-[1400px] mx-auto px-6 py-20">
           <div className="grid grid-cols-12 gap-6 mb-12">
             <div className="col-span-12 lg:col-span-5">
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-3">§ Capabilities</div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-3">Capabilities</div>
               <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
                 Six pillars of a modern<br />agent-assist platform.
               </h2>
@@ -174,7 +174,7 @@ export default function Landing() {
       {/* How it works */}
       <section id="how" className="border-b border-[#E5E5E5] bg-[#09090B] text-white">
         <div className="max-w-[1400px] mx-auto px-6 py-20">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-3">§ How it works</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-3">How it works</div>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-12 max-w-3xl">
             Four steps. Zero friction to deploy.
           </h2>

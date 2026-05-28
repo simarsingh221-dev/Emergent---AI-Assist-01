@@ -39,7 +39,7 @@ export default function Login() {
         </div>
         <div className="absolute inset-0" style={{background: "radial-gradient(600px 400px at 10% 10%, rgba(123,97,255,0.45), transparent 60%), radial-gradient(500px 400px at 90% 90%, rgba(255,79,216,0.35), transparent 60%), radial-gradient(500px 300px at 50% 50%, rgba(0,212,255,0.25), transparent 60%)"}} />
         <div className="relative z-10">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">§ Agent assist</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Agent assist</div>
           <h1 className="font-heading text-4xl font-bold leading-tight">Your agents have a new superpower.</h1>
           <p className="text-neutral-400 mt-4 max-w-md">Sign in to access the live workspace, knowledge base and supervisor insights.</p>
         </div>
@@ -48,7 +48,7 @@ export default function Login() {
 
       <div className="flex items-center justify-center p-6 sm:p-12 bg-white">
         <form onSubmit={submit} className="w-full max-w-sm" data-testid="login-form">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Sign in</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Sign in</div>
           <h2 className="font-heading text-3xl font-bold tracking-tight mb-8">Welcome back.</h2>
           <div className="space-y-4">
             <div>

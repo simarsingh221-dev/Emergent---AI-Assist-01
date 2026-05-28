@@ -169,7 +169,7 @@ export default function AgentWorkspace() {
   if (!call) {
     return (
       <div className="min-h-screen p-10 bg-[#F4F4F5]" data-testid="workspace-start">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Agent workspace</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Agent workspace</div>
         <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Start a new conversation.</h1>
         <div className="max-w-xl bg-white border border-[#E5E5E5] p-6 space-y-4">
           <div>

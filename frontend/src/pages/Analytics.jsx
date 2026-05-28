@@ -11,7 +11,7 @@ export default function Analytics() {
 
   return (
     <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="analytics-page">
-      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Analytics</div>
+      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Analytics</div>
       <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Post-call insights.</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] mb-8">

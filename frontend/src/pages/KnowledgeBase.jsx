@@ -63,7 +63,7 @@ export default function KnowledgeBase() {
 
   return (
     <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="kb-page">
-      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Knowledge base</div>
+      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Knowledge base</div>
       <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Your enterprise brain.</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -615,7 +615,7 @@ function CTAScreen({ onSubmitted }) {
           </div>
         ) : (
           <form onSubmit={submit} className="max-w-md" data-testid="demo-cta-form">
-            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Book a personalised demo</div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Book a personalised demo</div>
             <h3 className="font-heading text-2xl font-bold tracking-tight mb-6">Talk to us.</h3>
             <div className="space-y-3">
               <Input required placeholder="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}

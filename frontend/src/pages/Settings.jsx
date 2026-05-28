@@ -53,7 +53,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="settings-page">
-      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Settings</div>
+      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Settings</div>
       <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Integrations & webhooks.</h1>
 
       {/* AI Assist mode (supervisor-controlled) */}

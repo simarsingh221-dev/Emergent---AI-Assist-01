@@ -25,7 +25,7 @@ export default function SupervisorDashboard() {
     <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="supervisor-dashboard">
       <div className="flex items-baseline justify-between mb-8">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Supervisor</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Supervisor</div>
           <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight">Live call monitor.</h1>
         </div>
         <div className="flex items-center gap-2">

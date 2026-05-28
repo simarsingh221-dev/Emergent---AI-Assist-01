@@ -50,7 +50,7 @@ export default function Contact() {
           <div className="bg-[#0B0B12] text-white p-10 relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(700px 380px at 0% 100%, rgba(123,97,255,0.45), transparent 60%), radial-gradient(500px 300px at 100% 0%, rgba(255,79,216,0.35), transparent 60%), radial-gradient(450px 280px at 50% 50%, rgba(0,212,255,0.25), transparent 60%)" }} />
             <div className="relative z-10">
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">§ Get in touch</div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Get in touch</div>
               <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tighter">
                 Let's talk about <span className="brand-gradient-text">your contact center.</span>
               </h1>
@@ -94,7 +94,7 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={submit} data-testid="contact-form" className="max-w-md">
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Contact us</div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Contact us</div>
                 <h2 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mb-6">Tell us about your team.</h2>
                 <div className="space-y-3">
                   <div>

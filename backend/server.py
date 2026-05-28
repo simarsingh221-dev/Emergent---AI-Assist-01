@@ -896,7 +896,7 @@ def _build_contact_email_html(doc: Dict[str, Any]) -> str:
 <tr><td align="center">
 <table cellpadding="0" cellspacing="0" border="0" width="600" style="background:#ffffff;border:1px solid #E5E5E5;max-width:600px">
   <tr><td style="padding:20px 24px;background:#0B0B12;color:#ffffff">
-    <div style="font-family:monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#a3a3a3">§ New contact form submission</div>
+    <div style="font-family:monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#a3a3a3">New contact form submission</div>
     <div style="font-size:22px;font-weight:bold;margin-top:6px">FlowPilot · Contact us</div>
   </td></tr>
   <tr><td style="padding:24px">

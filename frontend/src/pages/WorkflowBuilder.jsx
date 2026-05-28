@@ -94,7 +94,7 @@ export default function WorkflowBuilder() {
     <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="workflows-page">
       <div className="flex items-baseline justify-between mb-8">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">§ Workflow builder</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Workflow builder</div>
           <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight">Build your agent playbooks.</h1>
         </div>
         {canEdit && (
@@ -107,7 +107,7 @@ export default function WorkflowBuilder() {
 
       {/* Pipeline architecture diagram */}
       <div className="bg-[#0B0B12] text-white p-6 mb-8 overflow-x-auto" data-testid="pipeline-diagram">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-4">§ How FlowPilot thinks</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-4">How FlowPilot thinks</div>
         <div className="flex items-stretch gap-2 min-w-[1100px]">
           {PIPELINE_STAGES.map((s, i) => (
             <div key={s.label} className="flex items-stretch">
