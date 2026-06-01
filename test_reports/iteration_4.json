@@ -1,0 +1,50 @@
+{
+  "summary": "End-to-end testing of the new FlowPilot Copilot module (backend POST /api/copilot/* + frontend CopilotPanel). 16/17 backend tests passed (94%), all 7 frontend flows passed (100%). Multi-turn context, intent routing (Flash vs GPT-5.2), KB sources, agent RBAC self-scoping, suggested follow-ups, clear/delete sessions, and 404 cross-user isolation all verified live. One minor cache-hit assertion failed due to non-deterministic intent classifier output (LLM temperature) that causes intermittent cache-key mismatches — real but low-impact.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "POST /api/copilot/chat (cache layer)",
+        "issue": "Cache miss on identical repeat message: intent classifier (Gemini Flash) is non-deterministic, so timeframe/intent fields in the cache key can differ between calls, causing cache to silently miss. Replies are semantically identical but wording differs. Repro: send the same analytics question twice within 5min — model_used rarely shows '(cached)'. Suggestion: hash only on (role, scope, normalized_message) — drop intent/timeframe from key, OR set Flash temperature=0 for the classifier."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Copilot Sheet panel",
+        "issues": [
+          "Radix Dialog a11y warning in console: 'Missing Description or aria-describedby for {DialogContent}'. SheetTitle is sr-only but no SheetDescription. Minor — does not break functionality but is logged on every panel open."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_copilot.py",
+    "/app/test_reports/pytest/iter4_copilot.xml"
+  ],
+  "action_items": [
+    "(Minor) Make cache key independent of LLM-classified intent/timeframe, OR set temperature=0 on intent classifier so repeat calls deterministically hit cache.",
+    "(Minor) Add <SheetDescription className='sr-only'> in CopilotPanel.jsx to silence Radix a11y warning.",
+    "(Nice-to-have) Update /app/memory/test_credentials.md to include the agent test account copilot_agent@flowpilot.ai / Agent1234 — currently only the demo+admin rows are listed there but the agent credential is referenced by the PR description."
+  ],
+  "critical_code_review_comments": [
+    "copilot.py:166 — `to_list(500)` loads all calls in scope into memory for every analytics turn; ok for v1 but will become a hotspot at scale. Consider an aggregation pipeline ($facet) once call volume > 5k.",
+    "copilot.py:204 fetch_kb — keyword scoring is O(N * Q) over full doc content (kb_docs.find with full content, then snippet trim). For >500 KB docs this becomes slow on every kb-intent turn. Recommend a MongoDB text index on title+content and use $text scoring.",
+    "copilot.py:343 scope_id = user['id'] if role=='agent' else role — supervisor cache is shared across ALL supervisors (since scope_id=='supervisor'). Two different supervisors in different teams will get cross-contaminated cache hits. Fix: include team_id or supervisor's own id once team-scoping ships.",
+    "copilot.py:281 _suggested_followups for agents filters out anything containing 'agent'/'team' — that removes valid prompts and falls back to smalltalk. The empty-list guard is hit too often. Curate agent-specific followups explicitly instead of substring-stripping.",
+    "CopilotPanel.jsx — `setSessionId(r.data.session_id)` is called inside async send; if the user spam-clicks two starter prompts in quick succession, both POSTs go out with session_id=null and the second one creates a second session, orphaning the first turn. Add an inflight guard or queue."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_copilot.py (NEW — 17 tests)"
+  ],
+  "success_rate": {"backend": "94% (16/17)", "frontend": "100% (7/7 flows)"},
+  "test_credentials": "demo@flowpilot.ai/Demo@1234 (supervisor), admin@flowpilot.co.in/Admin@2026! (admin), copilot_agent@flowpilot.ai/Agent1234 (agent — verified working)",
+  "seed_data_creation": "Created one transient agent (copilot_test_agent_<uuid>@flowpilot.ai) via supervisor /api/auth/register for RBAC isolation testing; cleaned up at suite end via DELETE /api/users/{id}.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All copilot endpoints + UI verified. Re-running test_copilot.py is safe (it self-cleans). For frontend, prefer JS-click (element.click()) when interacting with starter prompts inside the slide-over Sheet — Playwright's actionability check occasionally false-positives 'outside of viewport' due to Sheet's slide-in transform, but the elements are functionally clickable. Bounding boxes confirmed in-viewport at x=1462–1900 on a 1920-wide screen.",
+  "rca of the issue": "Cache test failure RCA — Stage-1 intent classifier (Gemini 2.5 Flash) is called with the default temperature; for an analytics question like 'List top compliance misses', it sometimes returns timeframe='week' and sometimes timeframe='month' (or omits it) → those values are part of the cache key (_cache_key + cache_payload at copilot.py:344) → cache key differs → cache miss → fresh synthesis → different wording. Mitigation A: drop timeframe+intent from the cache key (already implicit in normalized message). Mitigation B: pin classifier temperature=0. Either makes cache deterministic without affecting reply quality."
+}

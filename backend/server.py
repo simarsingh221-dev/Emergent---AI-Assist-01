@@ -26,6 +26,8 @@ import resend
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from emergentintegrations.llm.openai import OpenAISpeechToText, OpenAITextToSpeech
 
+from copilot import build_router as build_copilot_router
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -1037,6 +1039,9 @@ async def list_leads(user=Depends(get_current_user)):
 
 
 app.include_router(api)
+
+# Mount the Copilot router under /api/copilot (uses same JWT + RBAC as main API)
+app.include_router(build_copilot_router(db, get_current_user, EMERGENT_LLM_KEY), prefix="/api")
 
 
 # CORS — when allow_credentials is True, allow_origin_regex is required because

@@ -1,14 +1,23 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import FlowLogo from "@/components/FlowLogo";
+import CopilotPanel from "@/components/CopilotPanel";
 import {
   Headset, Broadcast, ChartLineUp, BookOpen, Gear, SignOut, ClockCounterClockwise, User,
-  UsersThree, GitBranch
+  UsersThree, GitBranch, Sparkle
 } from "@phosphor-icons/react";
+
+// Pages where the Copilot trigger should appear in the top-right.
+// Hidden on full-bleed surfaces like the active call workspace where the 4-pane already crowds the screen.
+const COPILOT_ROUTES = ["/app/supervisor", "/app/history", "/app/kb", "/app/analytics", "/app/workflows", "/app/users", "/app/settings"];
 
 export default function AppShell() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
+  const location = useLocation();
+  const [copilotOpen, setCopilotOpen] = useState(false);
+  const showCopilotTrigger = COPILOT_ROUTES.some((p) => location.pathname.startsWith(p));
 
   const items = [
     { to: "/app/workspace", icon: Headset, label: "Workspace", testid: "nav-workspace" },
@@ -67,8 +76,19 @@ export default function AppShell() {
           </button>
         </div>
       </aside>
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-hidden relative">
+        {showCopilotTrigger && (
+          <button
+            data-testid="copilot-trigger"
+            onClick={() => setCopilotOpen(true)}
+            className="fixed top-4 right-4 z-30 flex items-center gap-2 px-3 py-2 bg-[#0B0B12] text-white border border-neutral-800 hover:border-[#7B61FF] hover:bg-neutral-900 transition-colors shadow-lg"
+          >
+            <Sparkle size={14} weight="fill" className="text-[#7B61FF]" />
+            <span className="font-mono text-[10px] uppercase tracking-widest">Ask Copilot</span>
+          </button>
+        )}
         <Outlet />
+        <CopilotPanel open={copilotOpen} onOpenChange={setCopilotOpen} />
       </main>
     </div>
   );
