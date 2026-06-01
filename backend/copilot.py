@@ -339,14 +339,12 @@ def build_router(db: AsyncIOMotorDatabase, get_current_user, emergent_llm_key: s
             kw_query = " ".join(intent_data.get("keywords") or []) or req.message
             kb_sources = await fetch_kb(db, kw_query)
 
-        # Cache lookup on (role, scope, intent, message+timeframe+keywords) — skips for follow-ups since they depend on prior history
+        # Cache lookup on (role, scope, normalized_message) — intent/timeframe excluded so
+        # LLM-classifier non-determinism doesn't bust the cache key. Still skipped for follow-ups
+        # which depend on prior turn history.
         scope_id = user["id"] if user.get("role") == "agent" else user.get("role", "")
-        cache_payload = json.dumps({
-            "msg": req.message.lower().strip(),
-            "intent": intent,
-            "timeframe": intent_data.get("timeframe"),
-        }, sort_keys=True)
-        ck = _cache_key(user.get("role", ""), scope_id, intent, cache_payload)
+        cache_payload = json.dumps({"msg": req.message.lower().strip()}, sort_keys=True)
+        ck = _cache_key(user.get("role", ""), scope_id, "v1", cache_payload)
         cached = None if intent == "followup" else await _from_cache(db, ck)
 
         # Stage 3: synthesis

@@ -3,7 +3,7 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import {
   Sparkle, X, PaperPlaneRight, ArrowsClockwise, BookOpen, ChartLineUp,
   ChatCircleText, Lightbulb, ListChecks
@@ -48,6 +48,7 @@ export default function CopilotPanel({ open, onOpenChange }) {
   const [sending, setSending] = useState(false);
   const [sessionId, setSessionId] = useState(null);
   const [followups, setFollowups] = useState([]);
+  const sendingRef = useRef(false);  // inflight guard — prevents double-session bug on spam-click
   const endRef = useRef(null);
 
   useEffect(() => {
@@ -56,7 +57,8 @@ export default function CopilotPanel({ open, onOpenChange }) {
 
   const send = async (textOverride) => {
     const message = (textOverride ?? input).trim();
-    if (!message || sending) return;
+    if (!message || sendingRef.current) return;
+    sendingRef.current = true;
     setInput("");
     setSending(true);
     const userMsg = { role: "user", content: message, ts: new Date().toISOString() };
@@ -80,7 +82,7 @@ export default function CopilotPanel({ open, onOpenChange }) {
         ts: new Date().toISOString(),
         error: true,
       }]);
-    } finally { setSending(false); }
+    } finally { setSending(false); sendingRef.current = false; }
   };
 
   const clearChat = async () => {
@@ -98,6 +100,7 @@ export default function CopilotPanel({ open, onOpenChange }) {
         data-testid="copilot-panel"
       >
         <SheetTitle className="sr-only">FlowPilot Copilot</SheetTitle>
+        <SheetDescription className="sr-only">Conversational operational intelligence scoped to your role and permissions.</SheetDescription>
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="px-5 py-4 border-b border-[#E5E5E5] bg-[#0B0B12] text-white">
