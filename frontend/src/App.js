@@ -16,6 +16,9 @@ import Settings from "@/pages/Settings";
 import CallHistory from "@/pages/CallHistory";
 import UserManagement from "@/pages/UserManagement";
 import WorkflowBuilder from "@/pages/WorkflowBuilder";
+import Explorer from "@/pages/Explorer";
+import Categories from "@/pages/Categories";
+import Scorecard from "@/pages/Scorecard";
 import "@/App.css";
 
 function Private({ children }) {
@@ -47,6 +50,9 @@ export default function App() {
             <Route path="kb" element={<KnowledgeBase />} />
             <Route path="workflows" element={<WorkflowBuilder />} />
             <Route path="users" element={<UserManagement />} />
+            <Route path="explorer" element={<Explorer />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="scorecard" element={<Scorecard />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="settings" element={<Settings />} />
           </Route>

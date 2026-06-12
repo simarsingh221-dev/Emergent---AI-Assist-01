@@ -26,7 +26,7 @@ import resend
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from emergentintegrations.llm.openai import OpenAISpeechToText, OpenAITextToSpeech
 
-from copilot import build_router as build_copilot_router
+from insights import build_router as build_insights_router, tag_call_with_categories
 
 
 ROOT_DIR = Path(__file__).parent
@@ -604,12 +604,21 @@ async def summarize_call(call_id: str, user=Depends(get_current_user)):
     await db.calls.update_one({"id": call_id}, {
         "$set": {"summary": out, "status": "completed", "ended_at": now_iso()}
     })
+    # Auto-tag the call against active categories (transcript is finalized at summarize-time)
+    try:
+        await tag_call_with_categories(db, call_id)
+    except Exception as e:
+        logger.warning("category auto-tag failed for call %s: %s", call_id, e)
     return out
 
 
 @api.post("/calls/{call_id}/end")
 async def end_call(call_id: str, user=Depends(get_current_user)):
     await db.calls.update_one({"id": call_id}, {"$set": {"status": "completed", "ended_at": now_iso()}})
+    try:
+        await tag_call_with_categories(db, call_id)
+    except Exception as e:
+        logger.warning("category auto-tag failed for call %s: %s", call_id, e)
     return {"ok": True}
 
 
@@ -1040,8 +1049,8 @@ async def list_leads(user=Depends(get_current_user)):
 
 app.include_router(api)
 
-# Mount the Copilot router under /api/copilot (uses same JWT + RBAC as main API)
-app.include_router(build_copilot_router(db, get_current_user, EMERGENT_LLM_KEY), prefix="/api")
+# Mount the Insights (Conversation Intelligence) router under /api
+app.include_router(build_insights_router(db, get_current_user), prefix="/api")
 
 
 # CORS — when allow_credentials is True, allow_origin_regex is required because

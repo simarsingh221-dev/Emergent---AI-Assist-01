@@ -1,32 +1,26 @@
-import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import FlowLogo from "@/components/FlowLogo";
-import CopilotPanel from "@/components/CopilotPanel";
 import {
   Headset, Broadcast, ChartLineUp, BookOpen, Gear, SignOut, ClockCounterClockwise, User,
-  UsersThree, GitBranch, Sparkle
+  UsersThree, GitBranch, MagnifyingGlass, Tag, Medal
 } from "@phosphor-icons/react";
-
-// Pages where the Copilot trigger should appear in the top-right.
-// Hidden on full-bleed surfaces like the active call workspace where the 4-pane already crowds the screen.
-const COPILOT_ROUTES = ["/app/supervisor", "/app/history", "/app/kb", "/app/analytics", "/app/workflows", "/app/users", "/app/settings"];
 
 export default function AppShell() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
-  const location = useLocation();
-  const [copilotOpen, setCopilotOpen] = useState(false);
-  const showCopilotTrigger = COPILOT_ROUTES.some((p) => location.pathname.startsWith(p));
 
   const items = [
     { to: "/app/workspace", icon: Headset, label: "Workspace", testid: "nav-workspace" },
     { to: "/app/supervisor", icon: Broadcast, label: "Supervisor", testid: "nav-supervisor", roles: ["supervisor", "admin"] },
+    { to: "/app/explorer", icon: MagnifyingGlass, label: "Explorer", testid: "nav-explorer" },
+    { to: "/app/categories", icon: Tag, label: "Categories", testid: "nav-categories", roles: ["supervisor", "admin"] },
+    { to: "/app/scorecard", icon: Medal, label: "Scorecard", testid: "nav-scorecard" },
+    { to: "/app/analytics", icon: ChartLineUp, label: "Trends", testid: "nav-analytics" },
     { to: "/app/history", icon: ClockCounterClockwise, label: "History", testid: "nav-history" },
     { to: "/app/kb", icon: BookOpen, label: "Knowledge", testid: "nav-kb" },
     { to: "/app/workflows", icon: GitBranch, label: "Workflows", testid: "nav-workflows" },
     { to: "/app/users", icon: UsersThree, label: "Users", testid: "nav-users", roles: ["supervisor", "admin"] },
-    { to: "/app/analytics", icon: ChartLineUp, label: "Analytics", testid: "nav-analytics" },
     { to: "/app/settings", icon: Gear, label: "Settings", testid: "nav-settings" },
   ].filter((i) => !i.roles || i.roles.includes(user?.role));
 
@@ -40,7 +34,7 @@ export default function AppShell() {
           </div>
           <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mt-2">Agent Assist · v1.0</div>
         </div>
-        <nav className="flex-1 py-3">
+        <nav className="flex-1 py-3 overflow-y-auto scrollbar-thin">
           {items.map((it) => (
             <NavLink
               key={it.to}
@@ -76,19 +70,8 @@ export default function AppShell() {
           </button>
         </div>
       </aside>
-      <main className="flex-1 overflow-hidden relative">
-        {showCopilotTrigger && (
-          <button
-            data-testid="copilot-trigger"
-            onClick={() => setCopilotOpen(true)}
-            className="fixed top-4 right-4 z-30 flex items-center gap-2 px-3 py-2 bg-[#0B0B12] text-white border border-neutral-800 hover:border-[#7B61FF] hover:bg-neutral-900 transition-colors shadow-lg"
-          >
-            <Sparkle size={14} weight="fill" className="text-[#7B61FF]" />
-            <span className="font-mono text-[10px] uppercase tracking-widest">Ask Copilot</span>
-          </button>
-        )}
+      <main className="flex-1 overflow-auto relative">
         <Outlet />
-        <CopilotPanel open={copilotOpen} onOpenChange={setCopilotOpen} />
       </main>
     </div>
   );
