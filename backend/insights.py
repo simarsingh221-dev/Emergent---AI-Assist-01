@@ -15,7 +15,7 @@ from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Dict, Any
 
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 
@@ -68,11 +68,27 @@ SEED_CATEGORIES = [
 
 
 # ============================== MODELS ==============================
+_HEX_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
+
+
+def _validate_hex(v):
+    if v is None:
+        return v
+    if not _HEX_RE.match(v):
+        raise ValueError("color must be a 6-digit hex code like #7B61FF")
+    return v
+
+
 class CategoryReq(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     keywords: List[str] = Field(default_factory=list)
     color: Optional[str] = "#7B61FF"
     description: Optional[str] = ""
+
+    @field_validator("color")
+    @classmethod
+    def _v_color(cls, v):
+        return _validate_hex(v)
 
 
 class CategoryPatchReq(BaseModel):
@@ -81,6 +97,11 @@ class CategoryPatchReq(BaseModel):
     color: Optional[str] = None
     description: Optional[str] = None
     active: Optional[bool] = None
+
+    @field_validator("color")
+    @classmethod
+    def _v_color(cls, v):
+        return _validate_hex(v)
 
 
 class SearchReq(BaseModel):
