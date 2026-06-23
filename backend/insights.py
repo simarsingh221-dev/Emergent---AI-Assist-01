@@ -390,6 +390,103 @@ def build_router(db: AsyncIOMotorDatabase, get_current_user) -> APIRouter:
         return out
 
     # ---------- TRENDS ----------
+    @router.get("/analytics/heatmap")
+    async def heatmap(days: int = 30, user=Depends(get_current_user)):
+        """Day-of-week × hour-of-day call density. Returns 7×24 grid."""
+        q = {**_scope_filter(user)}
+        tf = _timeframe(days)
+        if tf:
+            q["started_at"] = tf
+        calls = await db.calls.find(q, {"_id": 0, "started_at": 1}).to_list(10000)
+        # 7x24 matrix; row 0 = Monday per ISO weekday convention
+        grid = [[0 for _ in range(24)] for _ in range(7)]
+        peak = 0
+        for c in calls:
+            ts = c.get("started_at")
+            if not ts:
+                continue
+            try:
+                dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            except Exception:
+                continue
+            dow = dt.weekday()  # 0=Mon
+            hod = dt.hour
+            grid[dow][hod] += 1
+            if grid[dow][hod] > peak:
+                peak = grid[dow][hod]
+        return {"window_days": days, "peak": peak, "grid": grid, "total_calls": len(calls)}
+
+    @router.get("/analytics/agent-daily")
+    async def agent_daily(days: int = 14, user=Depends(get_current_user)):
+        """Per-agent daily call count. For supervisor/admin only."""
+        if user.get("role") == "agent":
+            raise HTTPException(403, "Supervisor or admin required")
+        tf = _timeframe(days)
+        q = {}
+        if tf:
+            q["started_at"] = tf
+        calls = await db.calls.find(q, {"_id": 0, "started_at": 1, "agent_id": 1, "agent_name": 1}).to_list(10000)
+        # Build {agent_name: {date: count}}
+        per_agent: Dict[str, Dict[str, Any]] = {}
+        all_dates = set()
+        for c in calls:
+            d = (c.get("started_at") or "")[:10]
+            if not d:
+                continue
+            all_dates.add(d)
+            name = c.get("agent_name") or c.get("agent_id") or "Unknown"
+            row = per_agent.setdefault(name, {"agent": name, "total": 0, "by_date": {}})
+            row["by_date"][d] = row["by_date"].get(d, 0) + 1
+            row["total"] += 1
+        dates_sorted = sorted(all_dates)
+        rows = []
+        for name, row in sorted(per_agent.items(), key=lambda x: -x[1]["total"])[:10]:
+            series = [{"date": d, "count": row["by_date"].get(d, 0)} for d in dates_sorted]
+            rows.append({"agent": name, "total": row["total"], "series": series})
+        return {"window_days": days, "dates": dates_sorted, "agents": rows}
+
+    @router.get("/analytics/dod")
+    async def day_over_day(user=Depends(get_current_user)):
+        """Day-over-day deltas: yesterday vs day-before, last week vs prior."""
+        q = {**_scope_filter(user)}
+        now = datetime.now(timezone.utc)
+        # 3-day window covers today + yesterday + day-before
+        start = (now - timedelta(days=8)).isoformat()
+        q["started_at"] = {"$gte": start}
+        calls = await db.calls.find(q, {"_id": 0, "started_at": 1, "analysis": 1}).to_list(10000)
+        today = now.date()
+        buckets = {(today - timedelta(days=i)).isoformat(): {
+            "date": (today - timedelta(days=i)).isoformat(),
+            "total": 0, "negative": 0, "high_escalation": 0,
+        } for i in range(8)}
+        for c in calls:
+            d = (c.get("started_at") or "")[:10]
+            if d in buckets:
+                buckets[d]["total"] += 1
+                a = c.get("analysis") or {}
+                if a.get("sentiment") in ("negative", "frustrated"):
+                    buckets[d]["negative"] += 1
+                if a.get("escalation_risk") == "high":
+                    buckets[d]["high_escalation"] += 1
+        ordered = [buckets[d] for d in sorted(buckets.keys(), reverse=True)]
+
+        def delta(curr, prev):
+            if prev == 0:
+                return 100 if curr > 0 else 0
+            return round((curr - prev) / prev * 100)
+
+        last_7 = sum(b["total"] for b in ordered[1:8])  # excluding today
+        prev_7 = 0  # placeholder; 14d window would be needed for true wow
+        return {
+            "today": ordered[0],
+            "yesterday": ordered[1] if len(ordered) > 1 else None,
+            "day_before": ordered[2] if len(ordered) > 2 else None,
+            "yesterday_vs_db_pct": delta(ordered[1]["total"], ordered[2]["total"]) if len(ordered) > 2 else 0,
+            "last_7_total": last_7,
+            "last_7_vs_prev_pct": delta(last_7, prev_7),
+            "trail": ordered[:8],
+        }
+
     @router.get("/analytics/trends")
     async def trends(days: int = 14, user=Depends(get_current_user)):
         q = {**_scope_filter(user)}

@@ -1,20 +1,32 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip,
   LineChart, Line, Legend, AreaChart, Area
 } from "recharts";
-import { TrendUp, TrendDown, WarningCircle, ChatCircleDots } from "@phosphor-icons/react";
+import { WarningCircle, TrendUp, TrendDown } from "@phosphor-icons/react";
 
 const DAY_WINDOWS = [7, 14, 30, 60, 90];
 
 export default function Analytics() {
+  const { user } = useAuth();
+  const isAgent = user?.role === "agent";
   const [overview, setOverview] = useState(null);
   const [trends, setTrends] = useState(null);
+  const [heatmap, setHeatmap] = useState(null);
+  const [dod, setDod] = useState(null);
+  const [agentDaily, setAgentDaily] = useState(null);
   const [days, setDays] = useState(14);
 
   useEffect(() => { api.get("/analytics/overview").then((r) => setOverview(r.data)); }, []);
   useEffect(() => { api.get(`/analytics/trends?days=${days}`).then((r) => setTrends(r.data)); }, [days]);
+  useEffect(() => { api.get(`/analytics/heatmap?days=${days}`).then((r) => setHeatmap(r.data)); }, [days]);
+  useEffect(() => { api.get(`/analytics/dod`).then((r) => setDod(r.data)).catch(() => {}); }, []);
+  useEffect(() => {
+    if (isAgent) return;
+    api.get(`/analytics/agent-daily?days=${days}`).then((r) => setAgentDaily(r.data)).catch(() => {});
+  }, [isAgent, days]);
 
   return (
     <div className="min-h-screen bg-[#F4F4F5]" data-testid="analytics-page">
@@ -45,6 +57,19 @@ export default function Analytics() {
             value={overview?.escalation?.high ?? 0}
             tone={(overview?.escalation?.high ?? 0) > 0 ? "bad" : "good"} />
         </div>
+
+        {/* Day-over-day strip */}
+        {dod && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] mb-6" data-testid="dod-strip">
+            <DodTile label="Today" v={dod.today?.total ?? 0} sub={`${dod.today?.negative ?? 0} neg · ${dod.today?.high_escalation ?? 0} high-esc`} />
+            <DodTile label="Yesterday" v={dod.yesterday?.total ?? 0}
+              delta={dod.yesterday_vs_db_pct}
+              sub={`${dod.yesterday?.negative ?? 0} neg · ${dod.yesterday?.high_escalation ?? 0} high-esc`} />
+            <DodTile label="Day before" v={dod.day_before?.total ?? 0}
+              sub={`${dod.day_before?.negative ?? 0} neg · ${dod.day_before?.high_escalation ?? 0} high-esc`} />
+            <DodTile label="Last 7 days" v={dod.last_7_total} sub="rolling total" />
+          </div>
+        )}
 
         {/* Sentiment trend (big) */}
         <ChartCard title="Sentiment over time" subtitle={`Last ${days} days · daily breakdown`}>
@@ -165,6 +190,23 @@ export default function Analytics() {
             )}
           </div>
         </div>
+
+        {/* Heatmap */}
+        <div className="mt-6">
+          <ChartCard title="Call volume heatmap" subtitle={`Day of week × hour of day · last ${days} days`}>
+            {!heatmap ? <Loading /> : <Heatmap data={heatmap} />}
+          </ChartCard>
+        </div>
+
+        {/* Per-agent daily breakdown */}
+        {!isAgent && agentDaily && agentDaily.agents.length > 0 && (
+          <div className="mt-6">
+            <ChartCard title="Top agents — daily volume"
+              subtitle={`Top ${agentDaily.agents.length} agents · last ${days} days`}>
+              <AgentDailyChart data={agentDaily} />
+            </ChartCard>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -195,3 +237,94 @@ function ChartCard({ title, subtitle, children }) {
 function Loading() { return <div className="text-xs text-[#A3A3A3] font-mono py-12 text-center">Loading…</div>; }
 function EmptyState({ msg }) { return <div className="text-xs text-[#A3A3A3] font-mono py-8 text-center">{msg}</div>; }
 function fmtDay(d) { try { return new Date(d + "T00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" }); } catch { return d; } }
+
+const DOW_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function Heatmap({ data }) {
+  const peak = Math.max(1, data.peak);
+  return (
+    <div className="overflow-x-auto" data-testid="heatmap">
+      <table className="text-[10px] font-mono">
+        <thead>
+          <tr>
+            <th className="w-10"></th>
+            {[...Array(24)].map((_, h) => (
+              <th key={h} className="w-6 text-[#A3A3A3] font-normal pb-1.5">{h % 3 === 0 ? h : ""}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.grid.map((row, dow) => (
+            <tr key={dow}>
+              <td className="text-[#525252] uppercase tracking-wider pr-2 text-right">{DOW_LABELS[dow]}</td>
+              {row.map((cnt, h) => {
+                const intensity = cnt / peak;
+                const bg = cnt === 0 ? "#F4F4F5"
+                  : `rgba(123, 97, 255, ${0.15 + intensity * 0.85})`;
+                return (
+                  <td key={h} className="w-6 h-6 border border-white"
+                    style={{ background: bg }}
+                    title={`${DOW_LABELS[dow]} ${h}:00 — ${cnt} call${cnt === 1 ? "" : "s"}`}
+                    data-testid={`heat-${dow}-${h}`} />
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="mt-3 flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest text-[#525252]">
+        <span>Peak: <span className="text-[#0A0A0A] font-semibold">{data.peak}</span> calls/hour</span>
+        <span>·</span>
+        <span>Total: <span className="text-[#0A0A0A] font-semibold">{data.total_calls}</span></span>
+      </div>
+    </div>
+  );
+}
+
+const AGENT_LINE_COLORS = ["#7B61FF", "#FF4FD8", "#06B6D4", "#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#A855F7", "#84CC16", "#EC4899"];
+function AgentDailyChart({ data }) {
+  // Build composite series: [{date, agentA: n, agentB: n, ...}]
+  const rows = data.dates.map((d) => {
+    const row = { date: d };
+    data.agents.forEach((a) => {
+      row[a.agent] = a.series.find((s) => s.date === d)?.count || 0;
+    });
+    return row;
+  });
+  return (
+    <div className="h-72" data-testid="agent-daily-chart">
+      <ResponsiveContainer>
+        <LineChart data={rows}>
+          <CartesianGrid strokeDasharray="1 3" stroke="#E5E5E5" />
+          <XAxis dataKey="date" tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} tickFormatter={fmtDay} />
+          <YAxis tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} />
+          <Tooltip contentStyle={{ fontSize: 11 }} />
+          <Legend wrapperStyle={{ fontSize: 10, fontFamily: "JetBrains Mono", textTransform: "uppercase", letterSpacing: "0.05em" }} />
+          {data.agents.map((a, i) => (
+            <Line key={a.agent} type="monotone" dataKey={a.agent}
+              stroke={AGENT_LINE_COLORS[i % AGENT_LINE_COLORS.length]} strokeWidth={2} dot={{ r: 2 }} />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function DodTile({ label, v, sub, delta }) {
+  const isUp = delta > 0;
+  const isDown = delta < 0;
+  return (
+    <div className="bg-white p-4" data-testid={`dod-${label.replace(/\s/g, "-").toLowerCase()}`}>
+      <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">{label}</div>
+      <div className="flex items-baseline gap-2 mt-1">
+        <span className="font-heading text-2xl font-bold">{v}</span>
+        {delta !== undefined && delta !== 0 && (
+          <span className={`text-[11px] font-mono inline-flex items-center gap-0.5 ${isUp ? "text-red-600" : "text-emerald-600"}`}>
+            {isUp ? <TrendUp size={11} weight="bold" /> : <TrendDown size={11} weight="bold" />}
+            {Math.abs(delta)}%
+          </span>
+        )}
+      </div>
+      {sub && <div className="text-[10px] font-mono text-[#A3A3A3] mt-0.5">{sub}</div>}
+    </div>
+  );
+}

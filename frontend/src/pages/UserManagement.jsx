@@ -12,19 +12,21 @@ import { UserPlus, PencilSimple, Trash, Key, UserCircle, Shield } from "@phospho
 export default function UserManagement() {
   const { user: me } = useAuth();
   const [users, setUsers] = useState([]);
+  const [workflows, setWorkflows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [resetUser, setResetUser] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "agent" });
-  const [editForm, setEditForm] = useState({ name: "", role: "agent", active: true });
+  const [editForm, setEditForm] = useState({ name: "", role: "agent", active: true, allowed_workflows: [] });
   const [newPassword, setNewPassword] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const r = await api.get("/users");
-      setUsers(r.data);
+      const [u, w] = await Promise.all([api.get("/users"), api.get("/workflows")]);
+      setUsers(u.data);
+      setWorkflows(w.data);
     } catch (e) {
       if (e?.response?.status === 403) toast.error("Supervisor role required");
     } finally { setLoading(false); }
@@ -44,7 +46,10 @@ export default function UserManagement() {
 
   const startEdit = (u) => {
     setEditUser(u);
-    setEditForm({ name: u.name, role: u.role, active: u.active !== false });
+    setEditForm({
+      name: u.name, role: u.role, active: u.active !== false,
+      allowed_workflows: u.allowed_workflows || [],
+    });
   };
 
   const saveEdit = async () => {
@@ -206,6 +211,44 @@ export default function UserManagement() {
                 <input type="checkbox" checked={editForm.active} onChange={(e) => setEditForm({ ...editForm, active: e.target.checked })} data-testid="edit-active" />
                 Account active (inactive users cannot log in)
               </label>
+              {editForm.role === "agent" && (
+                <div className="pt-3 border-t border-[#E5E5E5]">
+                  <Label className="text-xs uppercase tracking-wider font-mono">Allowed workflows</Label>
+                  <p className="text-[11px] text-[#525252] mt-0.5">
+                    {editForm.allowed_workflows.length === 0
+                      ? "All workflows visible (default)"
+                      : `${editForm.allowed_workflows.length} of ${workflows.length} workflows selected`}
+                  </p>
+                  <div className="max-h-44 overflow-y-auto border border-[#E5E5E5] mt-2 divide-y divide-[#F4F4F5]" data-testid="edit-workflows">
+                    {workflows.map((w) => {
+                      const checked = editForm.allowed_workflows.includes(w.id);
+                      return (
+                        <label key={w.id} className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-[#FAFAFA] cursor-pointer"
+                          data-testid={`edit-wf-${w.id}`}>
+                          <input type="checkbox" checked={checked}
+                            onChange={(e) => {
+                              const next = e.target.checked
+                                ? [...editForm.allowed_workflows, w.id]
+                                : editForm.allowed_workflows.filter((x) => x !== w.id);
+                              setEditForm({ ...editForm, allowed_workflows: next });
+                            }}
+                            className="accent-[#7B61FF]" />
+                          <span className="flex-1">{w.name}</span>
+                          {w.is_seed && <span className="text-[9px] font-mono uppercase tracking-widest text-[#A3A3A3]">default</span>}
+                        </label>
+                      );
+                    })}
+                  </div>
+                  {editForm.allowed_workflows.length > 0 && (
+                    <button type="button"
+                      onClick={() => setEditForm({ ...editForm, allowed_workflows: [] })}
+                      className="text-[10px] font-mono uppercase tracking-widest text-[#7B61FF] hover:underline mt-2"
+                      data-testid="edit-wf-clear">
+                      Clear restrictions (allow all)
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
           <DialogFooter>

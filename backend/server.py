@@ -27,6 +27,7 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 from emergentintegrations.llm.openai import OpenAISpeechToText, OpenAITextToSpeech
 
 from insights import build_router as build_insights_router, tag_call_with_categories
+from articles import build_router as build_articles_router
 
 
 ROOT_DIR = Path(__file__).parent
@@ -285,12 +286,14 @@ class UserCreateReq(BaseModel):
     name: str
     role: str = "agent"
     password: str
+    allowed_workflows: Optional[List[str]] = None  # null = all workflows; list of workflow ids = restricted
 
 
 class UserUpdateReq(BaseModel):
     name: Optional[str] = None
     role: Optional[str] = None
     active: Optional[bool] = None
+    allowed_workflows: Optional[List[str]] = None  # set [] to allow all, or [ids] to restrict
 
 
 class PasswordResetReq(BaseModel):
@@ -324,10 +327,12 @@ async def create_user(req: UserCreateReq, user=Depends(get_current_user)):
     doc = {
         "id": uid, "email": req.email.lower(), "name": req.name, "role": req.role,
         "password": pwd_ctx.hash(req.password), "active": True,
+        "allowed_workflows": req.allowed_workflows or [],
         "created_at": now_iso(), "created_by": user["id"]
     }
     await db.users.insert_one(doc)
-    return {"id": uid, "email": doc["email"], "name": doc["name"], "role": doc["role"], "active": True, "created_at": doc["created_at"]}
+    return {"id": uid, "email": doc["email"], "name": doc["name"], "role": doc["role"],
+            "active": True, "allowed_workflows": doc["allowed_workflows"], "created_at": doc["created_at"]}
 
 
 @api.patch("/users/{user_id}")
@@ -342,6 +347,8 @@ async def update_user(user_id: str, req: UserUpdateReq, user=Depends(get_current
         updates["role"] = req.role
     if req.active is not None:
         updates["active"] = req.active
+    if req.allowed_workflows is not None:
+        updates["allowed_workflows"] = req.allowed_workflows
     if not updates:
         raise HTTPException(400, "No fields to update")
     result = await db.users.update_one({"id": user_id}, {"$set": updates})
@@ -738,6 +745,11 @@ async def _ensure_workflows_seeded() -> None:
 async def list_workflows(user=Depends(get_current_user)):
     await _ensure_workflows_seeded()
     docs = await db.workflows.find({"active": True}, {"_id": 0}).sort("name", 1).to_list(200)
+    # Agents see only their assigned workflows (allowed_workflows non-empty = restricted).
+    # Supervisors/admins always see all workflows.
+    allowed = user.get("allowed_workflows") or []
+    if user.get("role") == "agent" and allowed:
+        docs = [d for d in docs if d.get("id") in allowed]
     return docs
 
 
@@ -1047,10 +1059,43 @@ async def list_leads(user=Depends(get_current_user)):
     return leads
 
 
-app.include_router(api)
-
-# Mount the Insights (Conversation Intelligence) router under /api
 app.include_router(build_insights_router(db, get_current_user), prefix="/api")
+
+# Mount the Articles / Blog router (Rank AI webhook target) under /api
+app.include_router(build_articles_router(db, get_current_user), prefix="/api")
+
+
+# Dynamic sitemap helper — served at /api/sitemap so the frontend public
+# sitemap.xml can include a reference. Also useful for SEO tooling/GSC submission.
+@api.get("/sitemap", include_in_schema=False)
+async def api_sitemap_xml():
+    """Dynamic sitemap fragment — static marketing pages + all published articles."""
+    public_base = os.environ.get('PUBLIC_BASE_URL', 'https://flowpilot.co.in').rstrip('/')
+    static_paths = ["/", "/demo", "/contact", "/privacy", "/terms", "/blog"]
+    article_docs = await db.articles.find({"active": True}, {"_id": 0, "slug": 1, "updated_at": 1}).to_list(2000)
+    today = datetime.now(timezone.utc).date().isoformat()
+    urls_xml = []
+    for p in static_paths:
+        urls_xml.append(f"<url><loc>{public_base}{p}</loc><lastmod>{today}</lastmod>"
+                        f"<changefreq>weekly</changefreq><priority>{'1.0' if p == '/' else '0.7'}</priority></url>")
+    for a in article_docs:
+        slug = a.get("slug")
+        if not slug:
+            continue
+        lastmod = (a.get("updated_at") or "")[:10] or today
+        urls_xml.append(f"<url><loc>{public_base}/blog/{slug}</loc><lastmod>{lastmod}</lastmod>"
+                        f"<changefreq>monthly</changefreq><priority>0.6</priority></url>")
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "\n".join(urls_xml) +
+        "\n</urlset>"
+    )
+    from starlette.responses import Response
+    return Response(content=body, media_type="application/xml")
+
+
+app.include_router(api)
 
 
 # CORS — when allow_credentials is True, allow_origin_regex is required because

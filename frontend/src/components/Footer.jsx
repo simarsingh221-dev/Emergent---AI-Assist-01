@@ -19,6 +19,7 @@ export default function Footer() {
             <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-3">Product</div>
             <ul className="space-y-2 text-sm">
               <li><Link to="/demo" className="link-underline text-[#0A0A0A]" data-testid="footer-link-demo">Live demo</Link></li>
+              <li><Link to="/blog" className="link-underline text-[#0A0A0A]" data-testid="footer-link-blog">Blog</Link></li>
               <li><Link to="/contact" className="link-underline text-[#0A0A0A]" data-testid="footer-link-contact">Contact us</Link></li>
               <li><Link to="/login" className="link-underline text-[#0A0A0A]" data-testid="footer-link-login">Sign in</Link></li>
             </ul>

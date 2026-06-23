@@ -1,0 +1,47 @@
+{
+  "summary": "Iter6: Validated Blog/Articles (public list/read, RBAC, slug upsert, PATCH, soft-delete), Rank AI webhook with X-Webhook-Secret (401 wrong/missing, 200 flat + envelope payloads → source='rank.ai'), day-level analytics (/analytics/heatmap returns 7x24 grid, /analytics/dod returns today/yesterday/day_before/trail, /analytics/agent-daily 403 for agents), workflow filtering on agent GET /workflows. 20 new tests added in test_articles_analytics.py, all pass. Full regression: 124/124 backend tests pass. Frontend smoke: /blog renders with Helmet meta, /blog/{slug} renders article with JSON-LD BlogPosting + title in schema, Analytics page shows dod-strip + heatmap (168 cells) + agent-daily-chart, UserManagement edit dialog shows ALLOWED WORKFLOWS section for agent role with 5 workflow checkboxes. Found + fixed 2 backend bugs: (1) RANK_WEBHOOK_SECRET read at module import time before load_dotenv ran → moved to request-time read; (2) /api/sitemap defined AFTER app.include_router(api) so endpoint never mounted → moved router include below endpoint definition. Both fixes verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/blog/webhook (FIXED)", "issue": "RANK_WEBHOOK_SECRET was read at articles.py module import, but server.py calls load_dotenv() AFTER importing articles → secret was always empty in process env → endpoint returned 503 'Webhook not configured'. Fixed by reading env at request time via _get_webhook_secret() helper."},
+      {"endpoint": "/api/sitemap (FIXED)", "issue": "Endpoint was decorated AFTER app.include_router(api) call, so it never registered. Returned 404. Fixed by moving router include below endpoint definition."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/blog/{slug} (BlogPost)", "issues": ["og:type still resolves to 'website' on the article page (the index.html base meta dominates). Helmet should override og:type='article' for SEO best practice on article pages. Minor; rich results still work because JSON-LD BlogPosting is present and detected."]},
+      {"screen": "UserManagement (/app/users)", "issues": ["~16+ leftover TEST_ users (test_agent_*, test_sup_*, tester_*) from prior test runs are still in DB — previous tests' cleanup did not run on assertion failures. Consider a one-shot admin bulk delete or add a teardown that runs even on failure (try/finally in pytest fixtures)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_articles_analytics.py",
+    "/app/test_reports/pytest/iter6_articles.xml",
+    "/app/test_reports/pytest/iter6_final.xml"
+  ],
+  "action_items": [
+    "Consider setting og:type='article' via Helmet in BlogPost.jsx for proper article-card preview on social shares.",
+    "Bulk-clean leftover TEST_* and test_agent_*/test_sup_* users from /app/users to declutter the admin view (one-time DB cleanup, then add try/finally teardowns to fixtures).",
+    "Article testid in review request was 'article-card-assist-flow' but the actual implementation uses 'article-card-{slug}' — testid name in spec was misleading but implementation is correct (more flexible, no rename needed)."
+  ],
+  "critical_code_review_comments": [
+    "articles.py:71 build_router — module-level env reads are an anti-pattern when load_dotenv() runs later. The fix I applied (read at request time) is correct; consider doing the same audit for any other os.environ.get() at module top-level in this codebase.",
+    "server.py:1062 — placing app.include_router(api) BEFORE all @api.get() decorators is a latent bug template. Suggest moving include_router(api) to the very END of the file, after ALL decorators are bound to the router, OR document the constraint at the include line.",
+    "articles.py _slugify drops underscores entirely (regex strips before whitespace/dash collapse). 'My_Article_v2' becomes 'myarticlev2' instead of 'my-article-v2'. Treat underscore as whitespace: include '_' in the keep-set or pre-replace '_' with ' '.",
+    "insights.py:419 agent_daily caps at top 10 agents — no parameter to override. Supervisor with 30 agents will only ever see 10. Add a `limit` query param.",
+    "insights.py:486 last_7_vs_prev_pct is hardcoded to prev_7=0 so the percentage is always 100 (or 0). Either compute the true previous-7 by extending the window to 14 days, or drop the field to avoid misleading UI."
+  ],
+  "updated_files": [
+    "/app/backend/articles.py (fix: read RANK_WEBHOOK_SECRET at request time)",
+    "/app/backend/server.py (fix: move app.include_router(api) below /api/sitemap definition)",
+    "/app/backend/tests/test_articles_analytics.py (NEW — 20 tests across 5 classes: TestArticlesPublicRead, TestArticlesRBAC, TestRankWebhook, TestAnalyticsHeatmap, TestAnalyticsDod, TestAnalyticsAgentDaily, TestWorkflowAssignment)"
+  ],
+  "success_rate": {"backend": "100% (124/124 — 20 new + 104 prior)", "frontend": "100% on smoke tests (blog list, blog post + JSON-LD, Analytics dod-strip/heatmap/agent-daily-chart, UserManagement edit dialog with allowed_workflows multi-select)"},
+  "test_credentials": "demo@flowpilot.ai/Demo@1234 (supervisor) verified; admin@flowpilot.co.in/Admin@2026! (admin) verified; copilot_agent@flowpilot.ai/Agent1234 (agent) verified; Rank webhook secret 'flowpilot-rank-2026-CHANGEME' verified.",
+  "seed_data_creation": "Tests create transient articles with slug prefix 'test-' (testarticle*, test-upsert-*, test-patch-*, test-del-*, test-rank-flat-*, test-rank-env-*) — all self-cleaning. One TEST_wfagent_* user created and deleted per test_create_user_with_allowed_workflows.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "test_articles_analytics.py is fully self-cleaning. Two real backend bugs found AND fixed in this iteration — (1) RANK_WEBHOOK_SECRET timing bug fixed in articles.py via _get_webhook_secret(), (2) /api/sitemap 404 fixed by re-ordering app.include_router(api) AFTER the @api.get('/sitemap') decorator in server.py. /robots.txt + /sitemap.xml + /logo-512.png + /og-image.png all return 200 on the preview domain (review note suggested robots/sitemap might be Cloudflare-overridden — they're not, they serve correctly). The article-card data-testid in the review spec ('article-card-assist-flow') is a hint; actual implementation uses 'article-card-{slug}' (dynamic). Existing /app/users has ~16+ leftover TEST_ users from prior iterations — consider one-shot cleanup.",
+  "rca of the issue": "Bug 1 (webhook 503): Classic load_dotenv timing — articles.py line 21 read os.environ.get('RANK_WEBHOOK_SECRET') at module import, but server.py imports articles.py at line 30 BEFORE calling load_dotenv() at line 34. So when articles.py executed, the .env hadn't been loaded yet and the secret was empty. Fix: move env read to request-time inside a helper function _get_webhook_secret(). Bug 2 (/api/sitemap 404): The @api.get('/sitemap') decorator was placed AFTER `app.include_router(api)`. FastAPI snapshots routes when include_router is called, so any subsequent decorations on the api router are not visible to the app. Fix: move app.include_router(api) to AFTER all @api.get decorators in the file. Both fixes verified live."
+}
