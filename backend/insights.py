@@ -417,10 +417,11 @@ def build_router(db: AsyncIOMotorDatabase, get_current_user) -> APIRouter:
         return {"window_days": days, "peak": peak, "grid": grid, "total_calls": len(calls)}
 
     @router.get("/analytics/agent-daily")
-    async def agent_daily(days: int = 14, user=Depends(get_current_user)):
-        """Per-agent daily call count. For supervisor/admin only."""
+    async def agent_daily(days: int = 14, limit: int = 10, user=Depends(get_current_user)):
+        """Per-agent daily call count. For supervisor/admin only. `limit` caps top-N agents (default 10)."""
         if user.get("role") == "agent":
             raise HTTPException(403, "Supervisor or admin required")
+        limit = max(1, min(limit, 100))
         tf = _timeframe(days)
         q = {}
         if tf:
@@ -440,25 +441,25 @@ def build_router(db: AsyncIOMotorDatabase, get_current_user) -> APIRouter:
             row["total"] += 1
         dates_sorted = sorted(all_dates)
         rows = []
-        for name, row in sorted(per_agent.items(), key=lambda x: -x[1]["total"])[:10]:
+        for name, row in sorted(per_agent.items(), key=lambda x: -x[1]["total"])[:limit]:
             series = [{"date": d, "count": row["by_date"].get(d, 0)} for d in dates_sorted]
             rows.append({"agent": name, "total": row["total"], "series": series})
         return {"window_days": days, "dates": dates_sorted, "agents": rows}
 
     @router.get("/analytics/dod")
     async def day_over_day(user=Depends(get_current_user)):
-        """Day-over-day deltas: yesterday vs day-before, last week vs prior."""
+        """Day-over-day deltas: yesterday vs day-before, last 7d vs prior 7d."""
         q = {**_scope_filter(user)}
         now = datetime.now(timezone.utc)
-        # 3-day window covers today + yesterday + day-before
-        start = (now - timedelta(days=8)).isoformat()
+        # 15-day window covers today + last 7 + prior 7 for true WoW comparison
+        start = (now - timedelta(days=15)).isoformat()
         q["started_at"] = {"$gte": start}
         calls = await db.calls.find(q, {"_id": 0, "started_at": 1, "analysis": 1}).to_list(10000)
         today = now.date()
         buckets = {(today - timedelta(days=i)).isoformat(): {
             "date": (today - timedelta(days=i)).isoformat(),
             "total": 0, "negative": 0, "high_escalation": 0,
-        } for i in range(8)}
+        } for i in range(15)}
         for c in calls:
             d = (c.get("started_at") or "")[:10]
             if d in buckets:
@@ -475,14 +476,15 @@ def build_router(db: AsyncIOMotorDatabase, get_current_user) -> APIRouter:
                 return 100 if curr > 0 else 0
             return round((curr - prev) / prev * 100)
 
-        last_7 = sum(b["total"] for b in ordered[1:8])  # excluding today
-        prev_7 = 0  # placeholder; 14d window would be needed for true wow
+        last_7 = sum(b["total"] for b in ordered[1:8])   # yesterday .. 7 days ago
+        prev_7 = sum(b["total"] for b in ordered[8:15])  # 8 .. 14 days ago
         return {
             "today": ordered[0],
             "yesterday": ordered[1] if len(ordered) > 1 else None,
             "day_before": ordered[2] if len(ordered) > 2 else None,
             "yesterday_vs_db_pct": delta(ordered[1]["total"], ordered[2]["total"]) if len(ordered) > 2 else 0,
             "last_7_total": last_7,
+            "prev_7_total": prev_7,
             "last_7_vs_prev_pct": delta(last_7, prev_7),
             "trail": ordered[:8],
         }

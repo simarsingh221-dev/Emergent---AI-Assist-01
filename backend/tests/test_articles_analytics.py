@@ -95,8 +95,8 @@ class TestArticlesRBAC:
         assert r.status_code == 200, r.text
         body = r.json()
         slug = body["slug"]
-        # slugifier strips underscores in step 1, so "TEST_Article_xxx" -> "testarticlexxx"
-        assert slug and "testarticle" in slug
+        # slugifier converts underscores to hyphens, so "TEST_Article_xxx" -> "test-article-xxx"
+        assert slug and "test-article" in slug
         assert body.get("updated") is False
         # cleanup
         requests.delete(f"{API}/blog/articles/{slug}", headers=_hdr(sup_token), timeout=15)

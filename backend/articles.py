@@ -24,8 +24,10 @@ def _get_webhook_secret() -> str:
 
 
 def _slugify(text: str) -> str:
-    s = re.sub(r"[^a-zA-Z0-9\s-]", "", text or "").strip().lower()
-    s = re.sub(r"[\s_-]+", "-", s)
+    # Convert underscores to spaces so "My_Article_v2" → "my-article-v2"
+    s = (text or "").replace("_", " ")
+    s = re.sub(r"[^a-zA-Z0-9\s-]", "", s).strip().lower()
+    s = re.sub(r"[\s-]+", "-", s)
     return s.strip("-") or str(uuid.uuid4())[:8]
 
 
