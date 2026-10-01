@@ -29,8 +29,8 @@ export default function Analytics() {
   }, [isAgent, days]);
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5]" data-testid="analytics-page">
-      <div className="border-b border-[#E5E5E5] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="min-h-screen bg-[#FAFAF7]" data-testid="analytics-page">
+      <div className="border-b border-[#EAE9E2] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Conversation Trends</div>
           <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mt-1">
@@ -40,7 +40,7 @@ export default function Analytics() {
         <div className="flex gap-1">
           {DAY_WINDOWS.map((d) => (
             <button key={d} onClick={() => setDays(d)} data-testid={`trends-days-${d}`}
-              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest border ${days === d ? "bg-[#0A0A0A] text-white border-[#0A0A0A]" : "bg-white text-[#0A0A0A] border-[#E5E5E5] hover:border-[#A3A3A3]"}`}>
+              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest border ${days === d ? "bg-[#111827] text-white border-[#111827]" : "bg-white text-[#111827] border-[#EAE9E2] hover:border-[#A3A3A3]"}`}>
               {d}d
             </button>
           ))}
@@ -49,7 +49,7 @@ export default function Analytics() {
 
       <div className="p-6 lg:p-8">
         {/* KPI Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2] mb-6">
           <KPI label="Total calls" value={overview?.total_calls ?? "—"} />
           <KPI label="Active now" value={overview?.active_calls ?? "—"} accent="purple" />
           <KPI label="Completed" value={overview?.completed_calls ?? "—"} />
@@ -60,7 +60,7 @@ export default function Analytics() {
 
         {/* Day-over-day strip */}
         {dod && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] mb-6" data-testid="dod-strip">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2] mb-6" data-testid="dod-strip">
             <DodTile label="Today" v={dod.today?.total ?? 0} sub={`${dod.today?.negative ?? 0} neg · ${dod.today?.high_escalation ?? 0} high-esc`} />
             <DodTile label="Yesterday" v={dod.yesterday?.total ?? 0}
               delta={dod.yesterday_vs_db_pct}
@@ -77,10 +77,10 @@ export default function Analytics() {
             {!trends ? <Loading /> : (
               <ResponsiveContainer>
                 <AreaChart data={trends.sentiment_trend}>
-                  <CartesianGrid strokeDasharray="1 3" stroke="#E5E5E5" />
+                  <CartesianGrid strokeDasharray="1 3" stroke="#EAE9E2" />
                   <XAxis dataKey="date" tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} tickFormatter={fmtDay} />
                   <YAxis tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} />
-                  <Tooltip cursor={{ fill: "#FAFAFA" }} contentStyle={{ fontSize: 11, fontFamily: "JetBrains Mono" }} />
+                  <Tooltip cursor={{ fill: "#FCFBF8" }} contentStyle={{ fontSize: 11, fontFamily: "JetBrains Mono" }} />
                   <Legend wrapperStyle={{ fontSize: 10, fontFamily: "JetBrains Mono", textTransform: "uppercase", letterSpacing: "0.1em" }} />
                   <Area type="monotone" dataKey="positive" stackId="1" stroke="#10B981" fill="#10B981" fillOpacity={0.7} />
                   <Area type="monotone" dataKey="neutral" stackId="1" stroke="#A3A3A3" fill="#A3A3A3" fillOpacity={0.6} />
@@ -99,7 +99,7 @@ export default function Analytics() {
               {!trends ? <Loading /> : (
                 <ResponsiveContainer>
                   <BarChart data={trends.sentiment_trend}>
-                    <CartesianGrid strokeDasharray="1 3" stroke="#E5E5E5" />
+                    <CartesianGrid strokeDasharray="1 3" stroke="#EAE9E2" />
                     <XAxis dataKey="date" tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} tickFormatter={fmtDay} />
                     <YAxis tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} />
                     <Tooltip contentStyle={{ fontSize: 11 }} />
@@ -119,11 +119,11 @@ export default function Analytics() {
               {!trends ? <Loading /> : (
                 <ResponsiveContainer>
                   <LineChart data={trends.sentiment_trend}>
-                    <CartesianGrid strokeDasharray="1 3" stroke="#E5E5E5" />
+                    <CartesianGrid strokeDasharray="1 3" stroke="#EAE9E2" />
                     <XAxis dataKey="date" tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} tickFormatter={fmtDay} />
                     <YAxis tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} />
                     <Tooltip contentStyle={{ fontSize: 11 }} />
-                    <Line type="monotone" dataKey="total" stroke="#7B61FF" strokeWidth={2} dot={{ r: 2 }} />
+                    <Line type="monotone" dataKey="total" stroke="#0F9D7A" strokeWidth={2} dot={{ r: 2 }} />
                   </LineChart>
                 </ResponsiveContainer>
               )}
@@ -145,7 +145,7 @@ export default function Analytics() {
                     <div key={c.id} className="flex items-center gap-3" data-testid={`trend-cat-${c.id}`}>
                       <div className="w-2 h-2 shrink-0" style={{ background: c.color }} />
                       <div className="text-sm font-medium w-40 truncate">{c.name}</div>
-                      <div className="flex-1 bg-[#F4F4F5] h-2 relative">
+                      <div className="flex-1 bg-[#FAFAF7] h-2 relative">
                         <div className="absolute inset-y-0 left-0" style={{ width: `${pct}%`, background: c.color }} />
                       </div>
                       <div className="text-xs font-mono text-[#525252] w-20 text-right">{c.count} · {pct}%</div>
@@ -175,12 +175,12 @@ export default function Analytics() {
         </div>
 
         {/* Channels strip */}
-        <div className="mt-6 bg-white border border-[#E5E5E5] p-5">
+        <div className="mt-6 bg-white border border-[#EAE9E2] p-5">
           <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-3">Channel mix (all-time)</div>
           <div className="flex flex-wrap gap-4">
             {Object.entries(overview?.channels || {}).map(([k, v]) => (
               <div key={k} className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-[#7B61FF]" />
+                <span className="w-2 h-2 bg-[#0F9D7A]" />
                 <span className="font-mono text-xs uppercase tracking-widest text-[#525252]">{k}</span>
                 <span className="font-heading text-lg font-bold">{v}</span>
               </div>
@@ -213,7 +213,7 @@ export default function Analytics() {
 }
 
 function KPI({ label, value, tone, accent }) {
-  const cls = tone === "bad" ? "text-red-600" : tone === "good" ? "text-emerald-600" : accent === "purple" ? "text-[#7B61FF]" : "";
+  const cls = tone === "bad" ? "text-red-600" : tone === "good" ? "text-emerald-600" : accent === "purple" ? "text-[#0F9D7A]" : "";
   return (
     <div className="bg-white p-5">
       <div className={`font-heading text-3xl font-bold ${cls}`}>{value}</div>
@@ -224,7 +224,7 @@ function KPI({ label, value, tone, accent }) {
 
 function ChartCard({ title, subtitle, children }) {
   return (
-    <div className="bg-white border border-[#E5E5E5] p-5">
+    <div className="bg-white border border-[#EAE9E2] p-5">
       <div className="flex items-baseline justify-between mb-3">
         <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">{title}</div>
         {subtitle && <div className="font-mono text-[10px] text-[#A3A3A3]">{subtitle}</div>}
@@ -258,7 +258,7 @@ function Heatmap({ data }) {
               <td className="text-[#525252] uppercase tracking-wider pr-2 text-right">{DOW_LABELS[dow]}</td>
               {row.map((cnt, h) => {
                 const intensity = cnt / peak;
-                const bg = cnt === 0 ? "#F4F4F5"
+                const bg = cnt === 0 ? "#FAFAF7"
                   : `rgba(123, 97, 255, ${0.15 + intensity * 0.85})`;
                 return (
                   <td key={h} className="w-6 h-6 border border-white"
@@ -272,15 +272,15 @@ function Heatmap({ data }) {
         </tbody>
       </table>
       <div className="mt-3 flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest text-[#525252]">
-        <span>Peak: <span className="text-[#0A0A0A] font-semibold">{data.peak}</span> calls/hour</span>
+        <span>Peak: <span className="text-[#111827] font-semibold">{data.peak}</span> calls/hour</span>
         <span>·</span>
-        <span>Total: <span className="text-[#0A0A0A] font-semibold">{data.total_calls}</span></span>
+        <span>Total: <span className="text-[#111827] font-semibold">{data.total_calls}</span></span>
       </div>
     </div>
   );
 }
 
-const AGENT_LINE_COLORS = ["#7B61FF", "#FF4FD8", "#06B6D4", "#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#A855F7", "#84CC16", "#EC4899"];
+const AGENT_LINE_COLORS = ["#0F9D7A", "#D77BFF", "#4DA6FF", "#C9A36A", "#F59E0B", "#EF4444", "#8B7BFF", "#064E3B", "#84CC16", "#EC4899"];
 function AgentDailyChart({ data }) {
   // Build composite series: [{date, agentA: n, agentB: n, ...}]
   const rows = data.dates.map((d) => {
@@ -294,7 +294,7 @@ function AgentDailyChart({ data }) {
     <div className="h-72" data-testid="agent-daily-chart">
       <ResponsiveContainer>
         <LineChart data={rows}>
-          <CartesianGrid strokeDasharray="1 3" stroke="#E5E5E5" />
+          <CartesianGrid strokeDasharray="1 3" stroke="#EAE9E2" />
           <XAxis dataKey="date" tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} tickFormatter={fmtDay} />
           <YAxis tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} />
           <Tooltip contentStyle={{ fontSize: 11 }} />

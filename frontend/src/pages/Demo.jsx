@@ -238,9 +238,9 @@ export default function Demo() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5]" data-testid="demo-page">
+    <div className="min-h-screen bg-[#FAFAF7]" data-testid="demo-page">
       {/* Top control bar */}
-      <div className="bg-[#0B0B12] text-white border-b border-black sticky top-0 z-30">
+      <div className="bg-[#064E3B] text-white border-b border-black sticky top-0 z-30">
         <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2" data-testid="demo-home">
             <FlowLogo size={22} />
@@ -347,7 +347,7 @@ function DemoStage({ scene, transcript, analysis, nbas, suggested, compliance, k
   return (
     <div className="space-y-3" data-testid="demo-stage">
       {/* Scene header */}
-      <div className="flex items-center justify-between bg-white border border-[#E5E5E5] px-5 py-3">
+      <div className="flex items-center justify-between bg-white border border-[#EAE9E2] px-5 py-3">
         <div className="flex items-center gap-3">
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">Scene · {String(scene.number).padStart(2, "0")}</span>
           <span className="font-heading font-semibold">{scene.title}</span>
@@ -368,7 +368,7 @@ function DemoStage({ scene, transcript, analysis, nbas, suggested, compliance, k
       </AnimatePresence>
 
       {/* 3-pane stage */}
-      <div className="grid grid-cols-12 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] min-h-[540px]">
+      <div className="grid grid-cols-12 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2] min-h-[540px]">
         {/* Transcript */}
         <div className="col-span-12 lg:col-span-5 bg-white flex flex-col">
           <PaneHeader icon={ChatCircleText} title="Live transcript" />
@@ -407,10 +407,10 @@ function DemoStage({ scene, transcript, analysis, nbas, suggested, compliance, k
                 )}
                 {suggested && (
                   <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                    className="border brand-gradient-border bg-[#F3EFFF] p-4 relative">
+                    className="border brand-gradient-border bg-[#E6F6F1] p-4 relative">
                     <div className="flex items-center gap-2 mb-2">
-                      <Lightning size={14} weight="fill" className="text-[#7B61FF]" />
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#5B3EE5]">Suggested response</span>
+                      <Lightning size={14} weight="fill" className="text-[#0F9D7A]" />
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">Suggested response</span>
                     </div>
                     <p className="text-sm leading-relaxed">{suggested}</p>
                   </motion.div>
@@ -422,7 +422,7 @@ function DemoStage({ scene, transcript, analysis, nbas, suggested, compliance, k
                       <AnimatePresence initial={false}>
                         {nbas.map((nba, i) => (
                           <motion.div key={i} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}
-                            className="border border-[#E5E5E5] p-3">
+                            className="border border-[#EAE9E2] p-3">
                             <div className="flex items-start justify-between gap-2">
                               <div className="text-sm font-medium">{nba.title}</div>
                               <span className="font-mono text-[9px] uppercase tracking-wider text-[#A3A3A3]">{nba.type}</span>
@@ -470,7 +470,7 @@ function DemoStage({ scene, transcript, analysis, nbas, suggested, compliance, k
                 </div>
                 <div className="space-y-2">
                   {kb.map((s, i) => (
-                    <div key={i} className="border-l-2 border-[#7B61FF] pl-2.5">
+                    <div key={i} className="border-l-2 border-[#0F9D7A] pl-2.5">
                       <div className="text-xs font-semibold">{s.title}</div>
                       <div className="text-[11px] text-[#525252] mt-0.5">{s.category}</div>
                       <div className="text-[11px] text-[#525252] mt-1 line-clamp-3">{s.snippet}</div>
@@ -488,15 +488,15 @@ function DemoStage({ scene, transcript, analysis, nbas, suggested, compliance, k
                 <ol className="space-y-1.5">
                   {workflowSteps.map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-xs">
-                      <span className={`w-3 h-3 mt-0.5 border ${s.status === "done" ? "bg-black border-black" : s.status === "active" ? "border-[#7B61FF] bg-[#7B61FF]/30" : "border-[#A3A3A3]"}`} />
-                      <span className={s.status === "done" ? "line-through text-[#A3A3A3]" : s.status === "active" ? "text-[#0A0A0A] font-medium" : "text-[#525252]"}>{s.label}</span>
+                      <span className={`w-3 h-3 mt-0.5 border ${s.status === "done" ? "bg-black border-black" : s.status === "active" ? "border-[#0F9D7A] bg-[#0F9D7A]/30" : "border-[#A3A3A3]"}`} />
+                      <span className={s.status === "done" ? "line-through text-[#A3A3A3]" : s.status === "active" ? "text-[#111827] font-medium" : "text-[#525252]"}>{s.label}</span>
                     </li>
                   ))}
                 </ol>
               </div>
             )}
             {summary && summary.tags && (
-              <div className="border-t border-[#E5E5E5] pt-4">
+              <div className="border-t border-[#EAE9E2] pt-4">
                 <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Tags</div>
                 <div className="flex flex-wrap gap-1.5">
                   {summary.tags.map((t, i) => (
@@ -514,7 +514,7 @@ function DemoStage({ scene, transcript, analysis, nbas, suggested, compliance, k
 
 function PaneHeader({ icon: Icon, title }) {
   return (
-    <div className="px-5 py-3 border-b border-[#E5E5E5] flex items-center gap-2 bg-[#FAFAFA]">
+    <div className="px-5 py-3 border-b border-[#EAE9E2] flex items-center gap-2 bg-[#FCFBF8]">
       <Icon size={14} />
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">{title}</span>
     </div>
@@ -523,7 +523,7 @@ function PaneHeader({ icon: Icon, title }) {
 
 function Metric({ label, value, accent, dot }) {
   return (
-    <div className={`border p-2.5 ${accent || "border-[#E5E5E5]"}`}>
+    <div className={`border p-2.5 ${accent || "border-[#EAE9E2]"}`}>
       <div className="font-mono text-[9px] uppercase tracking-widest text-[#525252]">{label}</div>
       <div className="text-sm font-semibold mt-1 capitalize flex items-center gap-2">
         {dot && <span className={`w-2 h-2 rounded-full ${dot}`} />}
@@ -536,7 +536,7 @@ function Metric({ label, value, accent, dot }) {
 function SummaryBlock({ summary }) {
   return (
     <div className="space-y-3">
-      <div className="bg-[#0B0B12] text-white p-4">
+      <div className="bg-[#064E3B] text-white p-4">
         <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Auto call summary</div>
         <p className="text-sm leading-relaxed">{summary.summary}</p>
       </div>
@@ -556,7 +556,7 @@ function SummaryBlock({ summary }) {
         <div>
           <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-1">Next steps</div>
           <ul className="space-y-1">
-            {summary.next_steps.map((k, i) => <li key={i} className="text-sm flex gap-2"><span className="font-mono text-[#7B61FF]">□</span>{k}</li>)}
+            {summary.next_steps.map((k, i) => <li key={i} className="text-sm flex gap-2"><span className="font-mono text-[#0F9D7A]">□</span>{k}</li>)}
           </ul>
         </div>
       )}
@@ -582,9 +582,9 @@ function CTAScreen({ onSubmitted }) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] my-6" data-testid="demo-cta">
-      <div className="bg-[#0B0B12] text-white p-10 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" style={{background: "radial-gradient(700px 380px at 0% 100%, rgba(123,97,255,0.45), transparent 60%), radial-gradient(500px 300px at 100% 0%, rgba(255,79,216,0.35), transparent 60%), radial-gradient(450px 280px at 50% 50%, rgba(0,212,255,0.25), transparent 60%)"}} />
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2] my-6" data-testid="demo-cta">
+      <div className="bg-[#064E3B] text-white p-10 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{background: "radial-gradient(700px 380px at 0% 100%, rgba(139,123,255,0.45), transparent 60%), radial-gradient(500px 300px at 100% 0%, rgba(215,123,255,0.35), transparent 60%), radial-gradient(450px 280px at 50% 50%, rgba(77,166,255,0.25), transparent 60%)"}} />
         <div className="relative z-10">
           <FlowLogo size={28} />
           <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tighter mt-6">

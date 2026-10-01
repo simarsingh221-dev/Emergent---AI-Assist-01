@@ -62,14 +62,14 @@ export default function KnowledgeBase() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="kb-page">
+    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="kb-page">
       <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Knowledge base</div>
       <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Your enterprise brain.</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* Search */}
-          <div className="bg-white border border-[#E5E5E5] p-6">
+          <div className="bg-white border border-[#EAE9E2] p-6">
             <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-3">Semantic search</div>
             <div className="flex gap-2">
               <Input value={query} onChange={(e) => setQuery(e.target.value)}
@@ -78,16 +78,16 @@ export default function KnowledgeBase() {
                      className="rounded-none border-black h-11" data-testid="kb-search-input" />
               <Button onClick={search} disabled={searching}
                       data-testid="kb-search-btn"
-                      className="rounded-none h-11 bg-black hover:bg-[#7B61FF]">
+                      className="rounded-none h-11 bg-black hover:bg-[#0F9D7A]">
                 <MagnifyingGlass size={16} className="mr-2" />{searching ? "Searching…" : "Search"}
               </Button>
             </div>
             {result && (
               <div className="mt-5 space-y-3">
-                <div className="bg-[#F3EFFF] border border-[#7B61FF] p-4">
+                <div className="bg-[#E6F6F1] border border-[#0F9D7A] p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Sparkle size={12} className="text-[#7B61FF]" />
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#5B3EE5]">AI Answer</span>
+                    <Sparkle size={12} className="text-[#0F9D7A]" />
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">AI Answer</span>
                   </div>
                   <p className="text-sm leading-relaxed" data-testid="kb-search-answer">{result.answer}</p>
                 </div>
@@ -96,7 +96,7 @@ export default function KnowledgeBase() {
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Sources</div>
                     <div className="space-y-1">
                       {result.sources.map((s) => (
-                        <div key={s.id} className="text-xs border-l-2 border-[#7B61FF] pl-2">
+                        <div key={s.id} className="text-xs border-l-2 border-[#0F9D7A] pl-2">
                           <span className="font-semibold">{s.title}</span> <span className="text-[#A3A3A3] font-mono">· {s.category}</span>
                         </div>
                       ))}
@@ -108,17 +108,17 @@ export default function KnowledgeBase() {
           </div>
 
           {/* Documents */}
-          <div className="bg-white border border-[#E5E5E5]">
-            <div className="px-6 py-4 border-b border-[#E5E5E5] flex items-center justify-between">
+          <div className="bg-white border border-[#EAE9E2]">
+            <div className="px-6 py-4 border-b border-[#EAE9E2] flex items-center justify-between">
               <div className="font-heading text-lg font-semibold">Documents</div>
               <span className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">{docs.length} items</span>
             </div>
-            <div className="divide-y divide-[#E5E5E5]" data-testid="kb-doc-list">
+            <div className="divide-y divide-[#EAE9E2]" data-testid="kb-doc-list">
               {docs.length === 0 && (
                 <div className="px-6 py-12 text-center text-sm text-[#A3A3A3]">No documents yet. Upload or seed demo KB.</div>
               )}
               {docs.map((d) => (
-                <div key={d.id} className="px-6 py-3 flex items-center justify-between hover:bg-[#FAFAFA]">
+                <div key={d.id} className="px-6 py-3 flex items-center justify-between hover:bg-[#FCFBF8]">
                   <div className="flex items-center gap-3 min-w-0">
                     <FileText size={16} className="text-[#525252]" />
                     <div className="min-w-0">
@@ -137,7 +137,7 @@ export default function KnowledgeBase() {
 
         {/* Upload */}
         <div className="space-y-6">
-          <div className="bg-white border border-[#E5E5E5] p-6">
+          <div className="bg-white border border-[#EAE9E2] p-6">
             <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-3">Add document</div>
             <div className="space-y-3">
               <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}
@@ -149,16 +149,16 @@ export default function KnowledgeBase() {
                      data-testid="kb-file" />
               <Button onClick={upload} disabled={uploading}
                       data-testid="kb-upload-btn"
-                      className="w-full rounded-none h-10 bg-black hover:bg-[#7B61FF]">
+                      className="w-full rounded-none h-10 bg-black hover:bg-[#0F9D7A]">
                 <UploadSimple size={14} className="mr-2" />{uploading ? "Uploading…" : "Upload"}
               </Button>
             </div>
           </div>
-          <div className="bg-[#09090B] text-white p-6">
+          <div className="bg-[#053B2C] text-white p-6">
             <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Quick start</div>
             <div className="text-sm mb-4">Load pre-built banking, insurance & CX playbooks to explore the assist engine.</div>
             <Button onClick={seed} data-testid="kb-seed-btn"
-                    className="w-full rounded-none bg-white text-black hover:bg-[#7B61FF] hover:text-white">
+                    className="w-full rounded-none bg-white text-black hover:bg-[#0F9D7A] hover:text-white">
               Seed demo KB
             </Button>
           </div>

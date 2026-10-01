@@ -168,10 +168,10 @@ export default function AgentWorkspace() {
 
   if (!call) {
     return (
-      <div className="min-h-screen p-10 bg-[#F4F4F5]" data-testid="workspace-start">
+      <div className="min-h-screen p-10 bg-[#FAFAF7]" data-testid="workspace-start">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Agent workspace</div>
         <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Start a new conversation.</h1>
-        <div className="max-w-xl bg-white border border-[#E5E5E5] p-6 space-y-4">
+        <div className="max-w-xl bg-white border border-[#EAE9E2] p-6 space-y-4">
           <div>
             <label className="text-xs uppercase tracking-wider font-mono text-[#525252]">Customer name</label>
             <Input value={customerName} onChange={(e) => setCustomerName(e.target.value)}
@@ -200,7 +200,7 @@ export default function AgentWorkspace() {
             </div>
           </div>
           <Button onClick={startCall} data-testid="btn-start-call"
-                  className="w-full bg-black text-white hover:bg-[#7B61FF] rounded-none h-11">
+                  className="w-full bg-black text-white hover:bg-[#0F9D7A] rounded-none h-11">
             <Phone size={16} className="mr-2" /> Start call
           </Button>
         </div>
@@ -212,9 +212,9 @@ export default function AgentWorkspace() {
   const isActive = call.status === "active";
 
   return (
-    <div className="h-screen flex flex-col bg-[#F4F4F5]" data-testid="agent-workspace">
+    <div className="h-screen flex flex-col bg-[#FAFAF7]" data-testid="agent-workspace">
       {/* Top bar */}
-      <div className="bg-white border-b border-[#E5E5E5] px-6 py-3 flex items-center justify-between">
+      <div className="bg-white border-b border-[#EAE9E2] px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           {isActive && <span className="live-dot" />}
           <div>
@@ -233,9 +233,9 @@ export default function AgentWorkspace() {
           {assistMode === "auto" ? (
             <>
               {isActive && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F3EFFF] border border-[#7B61FF]/30" data-testid="auto-analyze-indicator">
-                  <Sparkle size={12} weight="fill" className={`text-[#7B61FF] ${analyzing ? "animate-pulse" : ""}`} />
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#5B3EE5]">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E6F6F1] border border-[#0F9D7A]/30" data-testid="auto-analyze-indicator">
+                  <Sparkle size={12} weight="fill" className={`text-[#8B7BFF] ${analyzing ? "animate-pulse" : ""}`} />
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">
                     {analyzing ? "AI analyzing…" : "AI Assist · auto"}
                   </span>
                 </div>
@@ -243,14 +243,14 @@ export default function AgentWorkspace() {
               <Button onClick={analyze} disabled={analyzing || (call.transcript?.length || 0) === 0}
                       data-testid="btn-analyze"
                       variant="outline"
-                      className="rounded-none h-9 border-[#7B61FF] text-[#5B3EE5] hover:bg-[#7B61FF] hover:text-white">
+                      className="rounded-none h-9 border-[#0F9D7A] text-[#0B8563] hover:bg-[#0F9D7A] hover:text-white">
                 <Sparkle size={14} className="mr-1.5" />Re-analyze
               </Button>
             </>
           ) : (
             <Button onClick={analyze} disabled={analyzing || (call.transcript?.length || 0) === 0}
                     data-testid="btn-analyze"
-                    className="rounded-none h-9 brand-gradient-bg text-white hover:opacity-90">
+                    className="rounded-none h-9 ai-gradient-bg text-white hover:opacity-90">
               <Sparkle size={14} className="mr-1.5" />{analyzing ? "Analyzing…" : "AI Assist"}
             </Button>
           )}
@@ -267,7 +267,7 @@ export default function AgentWorkspace() {
       </div>
 
       {/* 4-pane workspace */}
-      <div className="flex-1 grid grid-cols-12 gap-[1px] bg-[#E5E5E5] overflow-hidden">
+      <div className="flex-1 grid grid-cols-12 gap-[1px] bg-[#EAE9E2] overflow-hidden">
         {/* LEFT: Transcript */}
         <div className="col-span-12 lg:col-span-5 bg-white flex flex-col overflow-hidden">
           <PaneHeader icon={ChatCircleText} title="Live transcript" />
@@ -278,12 +278,12 @@ export default function AgentWorkspace() {
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}
                   className="mb-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className={`font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5 ${u.speaker === "agent" ? "bg-black text-white" : "bg-[#7B61FF] text-white"}`}>
+                    <span className={`font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5 ${u.speaker === "agent" ? "bg-black text-white" : "bg-[#0F9D7A] text-white"}`}>
                       {u.speaker}
                     </span>
                     <span className="font-mono text-[10px] text-[#A3A3A3]">{u.ts?.slice(11, 19)}</span>
                   </div>
-                  <p className="text-sm text-[#0A0A0A] leading-relaxed">{u.text}</p>
+                  <p className="text-sm text-[#111827] leading-relaxed">{u.text}</p>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -293,14 +293,14 @@ export default function AgentWorkspace() {
             <div ref={transcriptEnd} />
           </div>
           {isActive && (
-            <div className="border-t border-[#E5E5E5] p-3 space-y-2">
+            <div className="border-t border-[#EAE9E2] p-3 space-y-2">
               <div className="flex gap-2">
                 <Input value={custInput} onChange={(e) => setCustInput(e.target.value)}
                        placeholder="Customer says…"
                        onKeyDown={(e) => { if (e.key === "Enter") { addUtterance("customer", custInput); setCustInput(""); } }}
-                       className="rounded-none border-[#E5E5E5] h-9 text-sm" data-testid="input-customer" />
+                       className="rounded-none border-[#EAE9E2] h-9 text-sm" data-testid="input-customer" />
                 <Button onClick={() => { addUtterance("customer", custInput); setCustInput(""); }}
-                        className="rounded-none h-9 bg-[#7B61FF] hover:bg-[#5F44E6]"
+                        className="rounded-none h-9 bg-[#0F9D7A] hover:bg-[#0B8563]"
                         data-testid="btn-send-customer">
                   <PaperPlaneRight size={14} />
                 </Button>
@@ -314,7 +314,7 @@ export default function AgentWorkspace() {
                 <Input value={agentInput} onChange={(e) => setAgentInput(e.target.value)}
                        placeholder="Agent says…"
                        onKeyDown={(e) => { if (e.key === "Enter") { addUtterance("agent", agentInput); setAgentInput(""); } }}
-                       className="rounded-none border-[#E5E5E5] h-9 text-sm" data-testid="input-agent" />
+                       className="rounded-none border-[#EAE9E2] h-9 text-sm" data-testid="input-agent" />
                 <Button onClick={() => { addUtterance("agent", agentInput); setAgentInput(""); }}
                         className="rounded-none h-9 bg-black hover:bg-neutral-800"
                         data-testid="btn-send-agent">
@@ -357,15 +357,15 @@ export default function AgentWorkspace() {
                 </div>
 
                 {analysis.suggested_response && (
-                  <div className="border border-[#7B61FF] bg-[#F3EFFF] p-4">
+                  <div className="border border-[#0F9D7A] bg-[#E6F6F1] p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Lightning size={14} weight="fill" className="text-[#7B61FF]" />
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#5B3EE5]">Suggested response</span>
+                      <Lightning size={14} weight="fill" className="text-[#0F9D7A]" />
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">Suggested response</span>
                     </div>
-                    <p className="text-sm text-[#0A0A0A] leading-relaxed">{analysis.suggested_response}</p>
+                    <p className="text-sm text-[#111827] leading-relaxed">{analysis.suggested_response}</p>
                     <Button size="sm" onClick={() => addUtterance("agent", analysis.suggested_response)}
                             data-testid="btn-use-suggestion"
-                            className="mt-3 h-7 text-xs rounded-none bg-[#7B61FF] hover:bg-[#5F44E6]">
+                            className="mt-3 h-7 text-xs rounded-none bg-[#0F9D7A] hover:bg-[#0B8563]">
                       Use response
                     </Button>
                   </div>
@@ -376,7 +376,7 @@ export default function AgentWorkspace() {
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Next best actions</div>
                     <div className="space-y-2">
                       {analysis.next_best_actions.map((nba, i) => (
-                        <div key={i} className="border border-[#E5E5E5] p-3 hover:border-[#7B61FF]">
+                        <div key={i} className="border border-[#EAE9E2] p-3 hover:border-[#0F9D7A]">
                           <div className="flex items-start justify-between gap-2">
                             <div className="text-sm font-medium">{nba.title}</div>
                             <span className="font-mono text-[9px] uppercase tracking-wider text-[#A3A3A3]">{nba.type}</span>
@@ -421,7 +421,7 @@ export default function AgentWorkspace() {
                 </div>
                 <div className="space-y-2">
                   {analysis.kb_result.sources.map((s, i) => (
-                    <div key={i} className="border-l-2 border-[#7B61FF] pl-2.5">
+                    <div key={i} className="border-l-2 border-[#0F9D7A] pl-2.5">
                       <div className="text-xs font-semibold">{s.title}</div>
                       <div className="text-[11px] text-[#525252] mt-0.5">{s.category}</div>
                       <div className="text-[11px] text-[#525252] mt-1 line-clamp-3">{s.snippet}</div>
@@ -449,7 +449,7 @@ export default function AgentWorkspace() {
             )}
 
             {summary && (
-              <div className="border-t border-[#E5E5E5] pt-4">
+              <div className="border-t border-[#EAE9E2] pt-4">
                 <div className="flex items-center gap-2 mb-2">
                   <FileText size={12} />
                   <span className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">Call tags</span>
@@ -470,7 +470,7 @@ export default function AgentWorkspace() {
 
 function PaneHeader({ icon: Icon, title }) {
   return (
-    <div className="px-5 py-3 border-b border-[#E5E5E5] flex items-center gap-2 bg-[#FAFAFA]">
+    <div className="px-5 py-3 border-b border-[#EAE9E2] flex items-center gap-2 bg-[#FCFBF8]">
       <Icon size={14} />
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">{title}</span>
     </div>
@@ -479,7 +479,7 @@ function PaneHeader({ icon: Icon, title }) {
 
 function MetricBox({ label, value, accent, dot }) {
   return (
-    <div className={`border p-2.5 ${accent || "border-[#E5E5E5]"}`}>
+    <div className={`border p-2.5 ${accent || "border-[#EAE9E2]"}`}>
       <div className="font-mono text-[9px] uppercase tracking-widest text-[#525252]">{label}</div>
       <div className="text-sm font-semibold mt-1 capitalize flex items-center gap-2">
         {dot && <span className={`w-2 h-2 rounded-full ${dot}`} />}
@@ -492,7 +492,7 @@ function MetricBox({ label, value, accent, dot }) {
 function SummaryBlock({ summary }) {
   return (
     <div className="space-y-4">
-      <div className="bg-[#09090B] text-white p-4">
+      <div className="bg-[#053B2C] text-white p-4">
         <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Call summary</div>
         <p className="text-sm leading-relaxed">{summary.summary}</p>
       </div>
@@ -512,7 +512,7 @@ function SummaryBlock({ summary }) {
         <div>
           <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Next steps</div>
           <ul className="space-y-1">
-            {summary.next_steps.map((k, i) => <li key={i} className="text-sm flex gap-2"><span className="font-mono text-[#7B61FF]">□</span>{k}</li>)}
+            {summary.next_steps.map((k, i) => <li key={i} className="text-sm flex gap-2"><span className="font-mono text-[#0F9D7A]">□</span>{k}</li>)}
           </ul>
         </div>
       )}

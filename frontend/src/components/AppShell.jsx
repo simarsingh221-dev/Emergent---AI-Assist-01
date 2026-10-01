@@ -25,8 +25,8 @@ export default function AppShell() {
   ].filter((i) => !i.roles || i.roles.includes(user?.role));
 
   return (
-    <div className="flex min-h-screen bg-[#F4F4F5]" data-testid="app-shell">
-      <aside className="w-[220px] bg-[#09090B] text-white flex flex-col border-r border-black">
+    <div className="flex min-h-screen bg-[#FAFAF7]" data-testid="app-shell">
+      <aside className="w-[220px] bg-[#053B2C] text-white flex flex-col border-r border-black">
         <div className="px-5 py-6 border-b border-neutral-800">
           <div className="flex items-center gap-2">
             <FlowLogo size={24} />
@@ -42,7 +42,7 @@ export default function AppShell() {
               data-testid={it.testid}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-5 py-2.5 text-sm border-l-2 ${
-                  isActive ? "border-[#7B61FF] bg-neutral-900 text-white" : "border-transparent text-neutral-400 hover:text-white hover:bg-neutral-900"
+                  isActive ? "border-[#0F9D7A] bg-neutral-900 text-white" : "border-transparent text-neutral-400 hover:text-white hover:bg-neutral-900"
                 }`
               }
             >

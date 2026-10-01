@@ -4,8 +4,8 @@ import Footer from "@/components/Footer";
 
 export default function Privacy() {
   return (
-    <div className="min-h-screen bg-[#F4F4F5] text-[#0A0A0A] flex flex-col" data-testid="privacy-page">
-      <header className="border-b border-[#E5E5E5] bg-white">
+    <div className="min-h-screen bg-[#FAFAF7] text-[#111827] flex flex-col" data-testid="privacy-page">
+      <header className="border-b border-[#EAE9E2] bg-white">
         <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <FlowLogo size={26} />
@@ -19,7 +19,7 @@ export default function Privacy() {
         <h1 className="font-heading text-4xl sm:text-5xl font-bold tracking-tighter mb-3">Privacy policy</h1>
         <p className="font-mono text-xs text-[#525252] mb-12">Last updated: 5 February 2026</p>
 
-        <div className="prose prose-neutral max-w-none space-y-6 text-[15px] leading-relaxed text-[#0A0A0A]">
+        <div className="prose prose-neutral max-w-none space-y-6 text-[15px] leading-relaxed text-[#111827]">
           <Section title="1. Who we are">
             FlowPilot ("we", "us", "our") is a real-time agent assist platform operated from India. This policy explains how we
             collect, use and protect personal data when you use our website, contact form, and product.

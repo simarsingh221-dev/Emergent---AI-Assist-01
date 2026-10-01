@@ -89,15 +89,15 @@ export default function Explorer() {
   const pages = Math.ceil(total / pageSize) || 1;
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5]" data-testid="explorer-page">
-      <div className="border-b border-[#E5E5E5] bg-white px-8 py-5">
+    <div className="min-h-screen bg-[#FAFAF7]" data-testid="explorer-page">
+      <div className="border-b border-[#EAE9E2] bg-white px-8 py-5">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Conversation Explorer</div>
         <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mt-1">
-          Search every conversation. <span className="text-[#7B61FF]">{total.toLocaleString()}</span> match{total === 1 ? "" : "es"}.
+          Search every conversation. <span className="text-[#0F9D7A]">{total.toLocaleString()}</span> match{total === 1 ? "" : "es"}.
         </h1>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-[1px] bg-[#E5E5E5] min-h-[calc(100vh-128px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-[1px] bg-[#EAE9E2] min-h-[calc(100vh-128px)]">
         {/* Filters rail */}
         <aside className="bg-white p-5 overflow-y-auto scrollbar-thin" data-testid="explorer-filters">
           <div className="flex items-center justify-between mb-4">
@@ -105,7 +105,7 @@ export default function Explorer() {
               <Funnel size={14} className="text-[#525252]" />
               <span className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">Filters</span>
             </div>
-            <button onClick={clearAll} className="text-[10px] font-mono uppercase tracking-widest text-[#7B61FF] hover:underline" data-testid="explorer-clear-filters">
+            <button onClick={clearAll} className="text-[10px] font-mono uppercase tracking-widest text-[#0F9D7A] hover:underline" data-testid="explorer-clear-filters">
               Clear all
             </button>
           </div>
@@ -116,7 +116,7 @@ export default function Explorer() {
               {DAY_OPTIONS.map((o) => (
                 <button key={o.v} data-testid={`explorer-days-${o.v}`}
                   onClick={() => { setPage(1); setDays(o.v); }}
-                  className={`text-xs py-1.5 border ${days === o.v ? "bg-[#0A0A0A] text-white border-[#0A0A0A]" : "bg-white text-[#0A0A0A] border-[#E5E5E5] hover:border-[#A3A3A3]"}`}>
+                  className={`text-xs py-1.5 border ${days === o.v ? "bg-[#111827] text-white border-[#111827]" : "bg-white text-[#111827] border-[#EAE9E2] hover:border-[#A3A3A3]"}`}>
                   {o.label}
                 </button>
               ))}
@@ -162,7 +162,7 @@ export default function Explorer() {
 
         {/* Results */}
         <section className="bg-white">
-          <div className="px-5 py-3 border-b border-[#E5E5E5] sticky top-0 bg-white z-10">
+          <div className="px-5 py-3 border-b border-[#EAE9E2] sticky top-0 bg-white z-10">
             <div className="relative">
               <MagnifyingGlass size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A3A3A3]" />
               <Input value={q} onChange={(e) => { setPage(1); setQ(e.target.value); }}
@@ -170,14 +170,14 @@ export default function Explorer() {
                 className="pl-9 h-11 rounded-none border-black"
                 data-testid="explorer-search" />
               {q && (
-                <button onClick={() => setQ("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A3A3] hover:text-[#0A0A0A]">
+                <button onClick={() => setQ("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A3A3] hover:text-[#111827]">
                   <X size={14} />
                 </button>
               )}
             </div>
           </div>
 
-          <div className="divide-y divide-[#E5E5E5]" data-testid="explorer-results">
+          <div className="divide-y divide-[#EAE9E2]" data-testid="explorer-results">
             {loading && results.length === 0 ? (
               [...Array(5)].map((_, i) => (
                 <div key={i} className="p-5"><Skeleton className="h-4 w-2/3 mb-2" /><Skeleton className="h-3 w-full" /></div>
@@ -191,7 +191,7 @@ export default function Explorer() {
             ) : (
               results.map((c) => (
                 <button key={c.id} onClick={() => openDetail(c.id)}
-                  className="w-full text-left p-5 hover:bg-[#FAFAFA] block"
+                  className="w-full text-left p-5 hover:bg-[#FCFBF8] block"
                   data-testid={`explorer-result-${c.id}`}>
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
                     <SentimentIcon s={c.sentiment} />
@@ -209,7 +209,7 @@ export default function Explorer() {
                     )}
                   </div>
                   {c.intent && (
-                    <div className="text-xs text-[#525252] mb-1">Intent: <span className="font-medium text-[#0A0A0A]">{c.intent}</span></div>
+                    <div className="text-xs text-[#525252] mb-1">Intent: <span className="font-medium text-[#111827]">{c.intent}</span></div>
                   )}
                   {c.snippet && (
                     <div className="text-[13px] text-[#262626] leading-relaxed"
@@ -239,7 +239,7 @@ export default function Explorer() {
 
           {/* Pagination */}
           {total > pageSize && (
-            <div className="px-5 py-3 border-t border-[#E5E5E5] flex items-center justify-between" data-testid="explorer-pagination">
+            <div className="px-5 py-3 border-t border-[#EAE9E2] flex items-center justify-between" data-testid="explorer-pagination">
               <div className="text-xs text-[#525252] font-mono">
                 Page {page} of {pages} · {total.toLocaleString()} results
               </div>
@@ -277,9 +277,9 @@ function CheckList({ opts, values, labelFn, onToggle, colorFn, testid }) {
   return (
     <div className="space-y-1">
       {opts.map((o) => (
-        <label key={o} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-[#FAFAFA] px-1 py-0.5" data-testid={`${testid}-${o}`}>
+        <label key={o} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-[#FCFBF8] px-1 py-0.5" data-testid={`${testid}-${o}`}>
           <input type="checkbox" checked={values.includes(o)} onChange={() => onToggle(o)}
-            className="rounded-none accent-[#7B61FF]" />
+            className="rounded-none accent-[#0F9D7A]" />
           {colorFn && <span className="w-2 h-2" style={{ background: colorFn(o) }} />}
           <span className="capitalize">{labelFn(o)}</span>
         </label>
@@ -306,13 +306,13 @@ function CallDetail({ call, q, catLookup }) {
   const a = call.analysis || {};
   return (
     <div className="h-full flex flex-col">
-      <div className="border-b border-[#E5E5E5] px-6 py-5 bg-[#FAFAFA]">
+      <div className="border-b border-[#EAE9E2] px-6 py-5 bg-[#FCFBF8]">
         <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">§ Call detail</div>
         <h2 className="font-heading text-xl font-bold tracking-tight mt-1">{call.customer_name || "Unknown caller"}</h2>
         <div className="text-xs text-[#525252] mt-1 flex flex-wrap gap-3">
           <span><Headset size={11} className="inline mr-1" /> {call.agent_name}</span>
           <span><ClockCountdown size={11} className="inline mr-1" /> {formatDate(call.started_at)}</span>
-          {a.intent && <span>Intent: <span className="font-medium text-[#0A0A0A]">{a.intent}</span></span>}
+          {a.intent && <span>Intent: <span className="font-medium text-[#111827]">{a.intent}</span></span>}
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           {a.sentiment && <Pill label={`Sentiment · ${a.sentiment}`} color={SENTIMENT_COLOR[a.sentiment]} />}
@@ -336,7 +336,7 @@ function CallDetail({ call, q, catLookup }) {
         <DetailSection title="Transcript">
           <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin">
             {(call.transcript || []).map((t, i) => (
-              <div key={i} className={`text-sm ${t.speaker === "agent" ? "" : "pl-4 border-l-2 border-[#7B61FF]"}`}>
+              <div key={i} className={`text-sm ${t.speaker === "agent" ? "" : "pl-4 border-l-2 border-[#0F9D7A]"}`}>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3] mr-2">
                   {t.speaker === "agent" ? "Agent" : "Customer"}
                 </span>
@@ -354,7 +354,7 @@ function DetailSection({ title, children }) {
   return (
     <div>
       <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">{title}</div>
-      <div className="text-sm text-[#0A0A0A] leading-relaxed">{children}</div>
+      <div className="text-sm text-[#111827] leading-relaxed">{children}</div>
     </div>
   );
 }

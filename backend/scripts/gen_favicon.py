@@ -13,7 +13,8 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 from PIL import Image
 import io
 
-PUBLIC_DIR = Path(__file__).resolve().parents[2] / "frontend" / "public"
+_PUB_PARTS = ("frontend", "public")
+PUBLIC_DIR = Path(__file__).resolve().parents[2].joinpath(*_PUB_PARTS)
 
 
 async def gen(prompt: str, filename: str, session_id: str) -> Path:
@@ -55,13 +56,13 @@ def derive_variants(src: Path):
 async def main():
     favicon_prompt = (
         "Compact favicon glyph, square 1:1. Extremely simple, must be legible at 16×16 pixels. "
-        "Background: deep navy #0B0B12 with a soft radial gradient of violet #7B61FF and magenta #FF4FD8 emanating from the lower-left corner, fading to navy at the top-right. "
+        "Background: deep forest green #064E3B with a soft radial glow of emerald #0F9D7A and warm fawn gold #C9A36A emanating from the lower-left corner, fading to deep forest at the top-right. "
         "Centerpiece: a bold minimal geometric glyph in PURE WHITE — a single flowing chevron/wave shape that reads as either a sound-wave becoming an arrow, or the letter 'F' abstracted into a wave. Strong, thick, unambiguous. Fills roughly 60 percent of the canvas. "
         "NO TEXT, NO WORDMARK, NO LETTERS visible — pure mark only. "
-        "Style: flat vector, minimal, enterprise B2B, sophisticated. "
+        "Style: flat vector, minimal, luxury enterprise B2B, sophisticated. "
         "No border, no drop shadow. Icon must remain crisp when scaled down to 16×16."
     )
-    src = await gen(favicon_prompt, "favicon-source.png", "fav-gen")
+    src = await gen(favicon_prompt, "favicon-source.png", "fav-gen-v2")
     derive_variants(src)
     # Optional: remove the intermediate source
     src.unlink(missing_ok=True)

@@ -30,14 +30,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2" data-testid="login-page">
-      <div className="bg-[#0B0B12] text-white relative hidden lg:flex flex-col justify-between p-12 overflow-hidden">
+      <div className="bg-[#064E3B] text-white relative hidden lg:flex flex-col justify-between p-12 overflow-hidden">
         <div className="relative z-10">
           <Link to="/" className="flex items-center gap-2" data-testid="back-home">
             <FlowLogo size={26} />
             <span className="font-heading font-bold text-xl">FlowPilot</span>
           </Link>
         </div>
-        <div className="absolute inset-0" style={{background: "radial-gradient(600px 400px at 10% 10%, rgba(123,97,255,0.45), transparent 60%), radial-gradient(500px 400px at 90% 90%, rgba(255,79,216,0.35), transparent 60%), radial-gradient(500px 300px at 50% 50%, rgba(0,212,255,0.25), transparent 60%)"}} />
+        <div className="absolute inset-0" style={{background: "radial-gradient(600px 400px at 10% 10%, rgba(139,123,255,0.45), transparent 60%), radial-gradient(500px 400px at 90% 90%, rgba(215,123,255,0.35), transparent 60%), radial-gradient(500px 300px at 50% 50%, rgba(77,166,255,0.25), transparent 60%)"}} />
         <div className="relative z-10">
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Agent assist</div>
           <h1 className="font-heading text-4xl font-bold leading-tight">Your agents have a new superpower.</h1>
@@ -63,7 +63,7 @@ export default function Login() {
             </div>
             <Button type="submit" disabled={loading}
                     data-testid="login-submit"
-                    className="w-full h-11 bg-black text-white hover:bg-[#7B61FF] rounded-none">
+                    className="w-full h-11 bg-black text-white hover:bg-[#0F9D7A] rounded-none">
               {loading ? "Signing in…" : "Sign in"}
             </Button>
           </div>

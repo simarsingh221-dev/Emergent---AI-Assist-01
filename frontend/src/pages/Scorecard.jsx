@@ -38,8 +38,8 @@ export default function Scorecard() {
   }, [selectedId, days]);
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5]" data-testid="scorecard-page">
-      <div className="border-b border-[#E5E5E5] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="min-h-screen bg-[#FAFAF7]" data-testid="scorecard-page">
+      <div className="border-b border-[#EAE9E2] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Agent Scorecard</div>
           <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mt-1">
@@ -49,25 +49,25 @@ export default function Scorecard() {
         <div className="flex gap-1">
           {DAYS.map((d) => (
             <button key={d} onClick={() => setDays(d)} data-testid={`scorecard-days-${d}`}
-              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest border ${days === d ? "bg-[#0A0A0A] text-white border-[#0A0A0A]" : "bg-white text-[#0A0A0A] border-[#E5E5E5] hover:border-[#A3A3A3]"}`}>
+              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest border ${days === d ? "bg-[#111827] text-white border-[#111827]" : "bg-white text-[#111827] border-[#EAE9E2] hover:border-[#A3A3A3]"}`}>
               {d}d
             </button>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-[1px] bg-[#E5E5E5]">
+      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-[1px] bg-[#EAE9E2]">
         {/* Agent list (hidden for agent role) */}
         {!isAgent && (
           <aside className="bg-white p-4 overflow-y-auto scrollbar-thin max-h-[calc(100vh-130px)]">
             <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Agents · sorted by volume</div>
-            <div className="divide-y divide-[#E5E5E5]">
+            <div className="divide-y divide-[#EAE9E2]">
               {agents.length === 0 ? (
                 <div className="text-xs text-[#A3A3A3] py-4 font-mono">No agent data in window</div>
               ) : agents.map((a) => (
                 <button key={a.agent_id} onClick={() => setSelectedId(a.agent_id)}
                   data-testid={`scorecard-agent-${a.agent_id}`}
-                  className={`w-full text-left px-2 py-2.5 ${selectedId === a.agent_id ? "bg-[#F3EFFF] border-l-2 border-l-[#7B61FF]" : "hover:bg-[#FAFAFA]"}`}>
+                  className={`w-full text-left px-2 py-2.5 ${selectedId === a.agent_id ? "bg-[#E6F6F1] border-l-2 border-l-[#0F9D7A]" : "hover:bg-[#FCFBF8]"}`}>
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-semibold">{a.agent_name}</div>
                     <div className="text-[10px] font-mono text-[#525252]">{a.total_calls} calls</div>
@@ -89,7 +89,7 @@ export default function Scorecard() {
             <div className="text-sm text-[#525252] font-mono">Loading scorecard…</div>
           ) : card.total_calls === 0 ? (
             <div className="py-16 text-center">
-              <Medal size={32} className="mx-auto text-[#A3A3A3]" />
+              <Medal size={32} className="mx-auto text-[#C9A36A]" />
               <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mt-3">No calls in this window</div>
             </div>
           ) : (
@@ -107,7 +107,7 @@ export default function Scorecard() {
               </div>
 
               {/* KPIs */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2] mb-6">
                 <KPI label="Calls" value={card.total_calls} />
                 <KPI label="Avg duration" value={formatDur(card.avg_duration_sec)} />
                 <KPI label="QA compliance"
@@ -133,13 +133,13 @@ export default function Scorecard() {
                 <ChartCard title="Top categories handled">
                   <div className="space-y-2">
                     {card.top_categories.map((tc) => {
-                      const cat = cats[tc.id] || { name: tc.id, color: "#7B61FF" };
+                      const cat = cats[tc.id] || { name: tc.id, color: "#0F9D7A" };
                       const pct = Math.round(tc.count / card.total_calls * 100);
                       return (
                         <div key={tc.id} className="flex items-center gap-3" data-testid={`scorecard-cat-${tc.id}`}>
                           <div className="w-2 h-2 shrink-0" style={{ background: cat.color }} />
                           <div className="text-sm font-medium w-40 truncate">{cat.name}</div>
-                          <div className="flex-1 bg-[#F4F4F5] h-2 relative">
+                          <div className="flex-1 bg-[#FAFAF7] h-2 relative">
                             <div className="absolute inset-y-0 left-0" style={{ width: `${pct}%`, background: cat.color }} />
                           </div>
                           <div className="text-xs font-mono text-[#525252] w-20 text-right">{tc.count} · {pct}%</div>
@@ -152,7 +152,7 @@ export default function Scorecard() {
 
               <div className="mt-6">
                 <button onClick={() => nav("/app/explorer")}
-                  data-testid="scorecard-drill" className="text-sm text-[#7B61FF] font-mono uppercase tracking-widest hover:underline inline-flex items-center gap-1">
+                  data-testid="scorecard-drill" className="text-sm text-[#0F9D7A] font-mono uppercase tracking-widest hover:underline inline-flex items-center gap-1">
                   Drill down to this agent's calls <ArrowRight size={14} />
                 </button>
               </div>
@@ -176,7 +176,7 @@ function KPI({ label, value, tone }) {
 
 function ChartCard({ title, children }) {
   return (
-    <div className="bg-white border border-[#E5E5E5] p-5">
+    <div className="bg-white border border-[#EAE9E2] p-5">
       <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-3">{title}</div>
       {children}
     </div>
@@ -201,7 +201,7 @@ function PieDist({ data, colors }) {
           <div key={e.name} className="flex items-center gap-1.5">
             <span className="w-2 h-2" style={{ background: e.color }} />
             <span className="uppercase tracking-widest text-[#525252]">{e.name}</span>
-            <span className="ml-auto font-semibold text-[#0A0A0A]">{e.value}</span>
+            <span className="ml-auto font-semibold text-[#111827]">{e.value}</span>
           </div>
         ))}
       </div>

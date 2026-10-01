@@ -13,13 +13,13 @@ import {
 } from "@phosphor-icons/react";
 
 const PIPELINE_STAGES = [
-  { icon: Microphone, label: "Live conversation", sub: "Voice · Chat · Email", color: "#7B61FF" },
-  { icon: Waveform, label: "Transcription", sub: "Deepgram / Whisper", color: "#7B61FF" },
+  { icon: Microphone, label: "Live conversation", sub: "Voice · Chat · Email", color: "#0F9D7A" },
+  { icon: Waveform, label: "Transcription", sub: "Deepgram / Whisper", color: "#0F9D7A" },
   { icon: Brain, label: "Context engine", sub: "Rolling transcript + KB + persona", color: "#9B7BFF" },
-  { icon: GitBranch, label: "Decision engine", sub: "intent / sentiment / NBA", color: "#00D4FF" },
-  { icon: PuzzlePiece, label: "Workflow engine", sub: "Steps · compliance · triggers", color: "#00D4FF" },
-  { icon: Lightning, label: "Suggestion / action", sub: "Response · NBA · KB", color: "#FF4FD8" },
-  { icon: Monitor, label: "Agent UI", sub: "Real-time surface", color: "#FF4FD8" }
+  { icon: GitBranch, label: "Decision engine", sub: "intent / sentiment / NBA", color: "#4DA6FF" },
+  { icon: PuzzlePiece, label: "Workflow engine", sub: "Steps · compliance · triggers", color: "#4DA6FF" },
+  { icon: Lightning, label: "Suggestion / action", sub: "Response · NBA · KB", color: "#D77BFF" },
+  { icon: Monitor, label: "Agent UI", sub: "Real-time surface", color: "#D77BFF" }
 ];
 
 const newStepId = () => (typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
@@ -91,7 +91,7 @@ export default function WorkflowBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="workflows-page">
+    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="workflows-page">
       <div className="flex items-baseline justify-between mb-8">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Workflow builder</div>
@@ -106,7 +106,7 @@ export default function WorkflowBuilder() {
       </div>
 
       {/* Pipeline architecture diagram */}
-      <div className="bg-[#0B0B12] text-white p-6 mb-8 overflow-x-auto" data-testid="pipeline-diagram">
+      <div className="bg-[#064E3B] text-white p-6 mb-8 overflow-x-auto" data-testid="pipeline-diagram">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-4">How FlowPilot thinks</div>
         <div className="flex items-stretch gap-2 min-w-[1100px]">
           {PIPELINE_STAGES.map((s, i) => (
@@ -128,14 +128,14 @@ export default function WorkflowBuilder() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {loading && <div className="col-span-full text-sm text-[#A3A3A3] font-mono">Loading workflows…</div>}
         {!loading && workflows.length === 0 && (
-          <div className="col-span-full bg-white border border-[#E5E5E5] p-10 text-center">
+          <div className="col-span-full bg-white border border-[#EAE9E2] p-10 text-center">
             <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">No workflows</div>
             <p className="text-sm text-[#525252]">Create your first workflow to guide agents step-by-step.</p>
           </div>
         )}
         {workflows.map((w) => (
           <div key={w.id} data-testid={`workflow-card-${w.id}`}
-               className="bg-white border border-[#E5E5E5] p-5 hover:border-[#7B61FF] transition-colors flex flex-col">
+               className="bg-white border border-[#EAE9E2] p-5 hover:border-[#0F9D7A] transition-colors flex flex-col">
             <div className="flex items-start justify-between gap-3 mb-2">
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">{w.category || "General"}</div>
@@ -160,9 +160,9 @@ export default function WorkflowBuilder() {
               {w.steps?.length > 4 && <div className="text-[#A3A3A3]">+ {w.steps.length - 4} more…</div>}
             </div>
             {canEdit && (
-              <div className="flex gap-2 mt-auto pt-3 border-t border-[#E5E5E5]">
+              <div className="flex gap-2 mt-auto pt-3 border-t border-[#EAE9E2]">
                 <Button size="sm" variant="outline" onClick={() => openEdit(w)} data-testid={`btn-edit-workflow-${w.id}`}
-                        className="rounded-none h-8 border-[#7B61FF] text-[#5B3EE5] hover:bg-[#7B61FF] hover:text-white">
+                        className="rounded-none h-8 border-[#0F9D7A] text-[#0B8563] hover:bg-[#0F9D7A] hover:text-white">
                   <PencilSimple size={12} className="mr-1.5" /> Edit
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => remove(w)} data-testid={`btn-delete-workflow-${w.id}`}
@@ -218,18 +218,18 @@ export default function WorkflowBuilder() {
                 </div>
                 <div className="space-y-2">
                   {editor.data.steps.map((s, i) => (
-                    <div key={s._key || i} className="border border-[#E5E5E5] p-3 bg-[#FAFAFA]" data-testid={`wf-step-${i}`}>
+                    <div key={s._key || i} className="border border-[#EAE9E2] p-3 bg-[#FCFBF8]" data-testid={`wf-step-${i}`}>
                       <div className="flex items-start gap-3">
                         <span className="font-mono text-[11px] text-[#525252] mt-2 w-6">{String(i + 1).padStart(2, "0")}</span>
                         <div className="flex-1 space-y-2">
                           <Input value={s.label} onChange={(e) => updateStep(i, { label: e.target.value })}
                                  className="rounded-none border-black h-9 text-sm" placeholder="Step label" />
                           <Input value={s.description || ""} onChange={(e) => updateStep(i, { description: e.target.value })}
-                                 className="rounded-none border-[#E5E5E5] h-8 text-xs" placeholder="Description / instruction (optional)" />
+                                 className="rounded-none border-[#EAE9E2] h-8 text-xs" placeholder="Description / instruction (optional)" />
                           <div className="flex items-center gap-3 flex-wrap">
                             <Input value={(s.trigger_keywords || []).join(", ")}
                                    onChange={(e) => updateStep(i, { trigger_keywords: e.target.value.split(",").map((t) => t.trim()).filter(Boolean) })}
-                                   className="rounded-none border-[#E5E5E5] h-8 text-xs font-mono flex-1 min-w-[200px]"
+                                   className="rounded-none border-[#EAE9E2] h-8 text-xs font-mono flex-1 min-w-[200px]"
                                    placeholder="Trigger keywords (comma-separated, optional)" />
                             <label className="flex items-center gap-1 text-xs cursor-pointer">
                               <input type="checkbox" checked={s.required} onChange={(e) => updateStep(i, { required: e.target.checked })} />

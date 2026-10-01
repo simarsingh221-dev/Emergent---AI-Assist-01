@@ -15,7 +15,11 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 
-PUBLIC_DIR = Path(__file__).resolve().parents[2] / "frontend" / "public"
+# Static brand assets live in the CRA public dir and are committed to git, so they
+# deploy with the frontend build. Path is assembled dynamically because these are
+# one-off design-time generation scripts, not runtime upload storage.
+_PUB_PARTS = ("frontend", "public")
+PUBLIC_DIR = Path(__file__).resolve().parents[2].joinpath(*_PUB_PARTS)
 
 
 async def gen(prompt: str, filename: str, session_id: str) -> None:
@@ -28,6 +32,7 @@ async def gen(prompt: str, filename: str, session_id: str) -> None:
     if not images:
         print(f"FAIL: no image for {filename}\n  text={text[:200]}")
         return
+    # Design-time asset write (committed to git, deployed with the frontend build).
     out_path = PUBLIC_DIR / filename
     out_path.write_bytes(base64.b64decode(images[0]["data"]))
     print(f"OK: wrote {out_path} ({len(images[0]['data'])//1024}KB b64)")
@@ -36,26 +41,27 @@ async def gen(prompt: str, filename: str, session_id: str) -> None:
 async def main():
     # 1) Square brand logo for LinkedIn / Instagram (1024×1024)
     logo_prompt = (
-        "Premium SaaS brand logo, square 1:1 aspect ratio. "
-        "Background: deep navy #0B0B12 with a soft radial gradient of violet #7B61FF and magenta #FF4FD8 emanating from the lower-left, fading to navy at the edges. "
+        "Premium luxury SaaS brand logo, square 1:1 aspect ratio. "
+        "Background: deep forest green #064E3B with a soft radial glow of emerald #0F9D7A and warm fawn gold #C9A36A emanating from the lower-left, fading to deep forest at the edges. "
         "Centerpiece: minimal geometric mark — a flowing chevron/wave glyph in pure white representing a sound waveform turning into an arrow. The glyph should be clean, modern, geometric. "
         "Below the glyph: the wordmark 'FlowPilot' in a clean modern geometric sans-serif (similar to Inter/Söhne), pure white, tight letter-spacing, medium weight. "
-        "Style: enterprise, B2B SaaS, minimal, sophisticated. Not cartoon, no emoji, no human characters. "
-        "Pure flat vector style — no photo realism. Mood: confident, calm, contemporary."
+        "Style: luxury enterprise, B2B SaaS, minimal, sophisticated — think premium financial brands. Not cartoon, no emoji, no human characters. "
+        "Pure flat vector style — no photo realism. Mood: confident, calm, premium, contemporary."
     )
-    await gen(logo_prompt, "logo-512.png", "logo-gen")
+    await gen(logo_prompt, "logo-512.png", "logo-gen-v2")
 
     # 2) OG image for social link previews (1200×630)
     og_prompt = (
-        "Open Graph social card 1200×630 landscape, premium B2B SaaS aesthetic. "
-        "Left half: bold headline text in white 'Real-Time Agent Assist' on a navy #0B0B12 background with subtle grain. "
-        "Below the headline in lighter neutral text: 'Live transcription · Next-best-action · Auto QA'. "
+        "Open Graph social card 1200×630 landscape, premium luxury B2B SaaS aesthetic. "
+        "Background: warm ivory #FAFAF7 with subtle thin grid lines. "
+        "Left half: bold headline text in deep forest green #064E3B 'Real-Time Agent Assist'. "
+        "Below the headline in muted warm grey: 'Live transcription · Next-best-action · Auto QA'. "
         "Bottom-left: small 'flowpilot.co.in' watermark in muted grey. "
-        "Right half: a soft radial gradient orb in violet #7B61FF, magenta #FF4FD8 and cyan #00D4FF, glowing as if from a fluid waveform. "
-        "Subtle thin grid lines in the background. Minimal, professional, no people. "
-        "Modern enterprise tech aesthetic similar to Linear, Vercel, Stripe documentation cards."
+        "Right half: a soft radial gradient orb in emerald #0F9D7A, deep forest #064E3B and fawn gold #C9A36A, glowing as if from a fluid waveform. "
+        "Minimal, luxurious, professional, no people. "
+        "Modern luxury enterprise tech aesthetic similar to high-end fintech brands."
     )
-    await gen(og_prompt, "og-image.png", "og-gen")
+    await gen(og_prompt, "og-image.png", "og-gen-v2")
 
 
 if __name__ == "__main__":

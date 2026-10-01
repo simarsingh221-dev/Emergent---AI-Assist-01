@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tag, Plus, Trash, ArrowsClockwise, X, FloppyDisk, CheckCircle } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
-const PRESET_COLORS = ["#7B61FF", "#FF4FD8", "#EF4444", "#F59E0B", "#10B981", "#06B6D4", "#3B82F6", "#A855F7"];
+const PRESET_COLORS = ["#0F9D7A", "#064E3B", "#C9A36A", "#EF4444", "#F59E0B", "#4DA6FF", "#8B7BFF", "#D77BFF"];
 
 export default function Categories() {
   const { user } = useAuth();
@@ -66,8 +66,8 @@ export default function Categories() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5]" data-testid="categories-page">
-      <div className="border-b border-[#E5E5E5] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="min-h-screen bg-[#FAFAF7]" data-testid="categories-page">
+      <div className="border-b border-[#EAE9E2] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Categories</div>
           <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mt-1">
@@ -101,7 +101,7 @@ export default function Categories() {
             <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mt-3">No categories yet</div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2]">
             {cats.map((c) => (
               <div key={c.id} className="bg-white p-5" data-testid={`cat-${c.id}`}>
                 <div className="flex items-start justify-between">
@@ -112,10 +112,10 @@ export default function Categories() {
                   </div>
                   {canEdit && (
                     <div className="flex gap-1">
-                      <button onClick={() => openEdit(c)} className="text-xs px-2 py-1 border border-[#E5E5E5] hover:border-[#0A0A0A]" data-testid={`cat-edit-${c.id}`}>
+                      <button onClick={() => openEdit(c)} className="text-xs px-2 py-1 border border-[#EAE9E2] hover:border-[#111827]" data-testid={`cat-edit-${c.id}`}>
                         Edit
                       </button>
-                      <button onClick={() => del(c.id)} className="text-xs px-2 py-1 border border-[#E5E5E5] hover:border-red-600 hover:text-red-600" data-testid={`cat-del-${c.id}`}>
+                      <button onClick={() => del(c.id)} className="text-xs px-2 py-1 border border-[#EAE9E2] hover:border-red-600 hover:text-red-600" data-testid={`cat-del-${c.id}`}>
                         <Trash size={12} />
                       </button>
                     </div>
@@ -124,7 +124,7 @@ export default function Categories() {
                 {c.description && <div className="text-xs text-[#525252] mt-1.5">{c.description}</div>}
                 <div className="flex flex-wrap gap-1 mt-3">
                   {(c.keywords || []).map((k) => (
-                    <span key={k} className="text-[10px] px-1.5 py-0.5 bg-[#FAFAFA] border border-[#E5E5E5] font-mono">{k}</span>
+                    <span key={k} className="text-[10px] px-1.5 py-0.5 bg-[#FCFBF8] border border-[#EAE9E2] font-mono">{k}</span>
                   ))}
                 </div>
               </div>
@@ -136,13 +136,13 @@ export default function Categories() {
       {/* Editor modal */}
       {editing && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" data-testid="cat-editor">
-          <div className="bg-white border border-[#E5E5E5] w-full max-w-xl max-h-[90vh] overflow-y-auto">
-            <div className="px-5 py-4 border-b border-[#E5E5E5] flex items-center justify-between">
+          <div className="bg-white border border-[#EAE9E2] w-full max-w-xl max-h-[90vh] overflow-y-auto">
+            <div className="px-5 py-4 border-b border-[#EAE9E2] flex items-center justify-between">
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">§ {editing.mode === "create" ? "Create" : "Edit"} category</div>
                 <h2 className="font-heading text-lg font-bold tracking-tight">{editing.data.name || "Untitled"}</h2>
               </div>
-              <button onClick={() => setEditing(null)} className="text-[#525252] hover:text-[#0A0A0A]" data-testid="cat-editor-close">
+              <button onClick={() => setEditing(null)} className="text-[#525252] hover:text-[#111827]" data-testid="cat-editor-close">
                 <X size={18} />
               </button>
             </div>
@@ -165,7 +165,7 @@ export default function Categories() {
                   {PRESET_COLORS.map((col) => (
                     <button key={col} onClick={() => setEditing({ ...editing, data: { ...editing.data, color: col } })}
                       className="w-7 h-7 border-2"
-                      style={{ background: col, borderColor: editing.data.color === col ? "#0A0A0A" : "transparent" }}
+                      style={{ background: col, borderColor: editing.data.color === col ? "#111827" : "transparent" }}
                       data-testid={`cat-color-${col}`} />
                   ))}
                 </div>
@@ -179,7 +179,7 @@ export default function Categories() {
                 />
               </div>
             </div>
-            <div className="px-5 py-3 border-t border-[#E5E5E5] flex justify-end gap-2">
+            <div className="px-5 py-3 border-t border-[#EAE9E2] flex justify-end gap-2">
               <Button variant="outline" onClick={() => setEditing(null)} className="rounded-none" data-testid="cat-editor-cancel">Cancel</Button>
               <Button onClick={save} className="rounded-none brand-gradient-bg text-white hover:opacity-90" data-testid="cat-editor-save">
                 <FloppyDisk size={14} className="mr-2" /> Save
@@ -212,7 +212,7 @@ function KeywordEditor({ values, onChange }) {
       </div>
       <div className="flex flex-wrap gap-1.5 mt-2">
         {values.map((v) => (
-          <span key={v} className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-[#FAFAFA] border border-[#E5E5E5]">
+          <span key={v} className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-[#FCFBF8] border border-[#EAE9E2]">
             {v}
             <button onClick={() => onChange(values.filter((x) => x !== v))} className="text-[#525252] hover:text-red-600">
               <X size={11} />

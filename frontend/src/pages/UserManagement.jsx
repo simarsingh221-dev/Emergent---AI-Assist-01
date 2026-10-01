@@ -81,7 +81,7 @@ export default function UserManagement() {
 
   if (me?.role !== "supervisor" && me?.role !== "admin") {
     return (
-      <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="users-page">
+      <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="users-page">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Users</div>
         <h1 className="font-heading text-3xl font-bold tracking-tight mb-4">Access denied.</h1>
         <p className="text-sm text-[#525252]">User management is supervisor-only.</p>
@@ -90,7 +90,7 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="users-page">
+    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="users-page">
       <div className="flex items-baseline justify-between mb-8">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Users</div>
@@ -102,24 +102,24 @@ export default function UserManagement() {
         </Button>
       </div>
 
-      <div className="bg-white border border-[#E5E5E5]">
-        <div className="grid grid-cols-12 px-6 py-3 border-b border-[#E5E5E5] font-mono text-[10px] uppercase tracking-widest text-[#525252]">
+      <div className="bg-white border border-[#EAE9E2]">
+        <div className="grid grid-cols-12 px-6 py-3 border-b border-[#EAE9E2] font-mono text-[10px] uppercase tracking-widest text-[#525252]">
           <div className="col-span-3">Name</div>
           <div className="col-span-4">Email</div>
           <div className="col-span-2">Role</div>
           <div className="col-span-2">Status</div>
           <div className="col-span-1 text-right">Actions</div>
         </div>
-        <div className="divide-y divide-[#E5E5E5]">
+        <div className="divide-y divide-[#EAE9E2]">
           {loading ? (
             <div className="px-6 py-12 text-center text-sm text-[#A3A3A3]" data-testid="users-loading">Loading…</div>
           ) : users.length === 0 ? (
             <div className="px-6 py-12 text-center text-sm text-[#A3A3A3]">No users yet.</div>
           ) : users.map((u) => (
-            <div key={u.id} data-testid={`user-row-${u.id}`} className="grid grid-cols-12 px-6 py-3 items-center text-sm hover:bg-[#FAFAFA]">
+            <div key={u.id} data-testid={`user-row-${u.id}`} className="grid grid-cols-12 px-6 py-3 items-center text-sm hover:bg-[#FCFBF8]">
               <div className="col-span-3 flex items-center gap-2 font-medium">
-                {u.role === "admin" ? <Shield size={14} weight="fill" className="text-[#FF4FD8]" />
-                  : u.role === "supervisor" ? <Shield size={14} className="text-[#7B61FF]" />
+                {u.role === "admin" ? <Shield size={14} weight="fill" className="text-[#D77BFF]" />
+                  : u.role === "supervisor" ? <Shield size={14} className="text-[#0F9D7A]" />
                   : <UserCircle size={14} className="text-[#525252]" />}
                 {u.name}
               </div>
@@ -212,18 +212,18 @@ export default function UserManagement() {
                 Account active (inactive users cannot log in)
               </label>
               {editForm.role === "agent" && (
-                <div className="pt-3 border-t border-[#E5E5E5]">
+                <div className="pt-3 border-t border-[#EAE9E2]">
                   <Label className="text-xs uppercase tracking-wider font-mono">Allowed workflows</Label>
                   <p className="text-[11px] text-[#525252] mt-0.5">
                     {editForm.allowed_workflows.length === 0
                       ? "All workflows visible (default)"
                       : `${editForm.allowed_workflows.length} of ${workflows.length} workflows selected`}
                   </p>
-                  <div className="max-h-44 overflow-y-auto border border-[#E5E5E5] mt-2 divide-y divide-[#F4F4F5]" data-testid="edit-workflows">
+                  <div className="max-h-44 overflow-y-auto border border-[#EAE9E2] mt-2 divide-y divide-[#FAFAF7]" data-testid="edit-workflows">
                     {workflows.map((w) => {
                       const checked = editForm.allowed_workflows.includes(w.id);
                       return (
-                        <label key={w.id} className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-[#FAFAFA] cursor-pointer"
+                        <label key={w.id} className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-[#FCFBF8] cursor-pointer"
                           data-testid={`edit-wf-${w.id}`}>
                           <input type="checkbox" checked={checked}
                             onChange={(e) => {
@@ -232,7 +232,7 @@ export default function UserManagement() {
                                 : editForm.allowed_workflows.filter((x) => x !== w.id);
                               setEditForm({ ...editForm, allowed_workflows: next });
                             }}
-                            className="accent-[#7B61FF]" />
+                            className="accent-[#0F9D7A]" />
                           <span className="flex-1">{w.name}</span>
                           {w.is_seed && <span className="text-[9px] font-mono uppercase tracking-widest text-[#A3A3A3]">default</span>}
                         </label>
@@ -242,7 +242,7 @@ export default function UserManagement() {
                   {editForm.allowed_workflows.length > 0 && (
                     <button type="button"
                       onClick={() => setEditForm({ ...editForm, allowed_workflows: [] })}
-                      className="text-[10px] font-mono uppercase tracking-widest text-[#7B61FF] hover:underline mt-2"
+                      className="text-[10px] font-mono uppercase tracking-widest text-[#0F9D7A] hover:underline mt-2"
                       data-testid="edit-wf-clear">
                       Clear restrictions (allow all)
                     </button>

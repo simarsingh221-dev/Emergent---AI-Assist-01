@@ -22,7 +22,7 @@ export default function SupervisorDashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5] p-8" data-testid="supervisor-dashboard">
+    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="supervisor-dashboard">
       <div className="flex items-baseline justify-between mb-8">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Supervisor</div>
@@ -34,21 +34,21 @@ export default function SupervisorDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5] mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2] mb-8">
         <Stat icon={Broadcast} label="Active calls" value={overview?.active_calls ?? "—"} />
         <Stat icon={Users} label="Total calls" value={overview?.total_calls ?? "—"} />
         <Stat icon={TrendUp} label="High risk" value={overview?.escalation?.high ?? 0} danger />
         <Stat icon={Warning} label="Frustrated" value={overview?.sentiment?.frustrated ?? 0} danger />
       </div>
 
-      <div className="bg-white border border-[#E5E5E5]">
-        <div className="px-6 py-4 border-b border-[#E5E5E5] flex items-center justify-between">
+      <div className="bg-white border border-[#EAE9E2]">
+        <div className="px-6 py-4 border-b border-[#EAE9E2] flex items-center justify-between">
           <div>
             <div className="font-heading text-lg font-semibold">Active conversations</div>
             <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mt-0.5">{active.length} on air</div>
           </div>
         </div>
-        <div className="divide-y divide-[#E5E5E5]">
+        <div className="divide-y divide-[#EAE9E2]">
           {active.length === 0 && (
             <div className="px-6 py-12 text-center text-sm text-[#A3A3A3]" data-testid="no-active-calls">No live calls right now.</div>
           )}
@@ -57,7 +57,7 @@ export default function SupervisorDashboard() {
             const risk = c.analysis?.escalation_risk || "low";
             return (
               <div key={c.id} data-testid={`active-call-${c.id}`}
-                   className="px-6 py-4 flex items-center justify-between hover:bg-[#FAFAFA] cursor-pointer"
+                   className="px-6 py-4 flex items-center justify-between hover:bg-[#FCFBF8] cursor-pointer"
                    onClick={() => nav(`/app/workspace/${c.id}`)}>
                 <div className="flex items-center gap-4 min-w-0">
                   <span className="live-dot" />

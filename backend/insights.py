@@ -52,17 +52,17 @@ def _match_category(transcript_lc: str, keywords: List[str]) -> int:
 
 
 SEED_CATEGORIES = [
-    {"id": "refund", "name": "Refund Request", "color": "#FF4FD8",
+    {"id": "refund", "name": "Refund Request", "color": "#C9A36A",
      "keywords": ["refund", "money back", "reimburse", "return my money", "cashback"]},
     {"id": "cancel", "name": "Cancellation", "color": "#EF4444",
      "keywords": ["cancel", "close my account", "stop service", "terminate"]},
     {"id": "complaint", "name": "Complaint", "color": "#F59E0B",
      "keywords": ["complaint", "unhappy", "frustrated", "terrible", "worst", "escalate", "manager"]},
-    {"id": "kyc", "name": "KYC / Identity", "color": "#7B61FF",
+    {"id": "kyc", "name": "KYC / Identity", "color": "#0F9D7A",
      "keywords": ["KYC", "PAN", "aadhaar", "verify identity", "OTP", "date of birth"]},
-    {"id": "retention", "name": "Retention Save", "color": "#10B981",
+    {"id": "retention", "name": "Retention Save", "color": "#064E3B",
      "keywords": ["loyalty", "discount", "offer", "stay", "waive", "credit"]},
-    {"id": "tech", "name": "Tech Issue", "color": "#06B6D4",
+    {"id": "tech", "name": "Tech Issue", "color": "#4DA6FF",
      "keywords": ["not working", "error", "broken", "login", "reset password", "app crash"]},
 ]
 

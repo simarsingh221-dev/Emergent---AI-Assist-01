@@ -20,7 +20,7 @@ export default function Blog() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F4F4F5] text-[#0A0A0A] flex flex-col" data-testid="blog-page">
+    <div className="min-h-screen bg-[#FAFAF7] text-[#111827] flex flex-col" data-testid="blog-page">
       <Helmet>
         <title>FlowPilot Blog — Contact Center Intelligence & AI Insights</title>
         <meta name="description" content="Articles, playbooks, and research on real-time agent assist, contact center AI, conversation intelligence, and the future of CCaaS." />
@@ -32,7 +32,7 @@ export default function Blog() {
         <meta property="og:image" content="https://flowpilot.co.in/og-image.png" />
       </Helmet>
 
-      <header className="border-b border-[#E5E5E5] bg-white">
+      <header className="border-b border-[#EAE9E2] bg-white">
         <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2" data-testid="blog-home">
             <FlowLogo size={26} />
@@ -59,12 +59,12 @@ export default function Blog() {
         {loading ? (
           <div className="text-sm text-[#525252] font-mono">Loading articles…</div>
         ) : articles.length === 0 ? (
-          <div className="py-16 text-center border border-dashed border-[#E5E5E5]">
+          <div className="py-16 text-center border border-dashed border-[#EAE9E2]">
             <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">No articles yet</div>
             <div className="text-sm text-[#525252] mt-2">First article coming soon. <Link to="/contact" className="underline">Get notified</Link>.</div>
           </div>
         ) : (
-          <div className="space-y-[1px] bg-[#E5E5E5] border border-[#E5E5E5]">
+          <div className="space-y-[1px] bg-[#EAE9E2] border border-[#EAE9E2]">
             {articles.map((a) => <ArticleCard key={a.id} a={a} />)}
           </div>
         )}
@@ -77,7 +77,7 @@ export default function Blog() {
 function ArticleCard({ a }) {
   return (
     <Link to={`/blog/${a.slug}`} data-testid={`article-card-${a.slug}`}
-      className="bg-white p-6 lg:p-8 flex flex-col lg:flex-row gap-6 hover:bg-[#FAFAFA] transition-colors group">
+      className="bg-white p-6 lg:p-8 flex flex-col lg:flex-row gap-6 hover:bg-[#FCFBF8] transition-colors group">
       {a.cover_image_url && (
         <img src={a.cover_image_url} alt={a.title}
           className="w-full lg:w-64 h-40 lg:h-32 object-cover" loading="lazy" />
@@ -88,15 +88,15 @@ function ArticleCard({ a }) {
           <span>·</span>
           <span>{a.author}</span>
         </div>
-        <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight group-hover:text-[#7B61FF] transition-colors">
+        <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight group-hover:text-[#0F9D7A] transition-colors">
           {a.title}
         </h2>
         {a.excerpt && <p className="text-sm text-[#525252] mt-2 leading-relaxed line-clamp-3">{a.excerpt}</p>}
         <div className="flex flex-wrap items-center gap-2 mt-3">
           {(a.tags || []).slice(0, 4).map((t) => (
-            <span key={t} className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 bg-[#F4F4F5] text-[#525252]">{t}</span>
+            <span key={t} className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 bg-[#FAFAF7] text-[#525252]">{t}</span>
           ))}
-          <span className="ml-auto text-xs font-mono uppercase tracking-widest text-[#7B61FF] inline-flex items-center gap-1">
+          <span className="ml-auto text-xs font-mono uppercase tracking-widest text-[#0F9D7A] inline-flex items-center gap-1">
             Read article <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>

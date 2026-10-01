@@ -12,9 +12,9 @@ export default function FlowLogo({ size = 28, className = "", showWordmark = fal
       >
         <defs>
           <linearGradient id={gid} x1="0" y1="18" x2="56" y2="18" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#7B61FF" />
-            <stop offset="50%" stopColor="#00D4FF" />
-            <stop offset="100%" stopColor="#FF4FD8" />
+            <stop offset="0%" stopColor="#0F9D7A" />
+            <stop offset="60%" stopColor="#064E3B" />
+            <stop offset="100%" stopColor="#C9A36A" />
           </linearGradient>
         </defs>
         <path

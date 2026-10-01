@@ -19,9 +19,9 @@ const ccaas = ["Genesys", "Five9", "NICE CXone", "Amazon Connect", "Twilio Flex"
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#F4F4F5] text-[#0A0A0A]">
+    <div className="min-h-screen bg-[#FAFAF7] text-[#111827]">
       {/* Top bar */}
-      <header className="border-b border-[#E5E5E5] bg-white">
+      <header className="border-b border-[#EAE9E2] bg-white">
         <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2" data-testid="brand-logo">
@@ -37,14 +37,14 @@ export default function Landing() {
           <div className="flex items-center gap-3">
             <Link to="/login" data-testid="nav-login" className="text-sm px-3 py-2 hover:bg-neutral-100">Sign in</Link>
             <Link to="/contact" data-testid="nav-contact">
-              <Button className="bg-black text-white hover:bg-[#7B61FF] rounded-none h-9 px-4 text-sm">Contact us</Button>
+              <Button className="bg-black text-white hover:bg-[#0F9D7A] rounded-none h-9 px-4 text-sm">Contact us</Button>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="relative border-b border-[#E5E5E5] aurora-bg overflow-hidden">
+      <section className="relative border-b border-[#EAE9E2] aurora-bg overflow-hidden">
         <div className="absolute inset-0 grid-texture opacity-40 pointer-events-none" />
         <div className="max-w-[1400px] mx-auto px-6 py-20 md:py-28 relative">
           <div className="grid grid-cols-12 gap-6">
@@ -68,7 +68,7 @@ export default function Landing() {
                   </Button>
                 </Link>
                 <Link to="/contact" data-testid="hero-cta-contact">
-                  <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white rounded-none h-12 px-6 text-sm">
+                  <Button variant="outline" className="border-[#C9A36A] text-[#8A6B38] hover:bg-[#C9A36A] hover:text-white rounded-none h-12 px-6 text-sm">
                     Talk to sales
                   </Button>
                 </Link>
@@ -79,7 +79,7 @@ export default function Landing() {
                   { k: "50+", v: "Real-time signals" },
                   { k: "<800ms", v: "AI suggestion latency" }
                 ].map((s) => (
-                  <div key={s.k} className="border-l-2 border-[#7B61FF] pl-3">
+                  <div key={s.k} className="border-l-2 border-[#0F9D7A] pl-3">
                     <div className="font-heading text-2xl sm:text-3xl font-bold tracking-tight">{s.k}</div>
                     <div className="text-xs text-[#525252] mt-1">{s.v}</div>
                   </div>
@@ -88,7 +88,7 @@ export default function Landing() {
             </div>
 
             <div className="col-span-12 lg:col-span-4 relative">
-              <div className="bg-[#09090B] text-white p-5 border border-black" data-testid="hero-preview">
+              <div className="bg-[#053B2C] text-white p-5 border border-black" data-testid="hero-preview">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="live-dot" />
@@ -98,7 +98,7 @@ export default function Landing() {
                 </div>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <span className="font-mono text-[10px] text-[#7B61FF] uppercase">Customer</span>
+                    <span className="font-mono text-[10px] text-[#0F9D7A] uppercase">Customer</span>
                     <p className="mt-1">I want to close my credit card — too many fees.</p>
                   </div>
                   <div>
@@ -125,7 +125,7 @@ export default function Landing() {
       </section>
 
       {/* CCaaS logos */}
-      <section id="integrations" className="border-b border-[#E5E5E5] bg-[#FAFAFA]">
+      <section id="integrations" className="border-b border-[#EAE9E2] bg-[#FCFBF8]">
         <div className="max-w-[1400px] mx-auto px-6 py-10">
           <div className="flex items-center gap-3 mb-6">
             <CirclesFour size={16} />
@@ -133,7 +133,7 @@ export default function Landing() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
             {ccaas.map((n) => (
-              <div key={n} className="border border-[#E5E5E5] bg-white px-3 py-4 text-center font-mono text-[11px] uppercase tracking-wider text-[#525252]">
+              <div key={n} className="border border-[#EAE9E2] bg-white px-3 py-4 text-center font-mono text-[11px] uppercase tracking-wider text-[#525252]">
                 {n}
               </div>
             ))}
@@ -142,7 +142,7 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section id="features" className="border-b border-[#E5E5E5] bg-white">
+      <section id="features" className="border-b border-[#EAE9E2] bg-white">
         <div className="max-w-[1400px] mx-auto px-6 py-20">
           <div className="grid grid-cols-12 gap-6 mb-12">
             <div className="col-span-12 lg:col-span-5">
@@ -156,7 +156,7 @@ export default function Landing() {
               and surface your agents and supervisors need, in one omnichannel workspace.
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[#E5E5E5] border border-[#E5E5E5]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2]">
             {features.map((f) => (
               <div key={f.title} className="bg-white p-6 min-h-[200px] flex flex-col">
                 <div className="flex items-center justify-between mb-5">
@@ -172,7 +172,7 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section id="how" className="border-b border-[#E5E5E5] bg-[#09090B] text-white">
+      <section id="how" className="border-b border-[#EAE9E2] bg-[#053B2C] text-white">
         <div className="max-w-[1400px] mx-auto px-6 py-20">
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-3">How it works</div>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-12 max-w-3xl">
@@ -186,7 +186,7 @@ export default function Landing() {
               { n: "04", t: "Summarize", d: "Auto-generated summary & CRM updates at call end — zero wrap-up." }
             ].map((s) => (
               <div key={s.n} className="border-t border-neutral-800 pt-5">
-                <div className="font-mono text-xs text-[#7B61FF] mb-3">{s.n}</div>
+                <div className="font-mono text-xs text-[#0F9D7A] mb-3">{s.n}</div>
                 <div className="font-heading text-xl font-semibold">{s.t}</div>
                 <div className="text-sm text-neutral-400 mt-2">{s.d}</div>
               </div>
@@ -198,14 +198,14 @@ export default function Landing() {
       {/* CTA */}
       <section className="bg-white">
         <div className="max-w-[1400px] mx-auto px-6 py-20 text-center">
-          <Lightning size={32} weight="fill" className="mx-auto text-[#7B61FF]" />
+          <Lightning size={32} weight="fill" className="mx-auto text-[#0F9D7A]" />
           <h2 className="font-heading text-3xl sm:text-5xl font-bold tracking-tighter mt-6">
             Ship better conversations. Today.
           </h2>
           <p className="text-[#525252] mt-4 max-w-xl mx-auto">Tell us about your contact center. We'll get back within one business day.</p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link to="/contact" data-testid="footer-cta-contact">
-              <Button className="bg-black text-white hover:bg-[#7B61FF] rounded-none h-12 px-8 text-sm">Contact us</Button>
+              <Button className="bg-black text-white hover:bg-[#0F9D7A] rounded-none h-12 px-8 text-sm">Contact us</Button>
             </Link>
             <Link to="/demo" data-testid="footer-cta-demo">
               <Button variant="outline" className="border-black text-black hover:bg-black hover:text-white rounded-none h-12 px-8 text-sm">
