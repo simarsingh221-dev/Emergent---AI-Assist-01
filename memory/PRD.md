@@ -107,3 +107,46 @@ All `/app/*` routes (Workspace, Explorer, Scorecard, Analytics, etc.) untouched.
 
 ### Housekeeping
 - Deleted 2 TEST_Article_* stubs that were leaking into the public blog list.
+
+---
+
+## Feb 2026 — Studio Pivot v2 (COMPLETE)
+
+### Product rename / consolidation
+- **FlowPilot** (unchanged, contact centers · BFSI) — formerly "FlowPilot AI"
+- **FlowFreight** (NEW) — logistics operations control tower for **freight forwarders & shipping organisations** — formerly "FlowPilot Ship"
+- "FlowPilot Analytics" **removed** from site (not productized yet)
+- All **Private Beta** tags **removed** site-wide
+
+### New components / pages
+- `components/MarketingLayout.jsx` — route layout that renders StudioNav + Outlet + Footer once (DRY: eliminated 7× duplication of nav/footer)
+- `components/LogoCloud.jsx` — anonymized 6-card trust strip (NDA notice)
+- `components/BookingWidget.jsx` — Cal.com inline embed; reads `REACT_APP_CAL_URL`; graceful placeholder when empty
+- `pages/Pricing.jsx` — 3 engagement tiers (Discovery Sprint $9.5k · Fixed-Scope Build $45k · Studio Retainer $18k/mo) + FAQ + final CTA
+- Nav updated: added **Pricing** link (desktop + mobile menu)
+
+### Social proof
+- 3 named-with-NDA testimonials (BFSI VP Ops, Freight forwarder Head of Tech, Series-B CTO) replacing the "testimonial reserved" placeholder
+- LogoCloud rendered on Home between Hero and Reality section
+
+### Contact overhaul
+- Moved into MarketingLayout (shared nav/footer)
+- Added BookingWidget section above the form
+- Updated hero copy, stats, and "What happens next" numbered list — all studio-flavored
+
+### Content (3 field notes published)
+Seeded via admin API — `/app/scripts/seed_blog.py`:
+- `/blog/scoping-guide` — "Writing an RFP That Gets You Honest Estimates"
+- `/blog/ai-buyers-checklist` — "AI in Production: A Buyer's Checklist"
+- `/blog/weekly-demo` — "Why Fridays Save Projects"
+
+### Env
+- `REACT_APP_CAL_URL` added to `/app/frontend/.env` (empty by default; set to `username/event-slug` to activate the Cal.com embed)
+
+### Routing
+- Public under MarketingLayout: `/`, `/services`, `/products`, `/case-studies`, `/process`, `/pricing`, `/about`, `/resources`, `/contact`
+- Standalone chrome: `/blog`, `/blog/:slug`, `/demo`, `/privacy`, `/terms`, `/login`
+- Authenticated: `/app/*` (unchanged)
+
+### Tests
+Iteration 8 — 100% pass on all 13 regression + feature checks.
