@@ -122,7 +122,7 @@ All `/app/*` routes (Workspace, Explorer, Scorecard, Analytics, etc.) untouched.
 - `components/MarketingLayout.jsx` — route layout that renders StudioNav + Outlet + Footer once (DRY: eliminated 7× duplication of nav/footer)
 - `components/LogoCloud.jsx` — anonymized 6-card trust strip (NDA notice)
 - `components/BookingWidget.jsx` — Cal.com inline embed; reads `REACT_APP_CAL_URL`; graceful placeholder when empty
-- `pages/Pricing.jsx` — 3 engagement tiers (Discovery Sprint $9.5k · Fixed-Scope Build $45k · Studio Retainer $18k/mo) + FAQ + final CTA
+- `pages/Pricing.jsx` — 3 engagement tiers (Discovery Sprint $2k - 4k · Fixed-Scope Build $15k - 25k · Studio Retainer $6k - 10k/mo) + FAQ + final CTA
 - Nav updated: added **Pricing** link (desktop + mobile menu)
 
 ### Social proof
