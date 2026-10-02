@@ -9,7 +9,7 @@ const tiers = [
     icon: Compass,
     name: "Discovery Sprint",
     tagline: "Prove the business case before you commit.",
-    startingAt: "$9,500",
+    startingAt: "$2000",
     duration: "1–2 weeks",
     popular: false,
     includes: [
@@ -27,7 +27,7 @@ const tiers = [
     icon: Rocket,
     name: "Fixed-Scope Build",
     tagline: "A delivery date you can share with the board.",
-    startingAt: "$45,000",
+    startingAt: "$15000",
     duration: "6–16 weeks",
     popular: true,
     includes: [
@@ -45,7 +45,7 @@ const tiers = [
     icon: Sparkle,
     name: "Studio Retainer",
     tagline: "A product team that moves at startup speed.",
-    startingAt: "$18,000 / mo",
+    startingAt: "$6000 / mo",
     duration: "Rolling, 3-month minimum",
     popular: false,
     includes: [
