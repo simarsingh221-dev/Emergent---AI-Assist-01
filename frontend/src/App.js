@@ -3,6 +3,12 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import Landing from "@/pages/Landing";
+import Services from "@/pages/Services";
+import Products from "@/pages/Products";
+import CaseStudies from "@/pages/CaseStudies";
+import Process from "@/pages/Process";
+import About from "@/pages/About";
+import Resources from "@/pages/Resources";
 import Login from "@/pages/Login";
 import Demo from "@/pages/Demo";
 import Contact from "@/pages/Contact";
@@ -38,6 +44,12 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/case-studies" element={<CaseStudies />} />
+            <Route path="/process" element={<Process />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/resources" element={<Resources />} />
             <Route path="/login" element={<Login />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/contact" element={<Contact />} />

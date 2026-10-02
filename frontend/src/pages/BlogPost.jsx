@@ -103,19 +103,19 @@ export default function BlogPost() {
           <div className="mt-12 pt-6 border-t border-[#EAE9E2] flex flex-wrap gap-1.5">
             <Tag size={14} className="text-[#525252] mt-0.5" />
             {a.tags.map((t) => (
-              <span key={t} className="text-[10px] font-mono uppercase tracking-widest px-2 py-1 bg-[#FAFAF7] text-[#525252]">{t}</span>
+              <span key={t} className="text-[10px] font-mono uppercase tracking-widest px-2 py-1 bg-[#FAF8F4] text-[#525252]">{t}</span>
             ))}
           </div>
         )}
 
-        <div className="mt-12 p-6 bg-[#FCFBF8] border-l-2 border-[#0F9D7A]">
-          <div className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563] mb-2">From FlowPilot</div>
+        <div className="mt-12 p-6 bg-[#FCFBF8] border-l-2 border-[#0F766E]">
+          <div className="font-mono text-[10px] uppercase tracking-widest text-[#0B6058] mb-2">From FlowPilot</div>
           <h3 className="font-heading text-xl font-bold tracking-tight">Want this for your contact center?</h3>
           <p className="text-sm text-[#525252] mt-2">
             Real-time agent assist · sub-second next-best-action · auto QA — under one roof.
           </p>
           <div className="flex gap-2 mt-4">
-            <Link to="/demo" className="inline-flex items-center gap-1 text-sm px-4 py-2 bg-black text-white hover:bg-[#0F9D7A]">Watch 3-min demo</Link>
+            <Link to="/demo" className="inline-flex items-center gap-1 text-sm px-4 py-2 bg-black text-white hover:bg-[#0F766E]">Watch 3-min demo</Link>
             <Link to="/contact" className="inline-flex items-center gap-1 text-sm px-4 py-2 border border-black hover:bg-black hover:text-white">Talk to us</Link>
           </div>
         </div>

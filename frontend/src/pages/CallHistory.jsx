@@ -9,7 +9,7 @@ export default function CallHistory() {
   useEffect(() => { api.get("/calls").then((r) => setCalls(r.data)); }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="history-page">
+    <div className="min-h-screen bg-[#FAF8F4] p-8" data-testid="history-page">
       <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Call history</div>
       <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Conversations.</h1>
       <div className="bg-white border border-[#EAE9E2]">

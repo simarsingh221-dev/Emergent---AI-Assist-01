@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tag, Plus, Trash, ArrowsClockwise, X, FloppyDisk, CheckCircle } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
-const PRESET_COLORS = ["#0F9D7A", "#064E3B", "#C9A36A", "#EF4444", "#F59E0B", "#4DA6FF", "#8B7BFF", "#D77BFF"];
+const PRESET_COLORS = ["#0F766E", "#14532D", "#C8A97E", "#EF4444", "#F59E0B", "#4DA6FF", "#8B7BFF", "#D77BFF"];
 
 export default function Categories() {
   const { user } = useAuth();
@@ -66,7 +66,7 @@ export default function Categories() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7]" data-testid="categories-page">
+    <div className="min-h-screen bg-[#FAF8F4]" data-testid="categories-page">
       <div className="border-b border-[#EAE9E2] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Categories</div>

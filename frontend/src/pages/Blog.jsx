@@ -20,7 +20,7 @@ export default function Blog() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] text-[#111827] flex flex-col" data-testid="blog-page">
+    <div className="min-h-screen bg-[#FAF8F4] text-[#111827] flex flex-col" data-testid="blog-page">
       <Helmet>
         <title>FlowPilot Blog — Contact Center Intelligence & AI Insights</title>
         <meta name="description" content="Articles, playbooks, and research on real-time agent assist, contact center AI, conversation intelligence, and the future of CCaaS." />
@@ -88,15 +88,15 @@ function ArticleCard({ a }) {
           <span>·</span>
           <span>{a.author}</span>
         </div>
-        <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight group-hover:text-[#0F9D7A] transition-colors">
+        <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight group-hover:text-[#0F766E] transition-colors">
           {a.title}
         </h2>
         {a.excerpt && <p className="text-sm text-[#525252] mt-2 leading-relaxed line-clamp-3">{a.excerpt}</p>}
         <div className="flex flex-wrap items-center gap-2 mt-3">
           {(a.tags || []).slice(0, 4).map((t) => (
-            <span key={t} className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 bg-[#FAFAF7] text-[#525252]">{t}</span>
+            <span key={t} className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 bg-[#FAF8F4] text-[#525252]">{t}</span>
           ))}
-          <span className="ml-auto text-xs font-mono uppercase tracking-widest text-[#0F9D7A] inline-flex items-center gap-1">
+          <span className="ml-auto text-xs font-mono uppercase tracking-widest text-[#0F766E] inline-flex items-center gap-1">
             Read article <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>

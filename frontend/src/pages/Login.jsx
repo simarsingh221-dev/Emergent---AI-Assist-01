@@ -30,7 +30,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2" data-testid="login-page">
-      <div className="bg-[#064E3B] text-white relative hidden lg:flex flex-col justify-between p-12 overflow-hidden">
+      <div className="bg-[#14532D] text-white relative hidden lg:flex flex-col justify-between p-12 overflow-hidden">
         <div className="relative z-10">
           <Link to="/" className="flex items-center gap-2" data-testid="back-home">
             <FlowLogo size={26} />
@@ -63,7 +63,7 @@ export default function Login() {
             </div>
             <Button type="submit" disabled={loading}
                     data-testid="login-submit"
-                    className="w-full h-11 bg-black text-white hover:bg-[#0F9D7A] rounded-none">
+                    className="w-full h-11 bg-black text-white hover:bg-[#0F766E] rounded-none">
               {loading ? "Signing in…" : "Sign in"}
             </Button>
           </div>

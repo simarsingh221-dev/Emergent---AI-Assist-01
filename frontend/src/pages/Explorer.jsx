@@ -89,11 +89,11 @@ export default function Explorer() {
   const pages = Math.ceil(total / pageSize) || 1;
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7]" data-testid="explorer-page">
+    <div className="min-h-screen bg-[#FAF8F4]" data-testid="explorer-page">
       <div className="border-b border-[#EAE9E2] bg-white px-8 py-5">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Conversation Explorer</div>
         <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mt-1">
-          Search every conversation. <span className="text-[#0F9D7A]">{total.toLocaleString()}</span> match{total === 1 ? "" : "es"}.
+          Search every conversation. <span className="text-[#0F766E]">{total.toLocaleString()}</span> match{total === 1 ? "" : "es"}.
         </h1>
       </div>
 
@@ -105,7 +105,7 @@ export default function Explorer() {
               <Funnel size={14} className="text-[#525252]" />
               <span className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">Filters</span>
             </div>
-            <button onClick={clearAll} className="text-[10px] font-mono uppercase tracking-widest text-[#0F9D7A] hover:underline" data-testid="explorer-clear-filters">
+            <button onClick={clearAll} className="text-[10px] font-mono uppercase tracking-widest text-[#0F766E] hover:underline" data-testid="explorer-clear-filters">
               Clear all
             </button>
           </div>
@@ -279,7 +279,7 @@ function CheckList({ opts, values, labelFn, onToggle, colorFn, testid }) {
       {opts.map((o) => (
         <label key={o} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-[#FCFBF8] px-1 py-0.5" data-testid={`${testid}-${o}`}>
           <input type="checkbox" checked={values.includes(o)} onChange={() => onToggle(o)}
-            className="rounded-none accent-[#0F9D7A]" />
+            className="rounded-none accent-[#0F766E]" />
           {colorFn && <span className="w-2 h-2" style={{ background: colorFn(o) }} />}
           <span className="capitalize">{labelFn(o)}</span>
         </label>
@@ -336,7 +336,7 @@ function CallDetail({ call, q, catLookup }) {
         <DetailSection title="Transcript">
           <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin">
             {(call.transcript || []).map((t, i) => (
-              <div key={i} className={`text-sm ${t.speaker === "agent" ? "" : "pl-4 border-l-2 border-[#0F9D7A]"}`}>
+              <div key={i} className={`text-sm ${t.speaker === "agent" ? "" : "pl-4 border-l-2 border-[#0F766E]"}`}>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-[#A3A3A3] mr-2">
                   {t.speaker === "agent" ? "Agent" : "Customer"}
                 </span>

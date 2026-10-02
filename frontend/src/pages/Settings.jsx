@@ -52,7 +52,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="settings-page">
+    <div className="min-h-screen bg-[#FAF8F4] p-8" data-testid="settings-page">
       <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Settings</div>
       <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Integrations & webhooks.</h1>
 
@@ -70,13 +70,13 @@ export default function Settings() {
             disabled={savingMode || !canManage}
             onClick={() => updateAssistMode("auto")}
             className={`text-left p-5 border-2 transition-colors ${
-              assistMode === "auto" ? "border-[#0F9D7A] bg-[#E6F6F1]" : "border-[#EAE9E2] hover:border-[#A3A3A3]"
+              assistMode === "auto" ? "border-[#0F766E] bg-[#E6F6F1]" : "border-[#EAE9E2] hover:border-[#A3A3A3]"
             } ${!canManage ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
           >
             <div className="flex items-center gap-2 mb-2">
-              <Sparkle size={16} weight={assistMode === "auto" ? "fill" : "regular"} className="text-[#0F9D7A]" />
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">Auto</span>
-              {assistMode === "auto" && <span className="ml-auto font-mono text-[10px] uppercase tracking-widest text-[#0F9D7A]">● ACTIVE</span>}
+              <Sparkle size={16} weight={assistMode === "auto" ? "fill" : "regular"} className="text-[#0F766E]" />
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B6058]">Auto</span>
+              {assistMode === "auto" && <span className="ml-auto font-mono text-[10px] uppercase tracking-widest text-[#0F766E]">● ACTIVE</span>}
             </div>
             <div className="font-heading font-semibold text-base">Auto-analyse</div>
             <div className="text-xs text-[#525252] mt-1">FlowPilot analyses every utterance automatically (1.5 s debounce). Agents see live updates without clicking. Higher LLM cost but truly real-time.</div>
@@ -140,7 +140,7 @@ export default function Settings() {
             <Input placeholder="Events (comma separated)" value={form.events} onChange={(e) => setForm({ ...form, events: e.target.value })}
                    className="rounded-none border-black h-10" data-testid="wh-events" />
             <Button onClick={add} data-testid="wh-add"
-                    className="w-full rounded-none h-10 bg-black hover:bg-[#0F9D7A]">
+                    className="w-full rounded-none h-10 bg-black hover:bg-[#0F766E]">
               <Plus size={14} className="mr-2" /> Add webhook
             </Button>
           </div>

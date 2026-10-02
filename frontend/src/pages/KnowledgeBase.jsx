@@ -62,7 +62,7 @@ export default function KnowledgeBase() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="kb-page">
+    <div className="min-h-screen bg-[#FAF8F4] p-8" data-testid="kb-page">
       <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Knowledge base</div>
       <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Your enterprise brain.</h1>
 
@@ -78,16 +78,16 @@ export default function KnowledgeBase() {
                      className="rounded-none border-black h-11" data-testid="kb-search-input" />
               <Button onClick={search} disabled={searching}
                       data-testid="kb-search-btn"
-                      className="rounded-none h-11 bg-black hover:bg-[#0F9D7A]">
+                      className="rounded-none h-11 bg-black hover:bg-[#0F766E]">
                 <MagnifyingGlass size={16} className="mr-2" />{searching ? "Searching…" : "Search"}
               </Button>
             </div>
             {result && (
               <div className="mt-5 space-y-3">
-                <div className="bg-[#E6F6F1] border border-[#0F9D7A] p-4">
+                <div className="bg-[#E6F6F1] border border-[#0F766E] p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Sparkle size={12} className="text-[#0F9D7A]" />
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">AI Answer</span>
+                    <Sparkle size={12} className="text-[#0F766E]" />
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B6058]">AI Answer</span>
                   </div>
                   <p className="text-sm leading-relaxed" data-testid="kb-search-answer">{result.answer}</p>
                 </div>
@@ -96,7 +96,7 @@ export default function KnowledgeBase() {
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Sources</div>
                     <div className="space-y-1">
                       {result.sources.map((s) => (
-                        <div key={s.id} className="text-xs border-l-2 border-[#0F9D7A] pl-2">
+                        <div key={s.id} className="text-xs border-l-2 border-[#0F766E] pl-2">
                           <span className="font-semibold">{s.title}</span> <span className="text-[#A3A3A3] font-mono">· {s.category}</span>
                         </div>
                       ))}
@@ -149,7 +149,7 @@ export default function KnowledgeBase() {
                      data-testid="kb-file" />
               <Button onClick={upload} disabled={uploading}
                       data-testid="kb-upload-btn"
-                      className="w-full rounded-none h-10 bg-black hover:bg-[#0F9D7A]">
+                      className="w-full rounded-none h-10 bg-black hover:bg-[#0F766E]">
                 <UploadSimple size={14} className="mr-2" />{uploading ? "Uploading…" : "Upload"}
               </Button>
             </div>
@@ -158,7 +158,7 @@ export default function KnowledgeBase() {
             <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Quick start</div>
             <div className="text-sm mb-4">Load pre-built banking, insurance & CX playbooks to explore the assist engine.</div>
             <Button onClick={seed} data-testid="kb-seed-btn"
-                    className="w-full rounded-none bg-white text-black hover:bg-[#0F9D7A] hover:text-white">
+                    className="w-full rounded-none bg-white text-black hover:bg-[#0F766E] hover:text-white">
               Seed demo KB
             </Button>
           </div>

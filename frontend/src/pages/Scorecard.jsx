@@ -38,7 +38,7 @@ export default function Scorecard() {
   }, [selectedId, days]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7]" data-testid="scorecard-page">
+    <div className="min-h-screen bg-[#FAF8F4]" data-testid="scorecard-page">
       <div className="border-b border-[#EAE9E2] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Agent Scorecard</div>
@@ -67,7 +67,7 @@ export default function Scorecard() {
               ) : agents.map((a) => (
                 <button key={a.agent_id} onClick={() => setSelectedId(a.agent_id)}
                   data-testid={`scorecard-agent-${a.agent_id}`}
-                  className={`w-full text-left px-2 py-2.5 ${selectedId === a.agent_id ? "bg-[#E6F6F1] border-l-2 border-l-[#0F9D7A]" : "hover:bg-[#FCFBF8]"}`}>
+                  className={`w-full text-left px-2 py-2.5 ${selectedId === a.agent_id ? "bg-[#E6F6F1] border-l-2 border-l-[#0F766E]" : "hover:bg-[#FCFBF8]"}`}>
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-semibold">{a.agent_name}</div>
                     <div className="text-[10px] font-mono text-[#525252]">{a.total_calls} calls</div>
@@ -89,7 +89,7 @@ export default function Scorecard() {
             <div className="text-sm text-[#525252] font-mono">Loading scorecard…</div>
           ) : card.total_calls === 0 ? (
             <div className="py-16 text-center">
-              <Medal size={32} className="mx-auto text-[#C9A36A]" />
+              <Medal size={32} className="mx-auto text-[#C8A97E]" />
               <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mt-3">No calls in this window</div>
             </div>
           ) : (
@@ -133,13 +133,13 @@ export default function Scorecard() {
                 <ChartCard title="Top categories handled">
                   <div className="space-y-2">
                     {card.top_categories.map((tc) => {
-                      const cat = cats[tc.id] || { name: tc.id, color: "#0F9D7A" };
+                      const cat = cats[tc.id] || { name: tc.id, color: "#0F766E" };
                       const pct = Math.round(tc.count / card.total_calls * 100);
                       return (
                         <div key={tc.id} className="flex items-center gap-3" data-testid={`scorecard-cat-${tc.id}`}>
                           <div className="w-2 h-2 shrink-0" style={{ background: cat.color }} />
                           <div className="text-sm font-medium w-40 truncate">{cat.name}</div>
-                          <div className="flex-1 bg-[#FAFAF7] h-2 relative">
+                          <div className="flex-1 bg-[#FAF8F4] h-2 relative">
                             <div className="absolute inset-y-0 left-0" style={{ width: `${pct}%`, background: cat.color }} />
                           </div>
                           <div className="text-xs font-mono text-[#525252] w-20 text-right">{tc.count} · {pct}%</div>
@@ -152,7 +152,7 @@ export default function Scorecard() {
 
               <div className="mt-6">
                 <button onClick={() => nav("/app/explorer")}
-                  data-testid="scorecard-drill" className="text-sm text-[#0F9D7A] font-mono uppercase tracking-widest hover:underline inline-flex items-center gap-1">
+                  data-testid="scorecard-drill" className="text-sm text-[#0F766E] font-mono uppercase tracking-widest hover:underline inline-flex items-center gap-1">
                   Drill down to this agent's calls <ArrowRight size={14} />
                 </button>
               </div>

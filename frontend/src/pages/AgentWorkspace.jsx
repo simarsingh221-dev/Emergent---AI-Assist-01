@@ -168,7 +168,7 @@ export default function AgentWorkspace() {
 
   if (!call) {
     return (
-      <div className="min-h-screen p-10 bg-[#FAFAF7]" data-testid="workspace-start">
+      <div className="min-h-screen p-10 bg-[#FAF8F4]" data-testid="workspace-start">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Agent workspace</div>
         <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight mb-8">Start a new conversation.</h1>
         <div className="max-w-xl bg-white border border-[#EAE9E2] p-6 space-y-4">
@@ -200,7 +200,7 @@ export default function AgentWorkspace() {
             </div>
           </div>
           <Button onClick={startCall} data-testid="btn-start-call"
-                  className="w-full bg-black text-white hover:bg-[#0F9D7A] rounded-none h-11">
+                  className="w-full bg-black text-white hover:bg-[#0F766E] rounded-none h-11">
             <Phone size={16} className="mr-2" /> Start call
           </Button>
         </div>
@@ -212,7 +212,7 @@ export default function AgentWorkspace() {
   const isActive = call.status === "active";
 
   return (
-    <div className="h-screen flex flex-col bg-[#FAFAF7]" data-testid="agent-workspace">
+    <div className="h-screen flex flex-col bg-[#FAF8F4]" data-testid="agent-workspace">
       {/* Top bar */}
       <div className="bg-white border-b border-[#EAE9E2] px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -233,9 +233,9 @@ export default function AgentWorkspace() {
           {assistMode === "auto" ? (
             <>
               {isActive && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E6F6F1] border border-[#0F9D7A]/30" data-testid="auto-analyze-indicator">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E6F6F1] border border-[#0F766E]/30" data-testid="auto-analyze-indicator">
                   <Sparkle size={12} weight="fill" className={`text-[#8B7BFF] ${analyzing ? "animate-pulse" : ""}`} />
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B6058]">
                     {analyzing ? "AI analyzing…" : "AI Assist · auto"}
                   </span>
                 </div>
@@ -243,7 +243,7 @@ export default function AgentWorkspace() {
               <Button onClick={analyze} disabled={analyzing || (call.transcript?.length || 0) === 0}
                       data-testid="btn-analyze"
                       variant="outline"
-                      className="rounded-none h-9 border-[#0F9D7A] text-[#0B8563] hover:bg-[#0F9D7A] hover:text-white">
+                      className="rounded-none h-9 border-[#0F766E] text-[#0B6058] hover:bg-[#0F766E] hover:text-white">
                 <Sparkle size={14} className="mr-1.5" />Re-analyze
               </Button>
             </>
@@ -278,7 +278,7 @@ export default function AgentWorkspace() {
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}
                   className="mb-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className={`font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5 ${u.speaker === "agent" ? "bg-black text-white" : "bg-[#0F9D7A] text-white"}`}>
+                    <span className={`font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5 ${u.speaker === "agent" ? "bg-black text-white" : "bg-[#0F766E] text-white"}`}>
                       {u.speaker}
                     </span>
                     <span className="font-mono text-[10px] text-[#A3A3A3]">{u.ts?.slice(11, 19)}</span>
@@ -300,7 +300,7 @@ export default function AgentWorkspace() {
                        onKeyDown={(e) => { if (e.key === "Enter") { addUtterance("customer", custInput); setCustInput(""); } }}
                        className="rounded-none border-[#EAE9E2] h-9 text-sm" data-testid="input-customer" />
                 <Button onClick={() => { addUtterance("customer", custInput); setCustInput(""); }}
-                        className="rounded-none h-9 bg-[#0F9D7A] hover:bg-[#0B8563]"
+                        className="rounded-none h-9 bg-[#0F766E] hover:bg-[#0B6058]"
                         data-testid="btn-send-customer">
                   <PaperPlaneRight size={14} />
                 </Button>
@@ -357,15 +357,15 @@ export default function AgentWorkspace() {
                 </div>
 
                 {analysis.suggested_response && (
-                  <div className="border border-[#0F9D7A] bg-[#E6F6F1] p-4">
+                  <div className="border border-[#0F766E] bg-[#E6F6F1] p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Lightning size={14} weight="fill" className="text-[#0F9D7A]" />
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B8563]">Suggested response</span>
+                      <Lightning size={14} weight="fill" className="text-[#0F766E]" />
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#0B6058]">Suggested response</span>
                     </div>
                     <p className="text-sm text-[#111827] leading-relaxed">{analysis.suggested_response}</p>
                     <Button size="sm" onClick={() => addUtterance("agent", analysis.suggested_response)}
                             data-testid="btn-use-suggestion"
-                            className="mt-3 h-7 text-xs rounded-none bg-[#0F9D7A] hover:bg-[#0B8563]">
+                            className="mt-3 h-7 text-xs rounded-none bg-[#0F766E] hover:bg-[#0B6058]">
                       Use response
                     </Button>
                   </div>
@@ -376,7 +376,7 @@ export default function AgentWorkspace() {
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Next best actions</div>
                     <div className="space-y-2">
                       {analysis.next_best_actions.map((nba, i) => (
-                        <div key={i} className="border border-[#EAE9E2] p-3 hover:border-[#0F9D7A]">
+                        <div key={i} className="border border-[#EAE9E2] p-3 hover:border-[#0F766E]">
                           <div className="flex items-start justify-between gap-2">
                             <div className="text-sm font-medium">{nba.title}</div>
                             <span className="font-mono text-[9px] uppercase tracking-wider text-[#A3A3A3]">{nba.type}</span>
@@ -421,7 +421,7 @@ export default function AgentWorkspace() {
                 </div>
                 <div className="space-y-2">
                   {analysis.kb_result.sources.map((s, i) => (
-                    <div key={i} className="border-l-2 border-[#0F9D7A] pl-2.5">
+                    <div key={i} className="border-l-2 border-[#0F766E] pl-2.5">
                       <div className="text-xs font-semibold">{s.title}</div>
                       <div className="text-[11px] text-[#525252] mt-0.5">{s.category}</div>
                       <div className="text-[11px] text-[#525252] mt-1 line-clamp-3">{s.snippet}</div>
@@ -512,7 +512,7 @@ function SummaryBlock({ summary }) {
         <div>
           <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252] mb-2">Next steps</div>
           <ul className="space-y-1">
-            {summary.next_steps.map((k, i) => <li key={i} className="text-sm flex gap-2"><span className="font-mono text-[#0F9D7A]">□</span>{k}</li>)}
+            {summary.next_steps.map((k, i) => <li key={i} className="text-sm flex gap-2"><span className="font-mono text-[#0F766E]">□</span>{k}</li>)}
           </ul>
         </div>
       )}

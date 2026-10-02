@@ -29,7 +29,7 @@ export default function Analytics() {
   }, [isAgent, days]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7]" data-testid="analytics-page">
+    <div className="min-h-screen bg-[#FAF8F4]" data-testid="analytics-page">
       <div className="border-b border-[#EAE9E2] bg-white px-8 py-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252]">§ Conversation Trends</div>
@@ -123,7 +123,7 @@ export default function Analytics() {
                     <XAxis dataKey="date" tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} tickFormatter={fmtDay} />
                     <YAxis tick={{ fontSize: 10, fontFamily: "JetBrains Mono" }} />
                     <Tooltip contentStyle={{ fontSize: 11 }} />
-                    <Line type="monotone" dataKey="total" stroke="#0F9D7A" strokeWidth={2} dot={{ r: 2 }} />
+                    <Line type="monotone" dataKey="total" stroke="#0F766E" strokeWidth={2} dot={{ r: 2 }} />
                   </LineChart>
                 </ResponsiveContainer>
               )}
@@ -145,7 +145,7 @@ export default function Analytics() {
                     <div key={c.id} className="flex items-center gap-3" data-testid={`trend-cat-${c.id}`}>
                       <div className="w-2 h-2 shrink-0" style={{ background: c.color }} />
                       <div className="text-sm font-medium w-40 truncate">{c.name}</div>
-                      <div className="flex-1 bg-[#FAFAF7] h-2 relative">
+                      <div className="flex-1 bg-[#FAF8F4] h-2 relative">
                         <div className="absolute inset-y-0 left-0" style={{ width: `${pct}%`, background: c.color }} />
                       </div>
                       <div className="text-xs font-mono text-[#525252] w-20 text-right">{c.count} · {pct}%</div>
@@ -180,7 +180,7 @@ export default function Analytics() {
           <div className="flex flex-wrap gap-4">
             {Object.entries(overview?.channels || {}).map(([k, v]) => (
               <div key={k} className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-[#0F9D7A]" />
+                <span className="w-2 h-2 bg-[#0F766E]" />
                 <span className="font-mono text-xs uppercase tracking-widest text-[#525252]">{k}</span>
                 <span className="font-heading text-lg font-bold">{v}</span>
               </div>
@@ -213,7 +213,7 @@ export default function Analytics() {
 }
 
 function KPI({ label, value, tone, accent }) {
-  const cls = tone === "bad" ? "text-red-600" : tone === "good" ? "text-emerald-600" : accent === "purple" ? "text-[#0F9D7A]" : "";
+  const cls = tone === "bad" ? "text-red-600" : tone === "good" ? "text-emerald-600" : accent === "purple" ? "text-[#0F766E]" : "";
   return (
     <div className="bg-white p-5">
       <div className={`font-heading text-3xl font-bold ${cls}`}>{value}</div>
@@ -258,7 +258,7 @@ function Heatmap({ data }) {
               <td className="text-[#525252] uppercase tracking-wider pr-2 text-right">{DOW_LABELS[dow]}</td>
               {row.map((cnt, h) => {
                 const intensity = cnt / peak;
-                const bg = cnt === 0 ? "#FAFAF7"
+                const bg = cnt === 0 ? "#FAF8F4"
                   : `rgba(123, 97, 255, ${0.15 + intensity * 0.85})`;
                 return (
                   <td key={h} className="w-6 h-6 border border-white"
@@ -280,7 +280,7 @@ function Heatmap({ data }) {
   );
 }
 
-const AGENT_LINE_COLORS = ["#0F9D7A", "#D77BFF", "#4DA6FF", "#C9A36A", "#F59E0B", "#EF4444", "#8B7BFF", "#064E3B", "#84CC16", "#EC4899"];
+const AGENT_LINE_COLORS = ["#0F766E", "#D77BFF", "#4DA6FF", "#C8A97E", "#F59E0B", "#EF4444", "#8B7BFF", "#14532D", "#84CC16", "#EC4899"];
 function AgentDailyChart({ data }) {
   // Build composite series: [{date, agentA: n, agentB: n, ...}]
   const rows = data.dates.map((d) => {

@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export default function Terms() {
   return (
-    <div className="min-h-screen bg-[#FAFAF7] text-[#111827] flex flex-col" data-testid="terms-page">
+    <div className="min-h-screen bg-[#FAF8F4] text-[#111827] flex flex-col" data-testid="terms-page">
       <header className="border-b border-[#EAE9E2] bg-white">
         <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">

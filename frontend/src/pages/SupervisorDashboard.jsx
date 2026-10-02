@@ -22,7 +22,7 @@ export default function SupervisorDashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="supervisor-dashboard">
+    <div className="min-h-screen bg-[#FAF8F4] p-8" data-testid="supervisor-dashboard">
       <div className="flex items-baseline justify-between mb-8">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Supervisor</div>

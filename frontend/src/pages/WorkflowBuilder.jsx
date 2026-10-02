@@ -13,8 +13,8 @@ import {
 } from "@phosphor-icons/react";
 
 const PIPELINE_STAGES = [
-  { icon: Microphone, label: "Live conversation", sub: "Voice · Chat · Email", color: "#0F9D7A" },
-  { icon: Waveform, label: "Transcription", sub: "Deepgram / Whisper", color: "#0F9D7A" },
+  { icon: Microphone, label: "Live conversation", sub: "Voice · Chat · Email", color: "#0F766E" },
+  { icon: Waveform, label: "Transcription", sub: "Deepgram / Whisper", color: "#0F766E" },
   { icon: Brain, label: "Context engine", sub: "Rolling transcript + KB + persona", color: "#9B7BFF" },
   { icon: GitBranch, label: "Decision engine", sub: "intent / sentiment / NBA", color: "#4DA6FF" },
   { icon: PuzzlePiece, label: "Workflow engine", sub: "Steps · compliance · triggers", color: "#4DA6FF" },
@@ -91,7 +91,7 @@ export default function WorkflowBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] p-8" data-testid="workflows-page">
+    <div className="min-h-screen bg-[#FAF8F4] p-8" data-testid="workflows-page">
       <div className="flex items-baseline justify-between mb-8">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Workflow builder</div>
@@ -106,7 +106,7 @@ export default function WorkflowBuilder() {
       </div>
 
       {/* Pipeline architecture diagram */}
-      <div className="bg-[#064E3B] text-white p-6 mb-8 overflow-x-auto" data-testid="pipeline-diagram">
+      <div className="bg-[#14532D] text-white p-6 mb-8 overflow-x-auto" data-testid="pipeline-diagram">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-4">How FlowPilot thinks</div>
         <div className="flex items-stretch gap-2 min-w-[1100px]">
           {PIPELINE_STAGES.map((s, i) => (
@@ -135,7 +135,7 @@ export default function WorkflowBuilder() {
         )}
         {workflows.map((w) => (
           <div key={w.id} data-testid={`workflow-card-${w.id}`}
-               className="bg-white border border-[#EAE9E2] p-5 hover:border-[#0F9D7A] transition-colors flex flex-col">
+               className="bg-white border border-[#EAE9E2] p-5 hover:border-[#0F766E] transition-colors flex flex-col">
             <div className="flex items-start justify-between gap-3 mb-2">
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-widest text-[#525252]">{w.category || "General"}</div>
@@ -162,7 +162,7 @@ export default function WorkflowBuilder() {
             {canEdit && (
               <div className="flex gap-2 mt-auto pt-3 border-t border-[#EAE9E2]">
                 <Button size="sm" variant="outline" onClick={() => openEdit(w)} data-testid={`btn-edit-workflow-${w.id}`}
-                        className="rounded-none h-8 border-[#0F9D7A] text-[#0B8563] hover:bg-[#0F9D7A] hover:text-white">
+                        className="rounded-none h-8 border-[#0F766E] text-[#0B6058] hover:bg-[#0F766E] hover:text-white">
                   <PencilSimple size={12} className="mr-1.5" /> Edit
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => remove(w)} data-testid={`btn-delete-workflow-${w.id}`}

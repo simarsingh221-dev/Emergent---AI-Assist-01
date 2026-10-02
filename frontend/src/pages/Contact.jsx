@@ -34,7 +34,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] text-[#111827] flex flex-col" data-testid="contact-page">
+    <div className="min-h-screen bg-[#FAF8F4] text-[#111827] flex flex-col" data-testid="contact-page">
       <header className="border-b border-[#EAE9E2] bg-white">
         <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2" data-testid="contact-home">
@@ -47,7 +47,7 @@ export default function Contact() {
 
       <main className="flex-1">
         <div className="max-w-[1400px] mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2]">
-          <div className="bg-[#064E3B] text-white p-10 relative overflow-hidden">
+          <div className="bg-[#14532D] text-white p-10 relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(700px 380px at 0% 100%, rgba(139,123,255,0.45), transparent 60%), radial-gradient(500px 300px at 100% 0%, rgba(215,123,255,0.35), transparent 60%), radial-gradient(450px 280px at 50% 50%, rgba(77,166,255,0.25), transparent 60%)" }} />
             <div className="relative z-10">
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Get in touch</div>
@@ -60,11 +60,11 @@ export default function Contact() {
               </p>
               <div className="mt-10 space-y-4 text-sm">
                 <div className="flex items-center gap-3 text-neutral-300">
-                  <EnvelopeSimple size={16} className="text-[#0F9D7A]" />
+                  <EnvelopeSimple size={16} className="text-[#0F766E]" />
                   <span>Contactus@flowpilot.co.in</span>
                 </div>
                 <div className="flex items-center gap-3 text-neutral-300">
-                  <Buildings size={16} className="text-[#0F9D7A]" />
+                  <Buildings size={16} className="text-[#0F766E]" />
                   <span>FlowPilot</span>
                 </div>
               </div>
