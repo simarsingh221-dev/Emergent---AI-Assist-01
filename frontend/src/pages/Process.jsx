@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import StudioNav from "@/components/StudioNav";
-import Footer from "@/components/Footer";
 import { ArrowRight, Lightbulb, PaintBrush, Code, Rocket, CheckCircle, FileText, Users, ChatCircleText } from "@phosphor-icons/react";
 
 const phases = [
@@ -73,12 +71,11 @@ const rituals = [
 
 export default function Process() {
   return (
-    <div className="min-h-screen bg-[#FAF8F4] text-[#1F2937]">
+    <>
       <Helmet>
         <title>Our Process — FlowPilot Studio</title>
         <meta name="description" content="Discovery → Design → Build → Launch. Four phases, fixed scope, weekly demos. The way FlowPilot delivers software without surprises." />
       </Helmet>
-      <StudioNav />
 
       <section className="max-w-[1280px] mx-auto px-6 pt-20 pb-14 lg:pt-28 lg:pb-16">
         <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8A7540] mb-6">§ How we work</div>
@@ -168,8 +165,6 @@ export default function Process() {
           </Link>
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }

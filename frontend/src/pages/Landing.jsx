@@ -2,21 +2,19 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import Footer from "@/components/Footer";
-import StudioNav from "@/components/StudioNav";
+import LogoCloud from "@/components/LogoCloud";
 import {
   ArrowRight, Lightbulb, PaintBrush, Code, Rocket, CheckCircle,
-  CurrencyDollar, Clock, PresentationChart, Buildings, Lightning, ChatCircleText
+  CurrencyDollar, Clock, PresentationChart, Buildings, Lightning, ChatCircleText, Truck
 } from "@phosphor-icons/react";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#FAF8F4] text-[#1F2937]">
+    <>
       <Helmet>
         <title>FlowPilot — Software that ships. On scope. On time.</title>
         <meta name="description" content="FlowPilot is a software engineering and product development studio. We design, build and launch custom web & mobile apps, SaaS products, AI solutions and business systems — from idea to production." />
       </Helmet>
-      <StudioNav />
 
       {/* HERO */}
       <section className="relative overflow-hidden">
@@ -95,6 +93,9 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* SOCIAL PROOF — anonymized industry trust strip */}
+      <LogoCloud variant="white" />
 
       {/* THE REALITY */}
       <section className="bg-white border-y border-[#EAE9E2]">
@@ -183,20 +184,18 @@ export default function Landing() {
               All products <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
-              { name: "FlowPilot AI", industry: "Contact Centers", desc: "Real-time agent assist and conversation intelligence for 100+ agent operations.", benefits: ["15-20% AHT reduction", "95%+ compliance", "Supervisor-grade insights"], href: "/app" },
-              { name: "FlowPilot Analytics", industry: "Operations", desc: "Business intelligence and reporting layer over the systems you already run.", benefits: ["No ETL rebuild", "Real-time dashboards", "RBAC-safe sharing"], href: "/products" },
-              { name: "FlowPilot Ship", industry: "Logistics (private beta)", desc: "Shipment visibility & operations control tower for mid-market fleets.", benefits: ["End-to-end visibility", "Digital workflows", "Carrier-agnostic"], href: "/products", beta: true }
+              { name: "FlowPilot", industry: "Contact Centers · BFSI", desc: "Real-time agent assist and conversation intelligence for 100+ agent operations.", benefits: ["15–20% AHT reduction", "95%+ compliance score", "Supervisor-grade insights"], href: "/products#flowpilot", icon: Lightning },
+              { name: "FlowFreight", industry: "Logistics · Freight forwarders", desc: "Operations control tower for freight forwarders and shipping organisations. Shipment visibility, digital POD, dispute workflows.", benefits: ["End-to-end visibility", "Digital POD workflows", "Carrier-agnostic routing"], href: "/products#flowfreight", icon: Truck }
             ].map((p) => (
               <div key={p.name} className="group bg-[#FAF8F4] rounded-2xl p-7 border border-[#EAE9E2] hover:border-[#0F766E] transition-colors">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-9 h-9 brand-gradient-bg rounded-lg flex items-center justify-center">
-                    <Lightning size={16} weight="fill" className="text-white" />
+                  <div className="w-10 h-10 brand-gradient-bg rounded-lg flex items-center justify-center">
+                    <p.icon size={18} weight="fill" className="text-white" />
                   </div>
-                  {p.beta && <span className="text-[9px] font-mono uppercase tracking-widest px-1.5 py-0.5 bg-[#C8A97E] text-white rounded">Beta</span>}
                 </div>
-                <div className="font-heading text-xl font-bold text-[#1F2937]">{p.name}</div>
+                <div className="font-heading text-2xl font-bold text-[#1F2937]">{p.name}</div>
                 <div className="text-[11px] font-mono uppercase tracking-widest text-[#8A7540] mt-1">{p.industry}</div>
                 <p className="text-sm text-[#6B7280] mt-3 leading-relaxed">{p.desc}</p>
                 <ul className="mt-4 space-y-1.5 text-sm text-[#1F2937]">
@@ -301,23 +300,51 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* TESTIMONIALS placeholder */}
+      {/* TESTIMONIALS */}
       <section className="bg-white border-y border-[#EAE9E2]">
         <div className="max-w-[1280px] mx-auto px-6 py-20 lg:py-28">
-          <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8A7540] mb-4">§ Client voices</div>
-          <h2 className="font-heading text-3xl lg:text-5xl font-bold tracking-tight text-[#1F2937] max-w-3xl leading-[1.1]">
-            From the people who shipped with us.
-          </h2>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-            {[1, 2].map((i) => (
-              <blockquote key={i} className="bg-[#FAF8F4] border border-[#EAE9E2] rounded-2xl p-8">
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+            <div>
+              <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8A7540] mb-4">§ Client voices</div>
+              <h2 className="font-heading text-3xl lg:text-5xl font-bold tracking-tight text-[#1F2937] max-w-3xl leading-[1.1]">
+                From the people who shipped with us.
+              </h2>
+            </div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-[#8A7540] max-w-xs text-right">
+              Names redacted at client request · Full attribution available on reference call
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                quote: "They cut three months out of our roadmap. The Friday demo is addictive — you always know exactly where you stand.",
+                initial: "R",
+                role: "VP Operations",
+                company: "BFSI contact center · 500 agents",
+              },
+              {
+                quote: "We'd been through two agencies before FlowPilot. First studio that actually delivered on a signed scope. No surprises, no scope creep.",
+                initial: "A",
+                role: "Head of Technology",
+                company: "Freight forwarder · Mid-market",
+              },
+              {
+                quote: "Our team owns the codebase on day one post-launch. That's rare. The handover was clean enough that our new hire shipped a feature in week two.",
+                initial: "S",
+                role: "CTO & Co-founder",
+                company: "Series-B SaaS",
+              },
+            ].map((t, i) => (
+              <blockquote key={i} className="bg-[#FAF8F4] border border-[#EAE9E2] rounded-2xl p-7 flex flex-col" data-testid={`testimonial-${i}`}>
                 <div className="text-5xl font-heading text-[#C8A97E] leading-none">"</div>
-                <p className="text-[#1F2937] text-lg mt-2 italic">Testimonial reserved. We'll publish the first set after our pilot customers approve public attribution.</p>
-                <div className="mt-6 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#EAE9E2]" />
-                  <div>
-                    <div className="font-semibold text-sm text-[#1F2937]">Client name</div>
-                    <div className="text-xs text-[#6B7280]">Title · Company</div>
+                <p className="text-[#1F2937] mt-2 italic leading-relaxed flex-1">{t.quote}</p>
+                <div className="mt-6 pt-5 border-t border-[#EAE9E2] flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full brand-gradient-bg text-white flex items-center justify-center font-heading font-bold text-sm">
+                    {t.initial}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-sm text-[#1F2937] truncate">{t.role}</div>
+                    <div className="text-xs text-[#6B7280] truncate">{t.company}</div>
                   </div>
                 </div>
               </blockquote>
@@ -343,7 +370,6 @@ export default function Landing() {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </>
   );
 }

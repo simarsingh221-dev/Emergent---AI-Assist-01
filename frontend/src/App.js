@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
+import MarketingLayout from "@/components/MarketingLayout";
 import Landing from "@/pages/Landing";
 import Services from "@/pages/Services";
 import Products from "@/pages/Products";
@@ -9,13 +10,14 @@ import CaseStudies from "@/pages/CaseStudies";
 import Process from "@/pages/Process";
 import About from "@/pages/About";
 import Resources from "@/pages/Resources";
+import Pricing from "@/pages/Pricing";
+import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
 import Login from "@/pages/Login";
 import Demo from "@/pages/Demo";
 import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
 import AppShell from "@/components/AppShell";
 import AgentWorkspace from "@/pages/AgentWorkspace";
 import SupervisorDashboard from "@/pages/SupervisorDashboard";
@@ -43,22 +45,33 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/process" element={<Process />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/demo" element={<Demo />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
+            {/* Public marketing site — shared StudioNav + Footer via MarketingLayout */}
+            <Route element={<MarketingLayout />}>
+              <Route path="/" element={<Landing />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/case-studies" element={<CaseStudies />} />
+              <Route path="/process" element={<Process />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/contact" element={<Contact />} />
+            </Route>
+
+            {/* Blog keeps its own standalone chrome for now */}
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
-            {/* /register removed — accounts are provisioned by admin via /app/users */}
+
+            {/* Demo + Legal keep their own chrome */}
+            <Route path="/demo" element={<Demo />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+
+            {/* Auth */}
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Navigate to="/contact" replace />} />
+
+            {/* Authenticated SaaS app */}
             <Route path="/app" element={<Private><AppShell /></Private>}>
               <Route index element={<Navigate to="/app/workspace" replace />} />
               <Route path="workspace" element={<AgentWorkspace />} />

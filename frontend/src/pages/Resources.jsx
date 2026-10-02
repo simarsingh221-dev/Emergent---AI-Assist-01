@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import StudioNav from "@/components/StudioNav";
-import Footer from "@/components/Footer";
 import { ArrowRight, BookOpen, FileText, Compass, Lightning } from "@phosphor-icons/react";
 
 const guides = [
@@ -31,12 +29,11 @@ export default function Resources() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4] text-[#1F2937]">
+    <>
       <Helmet>
         <title>Resources — FlowPilot Studio</title>
         <meta name="description" content="Field notes, guides, and essays from the FlowPilot studio. How to scope software, buy AI, run projects that ship." />
       </Helmet>
-      <StudioNav />
 
       <section className="max-w-[1280px] mx-auto px-6 pt-20 pb-14 lg:pt-28 lg:pb-16">
         <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8A7540] mb-6">§ Resources</div>
@@ -116,8 +113,6 @@ export default function Resources() {
           </Link>
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }

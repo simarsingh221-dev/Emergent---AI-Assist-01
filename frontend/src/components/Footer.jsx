@@ -29,9 +29,9 @@ export default function Footer() {
             <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8A7540] mb-3">Products</div>
             <ul className="space-y-2 text-sm">
               <li><Link to="/products" className="link-underline text-[#1F2937]" data-testid="footer-link-products">All products</Link></li>
-              <li><Link to="/products#flowpilot-ai" className="link-underline text-[#1F2937]">FlowPilot AI</Link></li>
-              <li><Link to="/products#flowpilot-analytics" className="link-underline text-[#1F2937]">Analytics</Link></li>
-              <li><Link to="/products#flowpilot-ship" className="link-underline text-[#1F2937]">Ship (beta)</Link></li>
+              <li><Link to="/products#flowpilot" className="link-underline text-[#1F2937]">FlowPilot</Link></li>
+              <li><Link to="/products#flowfreight" className="link-underline text-[#1F2937]">FlowFreight</Link></li>
+              <li><Link to="/pricing" className="link-underline text-[#1F2937]" data-testid="footer-link-pricing">Pricing</Link></li>
             </ul>
           </div>
           <div>

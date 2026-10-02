@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import StudioNav from "@/components/StudioNav";
-import Footer from "@/components/Footer";
 import { ArrowRight, Target, Handshake, ShieldCheck, Lightbulb, Globe, Code } from "@phosphor-icons/react";
 
 const principles = [
@@ -23,12 +21,11 @@ const facts = [
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-[#FAF8F4] text-[#1F2937]">
+    <>
       <Helmet>
         <title>About — FlowPilot Studio</title>
         <meta name="description" content="FlowPilot is a software engineering and product development studio. Fixed scope, weekly demos, long-term support. The way software should be built." />
       </Helmet>
-      <StudioNav />
 
       {/* HERO */}
       <section className="max-w-[1280px] mx-auto px-6 pt-20 pb-14 lg:pt-28 lg:pb-16">
@@ -109,7 +106,6 @@ export default function About() {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </>
   );
 }

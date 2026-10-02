@@ -1,17 +1,14 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import StudioNav from "@/components/StudioNav";
-import Footer from "@/components/Footer";
-import { ArrowRight, CheckCircle, Lightning, ChartBar, Truck } from "@phosphor-icons/react";
+import { ArrowRight, CheckCircle, Lightning, Truck } from "@phosphor-icons/react";
 
 const products = [
   {
-    id: "flowpilot-ai",
+    id: "flowpilot",
     icon: Lightning,
-    name: "FlowPilot AI",
-    status: "GA",
-    industry: "Contact Centers",
+    name: "FlowPilot",
+    industry: "Contact Centers · BFSI",
     pitch: "Real-time agent assist and conversation intelligence for 100+ agent operations.",
     description: "Live transcription, next-best-action, compliance scoring, and supervisor dashboards. Deployed in BFSI contact centers with measurable outcomes in weeks, not quarters.",
     metrics: [
@@ -30,50 +27,26 @@ const products = [
     hrefLabel: "Open product",
   },
   {
-    id: "flowpilot-analytics",
-    icon: ChartBar,
-    name: "FlowPilot Analytics",
-    status: "GA",
-    industry: "Operations & RevOps",
-    pitch: "Business intelligence layer over the systems you already run.",
-    description: "Stop rebuilding ETLs. FlowPilot Analytics connects to your warehouse and operational systems and ships real-time dashboards with RBAC-safe sharing — in days, not quarters.",
-    metrics: [
-      { k: "0", v: "ETL rebuilds" },
-      { k: "<2 wk", v: "To first dashboard" },
-      { k: "RBAC", v: "Row & column level" },
-    ],
-    features: [
-      "Live dashboards & scheduled reports",
-      "Row-level security (RLS)",
-      "Snowflake, Postgres, BigQuery connectors",
-      "Alerts & threshold monitors",
-      "Embeddable widgets",
-    ],
-    href: "/contact",
-    hrefLabel: "Request access",
-  },
-  {
-    id: "flowpilot-ship",
+    id: "flowfreight",
     icon: Truck,
-    name: "FlowPilot Ship",
-    status: "Private Beta",
-    industry: "Logistics",
-    pitch: "Shipment visibility and operations control tower for mid-market fleets.",
-    description: "A single operations dashboard replacing 5+ disconnected tools. End-to-end shipment visibility, digital POD workflows, dispute resolution, and carrier-agnostic routing.",
+    name: "FlowFreight",
+    industry: "Logistics · Freight forwarders & shipping",
+    pitch: "Operations control tower for freight forwarders and shipping organisations.",
+    description: "A single operations platform replacing fragmented tools. End-to-end shipment visibility, digital POD workflows, dispute resolution, and carrier-agnostic routing — built for freight forwarders and shipping organisations.",
     metrics: [
       { k: "40%", v: "Fewer back-office hours" },
       { k: "3 → 1", v: "Vendor consolidation" },
-      { k: "Days → Hours", v: "Dispute resolution" },
+      { k: "Days → Hrs", v: "Dispute resolution" },
     ],
     features: [
       "Multi-carrier shipment tracking",
       "Digital POD & exception workflows",
       "Dispute & claims management",
-      "Driver & dispatcher mobile apps",
+      "Driver and dispatcher mobile apps",
       "KPI dashboards for ops leadership",
     ],
     href: "/contact",
-    hrefLabel: "Join private beta",
+    hrefLabel: "Request a walkthrough",
   },
 ];
 
@@ -82,13 +55,8 @@ function ProductCard({ p }) {
     <div id={p.id} className="bg-white rounded-2xl border border-[#EAE9E2] overflow-hidden" data-testid={`product-${p.id}`}>
       <div className="p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-5">
-          <div className="flex items-center gap-2">
-            <div className="w-11 h-11 brand-gradient-bg rounded-xl flex items-center justify-center">
-              <p.icon size={18} weight="fill" className="text-white" />
-            </div>
-            <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-1 rounded ${
-              p.status === "GA" ? "bg-[#F0FDF9] text-[#0F766E] border border-[#0F766E]/20" : "bg-[#C8A97E] text-white"
-            }`}>{p.status}</span>
+          <div className="w-12 h-12 brand-gradient-bg rounded-xl flex items-center justify-center">
+            <p.icon size={20} weight="fill" className="text-white" />
           </div>
           <div className="font-mono text-[11px] uppercase tracking-widest text-[#8A7540] mt-5">{p.industry}</div>
           <h2 className="font-heading text-3xl lg:text-4xl font-bold tracking-tight text-[#1F2937] mt-2">{p.name}</h2>
@@ -127,12 +95,11 @@ function ProductCard({ p }) {
 
 export default function Products() {
   return (
-    <div className="min-h-screen bg-[#FAF8F4] text-[#1F2937]">
+    <>
       <Helmet>
         <title>Products — FlowPilot Studio</title>
-        <meta name="description" content="Our own products — FlowPilot AI (agent assist), FlowPilot Analytics (BI layer), and FlowPilot Ship (logistics control tower). Built with the rigor we sell." />
+        <meta name="description" content="Our own products — FlowPilot (agent assist for contact centers) and FlowFreight (operations control tower for freight forwarders and shipping organisations). Built with the rigor we sell." />
       </Helmet>
-      <StudioNav />
 
       <section className="max-w-[1280px] mx-auto px-6 pt-20 pb-14 lg:pt-28 lg:pb-16">
         <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8A7540] mb-6">§ Products</div>
@@ -141,7 +108,7 @@ export default function Products() {
           <span className="brand-gradient-text">Built with the rigor we sell.</span>
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-[#6B7280] leading-relaxed">
-          We eat our own cooking. These are the products we've built, deployed, and operate in production.
+          We eat our own cooking. These are the products we've built, deployed, and operate in production — one for contact centers, one for logistics.
         </p>
       </section>
 
@@ -164,8 +131,6 @@ export default function Products() {
           </Link>
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }

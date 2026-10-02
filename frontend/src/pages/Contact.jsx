@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import FlowLogo from "@/components/FlowLogo";
-import Footer from "@/components/Footer";
+import BookingWidget from "@/components/BookingWidget";
 import { toast } from "sonner";
-import { ArrowRight, EnvelopeSimple, Buildings, Phone, Sparkle } from "@phosphor-icons/react";
+import { ArrowRight, EnvelopeSimple, Buildings, Sparkle, Clock, Calendar } from "@phosphor-icons/react";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", company: "", phone: "", message: "" });
@@ -34,118 +34,140 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4] text-[#111827] flex flex-col" data-testid="contact-page">
-      <header className="border-b border-[#EAE9E2] bg-white">
-        <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2" data-testid="contact-home">
-            <FlowLogo size={26} />
-            <span className="font-heading font-bold text-lg tracking-tight">FlowPilot</span>
-          </Link>
-          <Link to="/login" className="text-sm px-3 py-2 hover:bg-neutral-100" data-testid="contact-nav-login">Sign in</Link>
-        </div>
-      </header>
+    <>
+      <Helmet>
+        <title>Book a Discovery Call — FlowPilot Studio</title>
+        <meta name="description" content="Tell us what you're trying to build. We'll help you define the right path forward and respond within one business day." />
+      </Helmet>
 
-      <main className="flex-1">
-        <div className="max-w-[1400px] mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-[1px] bg-[#EAE9E2] border border-[#EAE9E2]">
-          <div className="bg-[#14532D] text-white p-10 relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(700px 380px at 0% 100%, rgba(139,123,255,0.45), transparent 60%), radial-gradient(500px 300px at 100% 0%, rgba(215,123,255,0.35), transparent 60%), radial-gradient(450px 280px at 50% 50%, rgba(77,166,255,0.25), transparent 60%)" }} />
+      {/* HERO */}
+      <section className="max-w-[1280px] mx-auto px-6 pt-20 pb-10 lg:pt-28 lg:pb-14" data-testid="contact-page">
+        <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8A7540] mb-6">§ Get in touch</div>
+        <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.03em] leading-[1.05] max-w-4xl">
+          Tell us what you're<br />
+          <span className="brand-gradient-text inline-block pb-1">trying to build.</span>
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg text-[#6B7280] leading-relaxed">
+          Whether you have a detailed spec or just an idea, we'll help you define the right path forward. We respond within one business day.
+        </p>
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
+          <Stat icon={Clock} k="< 1 day" v="Response time" />
+          <Stat icon={Calendar} k="30 min" v="Discovery call" />
+          <Stat icon={Sparkle} k="Free" v="No obligation" />
+        </div>
+      </section>
+
+      {/* BOOKING WIDGET */}
+      <section className="max-w-[1280px] mx-auto px-6 pb-10">
+        <BookingWidget />
+      </section>
+
+      {/* FORM + CONTACT INFO */}
+      <section id="form" className="max-w-[1280px] mx-auto px-6 pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* Left: context panel */}
+          <div className="bg-[#14532D] text-white rounded-2xl p-10 relative overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none opacity-70" style={{ background: "radial-gradient(600px 320px at 0% 100%, rgba(15,118,110,0.4), transparent 60%), radial-gradient(400px 240px at 100% 0%, rgba(200,169,126,0.25), transparent 60%)" }} />
             <div className="relative z-10">
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Get in touch</div>
-              <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15]">
-                Tell us what you're <span className="brand-gradient-text inline-block pb-1">trying to build.</span>
-              </h1>
-              <p className="text-neutral-300 mt-5 max-w-md">
-                Whether you have a detailed spec or just an idea, we'll help you define the right path forward.
-                We respond within one business day.
+              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#C8A97E] mb-3">Or send a note</div>
+              <h2 className="font-heading text-2xl lg:text-3xl font-bold tracking-tight leading-[1.15]">
+                Prefer email over calendar? That works too.
+              </h2>
+              <p className="text-white/70 mt-5 leading-relaxed">
+                Share what you're building. Team size, timelines, tech stack, pain points — whatever helps us scope the conversation.
               </p>
               <div className="mt-10 space-y-4 text-sm">
-                <div className="flex items-center gap-3 text-neutral-300">
-                  <EnvelopeSimple size={16} className="text-[#0F766E]" />
-                  <span>Contactus@flowpilot.co.in</span>
+                <div className="flex items-center gap-3 text-white/80">
+                  <EnvelopeSimple size={18} weight="duotone" className="text-[#C8A97E]" />
+                  <a href="mailto:contactus@flowpilot.co.in" className="underline-offset-4 hover:underline">contactus@flowpilot.co.in</a>
                 </div>
-                <div className="flex items-center gap-3 text-neutral-300">
-                  <Buildings size={16} className="text-[#0F766E]" />
-                  <span>FlowPilot</span>
+                <div className="flex items-center gap-3 text-white/80">
+                  <Buildings size={18} weight="duotone" className="text-[#C8A97E]" />
+                  <span>FlowPilot Studio</span>
                 </div>
               </div>
-              <div className="mt-12 grid grid-cols-3 gap-4 max-w-md">
-                <Stat k="80%" v="Less wrap-up" />
-                <Stat k="50+" v="Live signals" />
-                <Stat k="<800ms" v="Latency" />
+              <div className="mt-14 pt-6 border-t border-white/15">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[#C8A97E] mb-3">What happens next</div>
+                <ol className="space-y-2 text-sm text-white/80 list-decimal list-inside">
+                  <li>We read your note within one business day</li>
+                  <li>If there's a fit, we propose a 30-min discovery call</li>
+                  <li>We send a short, scoped proposal within 48 hours after</li>
+                </ol>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-10">
+          {/* Right: form */}
+          <div className="bg-white rounded-2xl p-10 border border-[#EAE9E2]">
             {done ? (
               <div className="py-12 text-center" data-testid="contact-done">
-                <div className="w-12 h-12 brand-gradient-bg mx-auto flex items-center justify-center">
-                  <Sparkle size={22} weight="fill" className="text-white" />
+                <div className="w-14 h-14 brand-gradient-bg rounded-xl mx-auto flex items-center justify-center">
+                  <Sparkle size={24} weight="fill" className="text-white" />
                 </div>
-                <h3 className="font-heading text-2xl font-bold tracking-tight mt-4">Message received.</h3>
-                <p className="text-[#525252] mt-2 max-w-sm mx-auto">
-                  Thank you, <span className="font-semibold">{form.name.split(" ")[0]}</span>. A FlowPilot specialist will reach out within one business day.
+                <h3 className="font-heading text-2xl font-bold tracking-tight mt-5">Message received.</h3>
+                <p className="text-[#6B7280] mt-3 max-w-sm mx-auto">
+                  Thank you, <span className="font-semibold text-[#1F2937]">{form.name.split(" ")[0]}</span>. A FlowPilot specialist will reach out within one business day.
                 </p>
-                <Link to="/demo" className="inline-block mt-8">
-                  <Button data-testid="contact-watch-demo" className="rounded-none h-11 bg-black hover:brand-gradient-bg text-white">
-                    Watch the 3-min demo <ArrowRight size={14} className="ml-2" />
+                <Link to="/case-studies" className="inline-block mt-8">
+                  <Button data-testid="contact-watch-demo" className="rounded-xl h-11 px-5 brand-gradient-bg text-white hover:opacity-90">
+                    Browse case studies <ArrowRight size={14} className="ml-2" />
                   </Button>
                 </Link>
               </div>
             ) : (
-              <form onSubmit={submit} data-testid="contact-form" className="max-w-md">
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#525252] mb-2">Contact us</div>
-                <h2 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mb-6">Tell us about your team.</h2>
-                <div className="space-y-3">
+              <form onSubmit={submit} data-testid="contact-form">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8A7540] mb-2">Contact us</div>
+                <h2 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight mb-6">Tell us about your project.</h2>
+                <div className="space-y-4">
                   <div>
-                    <Label htmlFor="c-name" className="text-xs uppercase tracking-wider font-mono">Full name *</Label>
+                    <Label htmlFor="c-name" className="text-xs uppercase tracking-wider font-mono text-[#6B7280]">Full name *</Label>
                     <Input id="c-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                           className="rounded-none border-black h-11 mt-1.5" data-testid="contact-name" placeholder="Jane Doe" />
+                           className="rounded-lg border-[#EAE9E2] h-11 mt-1.5" data-testid="contact-name" placeholder="Jane Doe" />
                   </div>
                   <div>
-                    <Label htmlFor="c-email" className="text-xs uppercase tracking-wider font-mono">Work email *</Label>
+                    <Label htmlFor="c-email" className="text-xs uppercase tracking-wider font-mono text-[#6B7280]">Work email *</Label>
                     <Input id="c-email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                           className="rounded-none border-black h-11 mt-1.5" data-testid="contact-email" placeholder="jane@company.com" />
+                           className="rounded-lg border-[#EAE9E2] h-11 mt-1.5" data-testid="contact-email" placeholder="jane@company.com" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label htmlFor="c-company" className="text-xs uppercase tracking-wider font-mono">Company</Label>
+                      <Label htmlFor="c-company" className="text-xs uppercase tracking-wider font-mono text-[#6B7280]">Company</Label>
                       <Input id="c-company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })}
-                             className="rounded-none border-black h-11 mt-1.5" data-testid="contact-company" placeholder="Acme Inc." />
+                             className="rounded-lg border-[#EAE9E2] h-11 mt-1.5" data-testid="contact-company" placeholder="Acme Inc." />
                     </div>
                     <div>
-                      <Label htmlFor="c-phone" className="text-xs uppercase tracking-wider font-mono">Phone</Label>
+                      <Label htmlFor="c-phone" className="text-xs uppercase tracking-wider font-mono text-[#6B7280]">Phone</Label>
                       <Input id="c-phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                             className="rounded-none border-black h-11 mt-1.5" data-testid="contact-phone" placeholder="+91 ..." />
+                             className="rounded-lg border-[#EAE9E2] h-11 mt-1.5" data-testid="contact-phone" placeholder="+91 ..." />
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="c-msg" className="text-xs uppercase tracking-wider font-mono">Message *</Label>
+                    <Label htmlFor="c-msg" className="text-xs uppercase tracking-wider font-mono text-[#6B7280]">Message *</Label>
                     <Textarea id="c-msg" required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
-                              className="rounded-none border-black min-h-[120px] mt-1.5" data-testid="contact-message"
-                              placeholder="What are you trying to solve? Team size, CCaaS stack, current pain points…" />
+                              className="rounded-lg border-[#EAE9E2] min-h-[120px] mt-1.5" data-testid="contact-message"
+                              placeholder="What are you trying to build? Team size, timeline, tech stack, pain points…" />
                   </div>
                   <Button type="submit" disabled={submitting} data-testid="contact-submit"
-                          className="w-full rounded-none h-11 brand-gradient-bg text-white hover:opacity-90">
+                          className="w-full rounded-xl h-11 brand-gradient-bg text-white hover:opacity-90 font-semibold">
                     {submitting ? "Sending…" : "Send message"}
                   </Button>
                 </div>
-                <p className="text-[11px] text-[#A3A3A3] mt-3">By submitting you agree to our <Link to="/privacy" className="underline">privacy policy</Link>.</p>
+                <p className="text-[11px] text-[#8A7540] mt-4">By submitting you agree to our <Link to="/privacy" className="underline">privacy policy</Link>.</p>
               </form>
             )}
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </section>
+    </>
   );
 }
 
-function Stat({ k, v }) {
+function Stat({ icon: Icon, k, v }) {
   return (
-    <div className="border-l-2 brand-gradient-border pl-3">
-      <div className="font-heading text-2xl font-bold">{k}</div>
-      <div className="font-mono text-[9px] uppercase tracking-widest text-neutral-400 mt-1">{v}</div>
+    <div className="bg-white border border-[#EAE9E2] rounded-xl p-4">
+      <Icon size={18} weight="duotone" className="text-[#0F766E]" />
+      <div className="font-heading text-xl font-bold mt-3">{k}</div>
+      <div className="font-mono text-[9px] uppercase tracking-widest text-[#6B7280] mt-1">{v}</div>
     </div>
   );
 }

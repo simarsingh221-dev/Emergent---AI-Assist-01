@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import StudioNav from "@/components/StudioNav";
-import Footer from "@/components/Footer";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 
 const studies = [
   {
     slug: "bfsi-agent-assist",
     industry: "BFSI · Contact Center",
-    size: "500 agents · 5 campaigns",
+    size: "500 agents · 5 campaigns · powered by FlowPilot",
     title: "Real-Time Agent Assist for a BFSI Contact Center",
     problem: "A 500-agent BFSI operation was losing margin to inconsistent agent behavior, compliance misses, and 9-minute average handle time. Supervisors were drowning in random call sampling.",
     approach: "We shipped a real-time agent assist platform with live transcription, next-best-action suggestions grounded in product knowledge, and supervisor compliance scoring across 100% of calls (not samples).",
@@ -30,11 +28,11 @@ const studies = [
   },
   {
     slug: "logistics-control-tower",
-    industry: "Logistics · Mid-market fleet",
-    size: "7 tools → 1 platform",
+    industry: "Logistics · Freight forwarder",
+    size: "7 tools → 1 platform · powered by FlowFreight",
     title: "Shipping Technology Transformation",
-    problem: "A mid-market fleet was running operations across 7 disconnected tools — a shipment tracker, a POD app, 3 spreadsheets, email for disputes, and a legacy TMS. Dispute resolution took days.",
-    approach: "We consolidated the stack into a single operations control tower with carrier-agnostic shipment visibility, digital POD workflows, and dispute workflows that cut cycle time by an order of magnitude.",
+    problem: "A freight forwarder was running operations across 7 disconnected tools — a shipment tracker, a POD app, 3 spreadsheets, email for disputes, and a legacy TMS. Dispute resolution took days.",
+    approach: "We consolidated the stack into FlowFreight — our own operations control tower for freight forwarders and shipping organisations — with carrier-agnostic shipment visibility, digital POD workflows, and dispute workflows that cut cycle time by an order of magnitude.",
     deliverables: [
       "Unified operations dashboard",
       "End-to-end shipment visibility (multi-carrier)",
@@ -54,12 +52,11 @@ const studies = [
 
 export default function CaseStudies() {
   return (
-    <div className="min-h-screen bg-[#FAF8F4] text-[#1F2937]">
+    <>
       <Helmet>
         <title>Case Studies — FlowPilot Studio</title>
-        <meta name="description" content="Real projects, real outcomes. BFSI agent assist, logistics control tower, and more case studies from the FlowPilot studio." />
+        <meta name="description" content="Real projects, real outcomes. BFSI agent assist (FlowPilot), freight forwarder operations control tower (FlowFreight), and more case studies from the FlowPilot studio." />
       </Helmet>
-      <StudioNav />
 
       <section className="max-w-[1280px] mx-auto px-6 pt-20 pb-14 lg:pt-28 lg:pb-16">
         <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8A7540] mb-6">§ Case studies</div>
@@ -128,8 +125,6 @@ export default function CaseStudies() {
           </Link>
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }
