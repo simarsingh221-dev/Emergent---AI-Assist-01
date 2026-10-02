@@ -75,3 +75,35 @@ A webapp that integrates with existing Call Monitoring / CCaaS solutions to prov
 - `EMERGENT_LLM_KEY` + `JWT_SECRET` in `/app/backend/.env`
 - `REACT_APP_BACKEND_URL` preserved (preview URL)
 - Single supervisor restart applied after initial setup; hot reload for iterations
+
+---
+
+## Feb 2026 — Studio Pivot (COMPLETE)
+
+### Positioning change
+FlowPilot is now a **software engineering & product development studio** that also sells its own products (FlowPilot AI, Analytics, Ship). The marketing site mirrors Stripe/Linear/Vercel in quality.
+
+### Marketing site — new structure (public, non-auth)
+- `/` — Home (9 sections: Hero + animated Idea→Design→Development→Launch pipeline, The Reality, What We Build, Featured Products, Case Studies, How We Work, Why Us, Testimonials, Final CTA)
+- `/services` — 4 practices (Web & Mobile, Business Systems, AI & Automation, Experience & Strategy) + stack grid
+- `/products` — 3 product cards (FlowPilot AI GA, Analytics GA, Ship Private Beta)
+- `/case-studies` — 2 anchor case studies (BFSI Agent Assist, Logistics Control Tower)
+- `/process` — Discovery → Design → Build → Launch & Operate timeline + rituals
+- `/about` — Studio story, 4 facts, 6 principles
+- `/resources` — Guides + live blog feed
+- `/contact` — Rebranded hero ("Tell us what you're trying to build")
+
+### New components
+- `components/StudioNav.jsx` — persistent sticky top nav with Book Discovery Call CTA (desktop + mobile menu)
+- `components/Footer.jsx` — overhauled 5-column studio footer
+
+### Design tokens
+- Palette: `#0F766E` emerald / `#14532D` forest / `#C8A97E` gold / `#FAF8F4` cream
+- Fonts: Cabinet Grotesk heading / JetBrains Mono accent / Inter body
+- Animations: framer-motion for hero pipeline and process timeline reveal
+
+### Auth-gated SaaS zone intact
+All `/app/*` routes (Workspace, Explorer, Scorecard, Analytics, etc.) untouched. demo@flowpilot.ai / Demo@1234 and admin@flowpilot.co.in / Admin@2026! regression-safe.
+
+### Housekeeping
+- Deleted 2 TEST_Article_* stubs that were leaking into the public blog list.

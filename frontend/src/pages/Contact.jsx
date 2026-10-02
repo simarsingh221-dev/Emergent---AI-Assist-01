@@ -51,12 +51,12 @@ export default function Contact() {
             <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(700px 380px at 0% 100%, rgba(139,123,255,0.45), transparent 60%), radial-gradient(500px 300px at 100% 0%, rgba(215,123,255,0.35), transparent 60%), radial-gradient(450px 280px at 50% 50%, rgba(77,166,255,0.25), transparent 60%)" }} />
             <div className="relative z-10">
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Get in touch</div>
-              <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tighter">
-                Let's talk about <span className="brand-gradient-text">your contact center.</span>
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15]">
+                Tell us what you're <span className="brand-gradient-text inline-block pb-1">trying to build.</span>
               </h1>
               <p className="text-neutral-300 mt-5 max-w-md">
-                Tell us about your team, the CCaaS stack you run, and the agents you want to augment.
-                We'll respond within one business day.
+                Whether you have a detailed spec or just an idea, we'll help you define the right path forward.
+                We respond within one business day.
               </p>
               <div className="mt-10 space-y-4 text-sm">
                 <div className="flex items-center gap-3 text-neutral-300">

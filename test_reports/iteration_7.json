@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only Studio pivot verification. All 7 marketing routes (/, /services, /products, /case-studies, /process, /about, /resources) render correctly with persistent StudioNav + Footer. Home has all 9 sections (Hero, Reality, What We Build, Featured Products, Case Studies, How We Work, Why Us, Testimonials, Final CTA). Animated hero pipeline cards (idea/design/development/launch) are visible with gold connectors. All 7 nav links route via client-side navigation (no full reload) and the active state styling applies. The persistent 'Book Discovery Call' CTA (studio-nav-book-call) + all 7 page-level CTAs (hero-book-call, services-cta, products-cta, case-studies-cta, process-cta, about-cta, resources-cta, final-cta) all resolve to href=/contact and navigate successfully. Services renders 4 service cards + 3-col stack grid (Frontend / Backend & AI / Platform). Products renders FlowPilot AI (GA), FlowPilot Analytics (GA), FlowPilot Ship (Private Beta) with metrics + capabilities. CaseStudies renders both BFSI Agent Assist + Logistics Control Tower articles with outcome metrics. Process renders 4-phase timeline (Discovery/Design/Build/Launch & Operate) + rituals cards. About renders story/facts/principles. Resources renders 3 guide cards (RFP, AI buyer's checklist, Friday demo) and 'From the Blog' with 3 posts (empty-state block exists in code but blog list is populated). Footer appears on every marketing page with Studio/Products/Company/Legal columns, 16 links total, all with valid hrefs. Mobile menu (studio-nav-menu @ 390px viewport) opens correctly and shows all nav links + mobile CTA (studio-nav-mobile-cta → /contact). No console errors, no page errors on any marketing route.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/resources — 'From the Blog' section", "issues": ["Two leftover TEST_Article_* stubs from backend test seeding still visible as public blog posts in Resources. Content is 'x' with no body — same cleanup bleed-through flagged in iter6. Non-blocking for Studio pivot but visually poor on a public marketing page."]},
+      {"screen": "/contact hero", "issues": ["Observed during final-CTA follow-through: gold accent text 'your contact center' in hero gets vertically clipped (descender cut, only 'cent...' visible) because the gradient-text line-height is tight on the two-line layout. Pre-existing — not caused by Studio pivot — but worth a line-height fix (leading-tight → leading-normal) on the gradient span."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Delete the TEST_Article_470f3db4 and TEST_Article_42666e6c stubs from the DB (admin cleanup) so public /resources Latest Essays shows only real posts.",
+    "Optional: increase line-height on gradient hero text in /contact page to prevent descender clipping."
+  ],
+  "critical_code_review_comments": [
+    "StudioNav + Footer are duplicated in every marketing page by import rather than wrapped at a layout route. Consider adding a <MarketingLayout> route in App.js that renders <StudioNav/><Outlet/><Footer/> once — reduces 7x import repetition and ensures consistency going forward.",
+    "Resources.jsx fetches /api/blog/articles directly in-component without a visible loading skeleton; on slow network the section will flash empty before populating. Add a small skeleton or spinner during fetch.",
+    "Hero pipeline cards use framer-motion but no prefers-reduced-motion check — accessibility concern for users who disable animations."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% on all Studio-pivot requirements (routing, CTAs, hero pipeline, 9 sections, Footer, mobile menu, per-page content checks)"},
+  "test_credentials": "n/a — all marketing routes public. demo@flowpilot.ai/Demo@1234 was listed for /app regression but not re-exercised in this iteration (unchanged by Studio pivot; verified end-to-end in iter5/iter6).",
+  "seed_data_creation": "None.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Studio marketing site is fully functional and visually complete. Only outstanding items are (1) TEST_Article_* stubs leaking into public /resources blog list (DB cleanup) and (2) a cosmetic line-height clip on /contact gradient text. /app/* authenticated routes were not re-tested in this iteration — they were verified intact in iter5/iter6 and the Studio pivot does not touch any /app/* code path (confirmed by App.js diff). If next pass needs /app regression, use demo@flowpilot.ai/Demo@1234 and selectors from UserManagement/AgentWorkspace — those were last known-good."
+}
